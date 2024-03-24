@@ -44,14 +44,14 @@ export default function AddEmployee({ employeeData = {}, onSuccess }) {
       phoneNumber: phoneNumberState,
       email: emailState,
       position: positionState,
-      supervisorUserId: supervisorUserIdState,
+      supUserId: supervisorUserIdState,
       salary: salaryState,
       address: addressState,
       department: departmentState,
     };
 
     try {
-      const response = await fetch("http://localhost:3001/addEmployee", {
+      const response = await fetch("http://localhost:3000/api/addemployee", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -195,13 +195,15 @@ export default function AddEmployee({ employeeData = {}, onSuccess }) {
                     Position:
                   </label>
                   <select
-                    class="form-select"
+                    className="form-select"
                     aria-label="Select Position"
                     required
                     value={positionState}
                     onChange={(e) => setPosition(e.target.value)}
                   >
-                    <option selected>Select Position</option>
+                    <option selected value={""}>
+                      Select Position
+                    </option>
                     <option value="Admin">Admin</option>
                     <option value="Park Manager">Park Manager</option>
                     <option value="Department Manager">
