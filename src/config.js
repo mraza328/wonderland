@@ -3,8 +3,8 @@ const config = {
     REACT_APP_API_BASE_URL: "http://localhost:3000/api",
   },
   production: {
-    REACT_APP_API_BASE_URL: "https://yourproductionapi.com/api",
+    REACT_APP_API_BASE_URL: "https://wonderland-deployment.vercel.app/api",
   },
 };
 
-export const currentConfig = config[process.env.NODE_ENV || "development"];
+export const currentConfig = config[process.env.NODE_ENV || "production"];
