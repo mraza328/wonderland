@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { currentConfig } from "../config";
+import { Link } from "react-router-dom";
 
 export default function SignIn() {
   const [email, setEmail] = useState("");
@@ -117,14 +118,13 @@ export default function SignIn() {
       >
         <div className="container text-right">
           <span className="text-muted">
-            <button type="button" className="btn btn-secondary">
-              <a
-                href="/staffSignIn"
-                className="text-decoration-none text-white"
-              >
-                Staff Login
-              </a>
-            </button>
+            <Link
+              className="text-black"
+              to="/staffSignIn"
+              style={{ textDecoration: "none " }}
+            >
+              Staff Sign In
+            </Link>
           </span>
         </div>
       </footer>
