@@ -2,11 +2,14 @@ import React, { useState } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { useAuth } from "../context/AuthContext";
+import { currentConfig } from "../config";
 
 export default function MaintenanceRequestForm({ onSuccess }) {
   const { currentUser } = useAuth();
   const [SubmissionDate, setSubmissionDate] = useState(new Date());
   const [CompletionDate, setCompletionDate] = useState(new Date());
+  const baseURL = currentConfig.REACT_APP_API_BASE_URL;
+  console.log(currentConfig.REACT_APP_API_BASE_URL);
 
   const [formData, setFormData] = useState({
     userID: currentUser.UserID,
@@ -35,7 +38,7 @@ export default function MaintenanceRequestForm({ onSuccess }) {
     console.log("Submitting:", updatedFormData);
 
     try {
-      const response = await fetch("http://localhost:3001/maintenanceRequest", {
+      const response = await fetch(`${baseURL}/newmaintenancerequest`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
