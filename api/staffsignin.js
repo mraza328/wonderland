@@ -39,9 +39,23 @@ export default async function handleStaffSignIn(req, res) {
       return;
     }
 
-    const positionQuery =
-      "SELECT position, depname FROM Employee WHERE UserID = ?";
+    const positionQuery = `
+SELECT 
+    e.position, 
+    e.depname, 
+    COALESCE(CONCAT(s.FirstName, ' ', s.LastName), 'No Supervisor') AS SupervisorName, 
+    COALESCE(e.Street, 'Not specified') AS Street, 
+    e.Salary
+FROM 
+    Employee e
+LEFT JOIN 
+    Employee s ON e.SupUserID = s.UserID
+WHERE 
+    e.UserID = ?
+`;
     const [positionResults] = await pool.query(positionQuery, [user.UserID]);
+
+    console.log(positionResults);
 
     const employeeDetails =
       positionResults.length > 0
@@ -53,11 +67,15 @@ export default async function handleStaffSignIn(req, res) {
       userID: user.UserID,
       firstName: user.FirstName,
       lastName: user.LastName,
+      dateOfBirth: user.DateOfBirth,
       email: user.Email,
       accountType: user.AccountType,
       phoneNumber: user.PhoneNumber,
       position: employeeDetails.position,
       depname: employeeDetails.depname,
+      supervisorName: employeeDetails.SupervisorName,
+      street: employeeDetails.Street,
+      salary: employeeDetails.Salary,
     });
   } catch (error) {
     console.error("Error processing request:", error);

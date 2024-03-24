@@ -28,11 +28,15 @@ export default function StaffSignIn() {
         UserID: data.userID,
         FirstName: data.firstName,
         LastName: data.lastName,
+        DateOfBirth: data.dateOfBirth,
         Email: data.email,
         AccountType: data.accountType,
         PhoneNumber: data.phoneNumber,
         Position: data.position,
         Department: data.depname,
+        Supervisor: data.supervisorName,
+        Address: data.street,
+        Salary: data.salary,
       });
     } else {
       setErrorMessage(data.message || "Incorrect User ID or Password");

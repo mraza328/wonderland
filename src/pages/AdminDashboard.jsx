@@ -26,12 +26,12 @@ export default function AdminDashboard() {
         position: `${currentUser.Position}`,
         employeeID: `${currentUser.UserID}`,
         contactInformation: `${currentUser.Email} | ${currentUser.PhoneNumber}`,
-        Supervisor: "",
-        Salary: "",
-        Address: "",
+        Supervisor: `${currentUser.Supervisor}`,
+        Salary: `${currentUser.Salary}`,
+        Address: `${currentUser.Address}`,
         Department: `${currentUser.Department}`,
         Schedule: "",
-        DateOfBirth: "",
+        DateOfBirth: `${currentUser.DateOfBirth}`,
       });
     }
   }, [currentUser]);
