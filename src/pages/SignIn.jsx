@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { currentConfig } from "../config";
 
 export default function SignIn() {
   const [email, setEmail] = useState("");
@@ -8,10 +9,12 @@ export default function SignIn() {
   const [errorMessage, setErrorMessage] = useState("");
   const navigate = useNavigate();
   const { signIn } = useAuth();
+  const baseURL = currentConfig.REACT_APP_API_BASE_URL;
+  console.log(currentConfig.REACT_APP_API_BASE_URL);
 
   const handleSignIn = async (event) => {
     event.preventDefault();
-    const response = await fetch("http://localhost:3000/api/signin", {
+    const response = await fetch(`${baseURL}/signin`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

@@ -1,9 +1,12 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { currentConfig } from "../config";
 
 export default function AddEmployee({ employeeData = {}, onSuccess }) {
   console.log("Received employeeData:", employeeData);
+  const baseURL = currentConfig.REACT_APP_API_BASE_URL;
+  console.log(currentConfig.REACT_APP_API_BASE_URL);
   const {
     userId: initialUserID = "",
     firstName = "",
@@ -51,7 +54,7 @@ export default function AddEmployee({ employeeData = {}, onSuccess }) {
     };
 
     try {
-      const response = await fetch("http://localhost:3000/api/addemployee", {
+      const response = await fetch(`${baseURL}/addemployee`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

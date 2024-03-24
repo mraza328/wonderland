@@ -1,17 +1,19 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { currentConfig } from "../config";
 
 export default function SignUp() {
   const [errorMessage, setErrorMessage] = useState("");
   const navigate = useNavigate(); // This hook provides imperative navigation
+  const baseURL = currentConfig.REACT_APP_API_BASE_URL;
+  console.log(currentConfig.REACT_APP_API_BASE_URL);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
     const formData = new FormData(event.target);
     const data = Object.fromEntries(formData.entries());
-
     try {
-      const response = await fetch("http://localhost:3000/api/signup", {
+      const response = await fetch(`${baseURL}/signup`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

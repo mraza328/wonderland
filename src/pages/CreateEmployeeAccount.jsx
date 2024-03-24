@@ -1,7 +1,10 @@
 import React, { useState } from "react";
+import { currentConfig } from "../config";
 
 export default function CreateEmployeeAccount({ onSuccess }) {
   const [errorMessage, setErrorMessage] = useState("");
+  const baseURL = currentConfig.REACT_APP_API_BASE_URL;
+  console.log(currentConfig.REACT_APP_API_BASE_URL);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -9,7 +12,7 @@ export default function CreateEmployeeAccount({ onSuccess }) {
     const data = Object.fromEntries(formData.entries());
 
     try {
-      const response = await fetch("http://localhost:3000/api/staffsignup", {
+      const response = await fetch(`${baseURL}/staffsignup`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
