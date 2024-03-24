@@ -94,9 +94,9 @@ export default function SignIn() {
                   <div className="mt-5 pb-3">
                     <p>
                       New User?{" "}
-                      <a href="/signUp" className="text-decoration-none">
+                      <Link to="/signUp" className="text-decoration-none">
                         Create an Account
-                      </a>
+                      </Link>
                     </p>
                   </div>
                 </div>
