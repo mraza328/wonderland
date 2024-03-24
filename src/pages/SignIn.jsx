@@ -119,9 +119,9 @@ export default function SignIn() {
         <div className="container text-right">
           <span className="text-muted">
             <Link
-              className="text-black"
               to="/staffSignIn"
-              style={{ textDecoration: "none " }}
+              className="btn btn-primary"
+              style={{ textDecoration: "none" }}
             >
               Staff Sign In
             </Link>
