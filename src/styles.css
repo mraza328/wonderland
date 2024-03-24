@@ -1,0 +1,225 @@
+/* All Pages */
+body {
+    background-color: #E7EEEF;
+    padding: 0;
+    margin: 0;
+}
+/* All Pages */
+
+/* Navbar Component Styling */
+.navbar.navbar-expand-lg {
+    background-color: #33658A;
+    display: flex;
+    max-height: 60px;
+}
+
+.nav-item {
+    margin-left: 30px;
+}
+
+.btn-warning {
+    background-color: #F6AE2D;
+    border-color: black;
+    border-width: 2px;
+}
+/* Navbar Component Styling */
+
+/* Card Styling */
+.card {
+    margin: auto;
+    margin-top: 10vh;
+    width: 70vh;
+    height: 60vh;
+    border-radius: 30px;
+}
+
+.card-body {
+    background-color: #86BBD8;
+    border-radius: 30px;
+}
+/* Card Styling */
+
+/* Sign Up Card */
+.sign-up {
+    margin-top: 10vh;
+    width: 190vh;
+    height: 70vh;
+}
+/* */
+
+/*Data Entry Form Styling*/
+.dataEntryForm {
+    margin-top: 10vh;
+    width: 130vh;
+    height: 70vh;
+}
+/*  */
+
+.btn-secondary {
+    border-width: 2px;
+    border-color: black;
+    background-color: #2F4858;
+}
+
+.btn-secondary:hover {
+    background-color: #2F4858;
+    border-color: #2F4858;
+}
+
+/* Staff Sidebar Styling */
+.sidebar {
+    position: absolute;
+    left: 0;
+    height: 100vh;
+    width: 50vh;
+
+    background-color: #86BBD8; 
+    border: 1px solid #dee2e6; 
+    padding: 10px; 
+
+    overflow-x: hidden; 
+    transition: width 0.3s ease;
+}
+  
+.list-group-item {
+    cursor: pointer;
+    padding: 10px 15px;
+    color: black;
+    border: none;
+    background-color: #86BBD8;
+    transition: background-color 0.3s ease;
+}
+
+.list-group-item:hover {
+    background-color: #adcbe3;
+}
+
+.list-group-item.active {
+    background-color: #86BBD8;
+    color: black;
+}
+
+.list-group-item:not(:last-child) {
+    border-bottom: 1px solid black; /* Change border color here */
+}
+
+.list-group-submenu {
+    list-style: "-";
+    padding-top: 5px;
+    padding-left: 15px;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+}
+
+.list-group-submenu-item {
+    cursor: pointer;
+    padding: 5px 10px;
+    color: black;
+}
+
+.list-group-submenu-item:hover {
+    background-color: #adcbe3;
+}
+
+/*Dashboard Styling*/
+.dashboard {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    font-family: Arial, sans-serif;
+}
+
+.personal-info, .schedule-calendar, .feedback {
+    background-color: #f9f9f9;
+    border-radius: 5px;
+    padding: 15px;
+    margin-bottom: 20px;
+}
+
+.schedule-calendar {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    overflow: hidden;
+    margin-bottom: 20px;
+}
+
+.schedule-header {
+    display: flex;
+    justify-content: space-around;
+    background-color: #f0f0f0;
+    padding: 5px;
+    font-weight: bold;
+}
+
+.schedule-week {
+    display: flex;
+    justify-content: space-around;
+    padding: 5px;
+}
+
+.schedule-day {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 5px;
+}
+
+.highlight {
+    background-color: #ffcc00; /* Highlight color for the current day */
+}
+
+/* Data Reports Styling */
+.ticket-report-container {
+    margin-top: 3%;
+    margin-left: 3%;
+    margin-right: 10%;
+}
+
+.ride-report-container {
+    margin-top: 3%;
+    margin-left: 3%;
+    margin-right: 10%;
+}
+
+.revenue-report-container {
+    margin-top: 3%;
+    margin-left: 3%;
+    margin-right: 10%;
+}
+
+.dateBox {
+    display: block;
+    padding: 8px 16px; /* Adjust padding as needed */
+    background-color: white;
+    border-radius: 5px; /* Adjust border-radius to make the box rounded */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Optional: Add shadow for depth */
+  }
+
+  .sidenav {
+    height: 100%; /* Full-height: remove this if you want "auto" height */
+    width: 160px; /* Set the width of the sidebar */
+    position: fixed; /* Fixed Sidebar (stay in place on scroll) */
+    z-index: 1; /* Stay on top */
+    top: 0; /* Stay at the top */
+    left: 0;
+    background-color: #111; /* Black */
+    overflow-x: hidden; /* Disable horizontal scroll */
+    padding-top: 20px;
+  }
+
+  ul.error {
+    padding: 10px;
+    padding-left: 25px;
+    background: #ffefef;
+    border: 1px solid red;
+    color: red;
+    border-radius: 4px;
+    margin: 20px 0;
+  }
+
+  input.error {
+    border: 1px solid red;
+  }
+  

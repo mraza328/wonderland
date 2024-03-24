@@ -1,0 +1,230 @@
+body, h1, h2, h3, p, ul, li {
+    margin: 0;
+    padding: 0;
+  }
+  
+  .homepage {
+    font-family: Arial, sans-serif;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+
+  .about {
+    background-color: #f9f9f9;
+    padding: 40px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  .about h2 {
+    font-size: 36px;
+    color: #33658A;
+    margin-bottom: 20px;
+  }
+  
+  .about h3 {
+    font-size: 24px;
+    color: #86BBD8;
+    margin-top: 40px;
+  }
+  
+  .about p {
+    font-size: 18px;
+    color: #666;
+    line-height: 1.6;
+  }
+  
+  .about p:first-child {
+    margin-top: 20px;
+  }
+  
+  header {
+    margin-bottom: 20px;
+  }
+  
+  h1 {
+    font-size: 40px;
+    margin-bottom: 10px;
+    text-align: center;
+  }
+  
+  nav ul {
+    list-style-type: none;
+    text-align: center;
+  }
+  
+  nav ul li {
+    display: inline;
+    margin-right: 20px;
+  }
+  
+  nav ul li a {
+    text-decoration: none;
+    color: #333;
+    font-weight: bold;
+  }
+  
+  nav ul li a:hover {
+    color: #007bff;
+  }
+  
+  main {
+    margin-bottom: 20px;
+  }
+  
+  section {
+    margin-bottom: 40px;
+  }
+  
+  h2 {
+    font-size: 24px;
+    margin-bottom: 10px;
+  }
+
+  h3 {
+    font-size: 20px;
+    margin-bottom: 10px;
+    margin-top: 10px;
+  }
+  
+  .attraction {
+    background-color: #f9f9f9;
+    padding: 40px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  }
+
+  .attraction h2 {
+    font-size: 36px;
+    color: #33658A;
+    margin-bottom: 20px;
+  }
+  
+  .attraction h3 {
+    font-size: 24px;
+    color: #86BBD8;
+    margin-top: 20px;
+  }
+  
+  .attraction img {
+    width: 100%;
+    border-radius: 5px;
+  }
+
+  .attraction p {
+    font-size: 18px;
+    color: #666;
+    line-height: 1.6;
+    margin-top: 15px;
+  }
+
+  .vendor {
+    background-color: #f9f9f9;
+    padding: 40px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  }
+
+  .vendor h2 {
+    font-size: 36px;
+    color: #33658A;
+    margin-bottom: 20px;
+  }
+  
+  .vendor h3 {
+    font-size: 24px;
+    color: #86BBD8;
+    margin-top: 20px;
+  }
+  
+  .vendor img {
+    width: 100%;
+    border-radius: 5px;
+  }
+
+  .vendor p {
+    font-size: 18px;
+    color: #666;
+    line-height: 1.6;
+    margin-top: 15px;
+  }
+
+  .ticket {
+    background-color: #f9f9f9;
+    padding: 40px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  }
+
+  .ticket h2 {
+    font-size: 36px;
+    color: #33658A;
+    margin-bottom: 20px;
+  }
+  
+  .ticket h3 {
+    font-size: 24px;
+    color: #86BBD8;
+    margin-top: 20px;
+  }
+
+  .ticket p {
+    font-size: 18px;
+    color: #666;
+    line-height: 1.6;
+    margin-top: 15px;
+  }
+
+  .ticket .button {
+    display: inline-block;
+    background-color: #007bff;
+    color: #fff;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    text-decoration: none;
+    cursor: pointer;
+  }
+  
+  /* Button hover effect */
+  .ticket .button:hover {
+    background-color: #0056b3;
+  }
+  
+  /* Button active effect */
+  .ticket .button:active {
+    transform: translateY(1px);
+  }
+
+  .contact {
+    background-color: #f9f9f9;
+    padding: 40px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  }
+
+  .contact h2 {
+    font-size: 36px;
+    color: #33658A;
+    margin-bottom: 20px;
+  }
+
+  .contact p {
+    font-size: 18px;
+    color: #666;
+    line-height: 1.6;
+    margin-top: 15px;
+  }
+
+  footer {
+    text-align: center;
+    padding-top: 20px;
+    border-top: 1px solid #ccc;
+  }
+  
+  footer p {
+    font-size: 14px;
+    color: #666;
+  }

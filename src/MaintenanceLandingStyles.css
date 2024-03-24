@@ -1,0 +1,82 @@
+.maintenance-report-container{
+  margin-right: 8%;
+  margin-top: 3%;
+}
+
+/* Blank Card Styling */
+.blank-card {
+    margin: auto;
+    margin-top: 10vh;
+    width: auto;
+    height: auto;
+    border-radius: auto;
+}
+
+.blank-card-body {
+    background-color: #E7EEEF;
+    border-radius: 30px;
+}
+/* Blank Card Styling */
+
+/* Blank Card Styling */
+.report-card {
+  margin-top: 5vh;
+  width: 100vh;
+  height: auto;
+  border-radius: auto;
+}
+
+.report-card-body {
+  background-color: #E7EEEF;
+  border-radius: 30px;
+}
+/* Blank Card Styling */
+
+/* Button Styling */
+.styled-button {
+    background-color: #86BBD8; /* Match card color */
+    color: #2F4858; /* For readability on dark background */
+    border: none;
+    margin: 1rem; /* Adjust space between buttons */
+    padding: 5px 5px; /* Adjust padding */
+    cursor: pointer;
+    border-radius: 30px; /* Rounded corners */
+    font-family: 'Arial', sans-serif; /* Match font family of "Current Requests" */
+    font-size: 25px; /* Adjust font size as needed */
+    font-weight: bold; /* Match font-weight if "Current Requests" is bold */
+    white-space: nowrap; /* Prevent text from wrapping */
+    box-sizing: border-box; /* Include padding and border in the width and height */
+    height: 11vh;
+    width: 60vh; /* Set a fixed width for all buttons */
+    text-align: center; /* Center the text inside the button */
+  }
+  
+  .styled-button:hover {
+    background-color: #7eadc6; /* Slightly darker shade for hover effect */
+  }
+/* Button Styling */
+
+/* Maintenance Request Card */
+.MaintReq {
+  margin-top: 10vh;
+  width: 100vh;
+  height: 60vh;
+}
+/* Maintenance Request Card */
+
+/* Card Styling */
+.MaintReqUp {
+  margin: auto;
+  margin-top: 10vh;
+  width: 70vh;
+  height: 60vh;
+  border-radius: 30px;
+}
+/* Card Styling */
+
+h28 {
+  font-family: 'Arial';
+  color: #2F4858;
+  font-size: 40px;
+  font-weight: bold;
+}
