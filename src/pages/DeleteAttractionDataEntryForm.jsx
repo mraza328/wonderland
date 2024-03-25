@@ -1,70 +1,76 @@
 import React, { useState, useEffect } from "react";
+import { currentConfig } from "../config";
 
 export default function DeleteAttraction() {
-    const [attractionName, setAttractionName] = useState("");
-    const [status, setStatus] = useState("Inactive");
-    const [attractions, setAttractions] = useState(null);
-    const [isSet, setIsSet] = useState(false);
-    const [creationSuccess, setCreationSuccess] = useState(false);
+  const [attractionName, setAttractionName] = useState("");
+  const [status, setStatus] = useState("Inactive");
+  const [attractions, setAttractions] = useState(null);
+  const [isSet, setIsSet] = useState(false);
+  const [creationSuccess, setCreationSuccess] = useState(false);
+  const baseURL = currentConfig.REACT_APP_API_BASE_URL;
+  console.log(currentConfig.REACT_APP_API_BASE_URL);
 
-    useEffect(() => {
-      // Fetch attraction data from your backend based on the attractionID to be implemented later (backend)
-      const fetchAttractions = async () => {
-        const response = await fetch("http://localhost:3001/getAttractions", {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        });
-  
-        const json = await response.json();
-        console.log(json);
-  
-        if (!response.ok) {
-          console.log("Failed to fetch attraction data");
-        }
-        if (response.ok) {
-          setAttractions(json);
-          setIsSet(true);
-        }
-      };
-  
-      fetchAttractions();
-    }, []);
+  useEffect(() => {
+    const fetchAttractions = async () => {
+      const response = await fetch(`${baseURL}/getallattractions`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
 
-    const handleSubmit = async (event) => {
-        event.preventDefault();
-        setCreationSuccess(false);
-    
-        const formData = {
-          attractionName, 
-          status
-        };
-    
-        try {
-          const response = await fetch(`http://localhost:3001/deleteAttraction/${encodeURIComponent(attractionName)}`, {
-            method: "PUT",
-            body: JSON.stringify(formData),
-            headers: {
-              "Content-Type": "application/json",
-            },
-          });
-    
-          const json = await response.json();
-    
-          if (!response.ok) {
-            console.log(`Error: ${response.message}`)
-          }
-          if (response.ok) {
-            setCreationSuccess(true);
-          }
-        } catch (error) {
-          console.log("Error:", error.message);
-        }
-      };
+      const json = await response.json();
+      console.log(json);
 
-    return (
-        <div className="row justify-content-center">
+      if (!response.ok) {
+        console.log("Failed to fetch attraction data");
+      }
+      if (response.ok) {
+        // Filter the attractions to only include those with an "Active" status
+        const activeAttractions = json.filter(
+          (attraction) => attraction.AttractionStatus === "Active"
+        );
+        setAttractions(activeAttractions);
+        setIsSet(true);
+      }
+    };
+
+    fetchAttractions();
+  }, []);
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    setCreationSuccess(false);
+
+    const formData = {
+      name: attractionName,
+      status,
+    };
+
+    try {
+      const response = await fetch(`${baseURL}/deleteattraction`, {
+        method: "PUT",
+        body: JSON.stringify(formData),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      const json = await response.json();
+
+      if (!response.ok) {
+        console.log(`Error: ${response.message}`);
+      }
+      if (response.ok) {
+        setCreationSuccess(true);
+      }
+    } catch (error) {
+      console.log("Error:", error.message);
+    }
+  };
+
+  return (
+    <div className="row justify-content-center">
       <div className="col md-4 mb-4">
         <div className="card dataEntryForm">
           <div className="card-body">
@@ -74,35 +80,41 @@ export default function DeleteAttraction() {
             <div className="text-center">
               Please select the name of the Attraction you would like to delete.
             </div>
-            
+
             {isSet && (
-            <form onSubmit={handleSubmit}>
-              <div className="mb-3 mt-3">
-              <label htmlFor="attractionName" className="form-label">
-                  Select Attraction Name:
-                </label>
-                <input
-                  list="attractions"
-                  className="form-control"
-                  id="attractionName"
-                  name="attractionName"
-                  value={attractionName}
-                  onChange={(e) => setAttractionName(e.target.value)}
-                />
-                <datalist id="attractions">
-                  {attractions.map((type, index) => (
-                    <option key={index} value={type.NameOfAttraction} />
-                  ))}
-                </datalist>
-              </div>
-              <div className="flex flex-wrap -mx-3 mt-6">
-                <div className="w-full px-3 text-center">
-                  <button id="button" type="submit" className="btn btn-primary">
-                    Delete Attraction
-                  </button>
+              <form onSubmit={handleSubmit}>
+                <div className="mb-3 mt-3">
+                  <label htmlFor="attractionName" className="form-label">
+                    Select Attraction Name:
+                  </label>
+                  <select
+                    className="form-select"
+                    id="attractionName"
+                    name="attractionName"
+                    value={attractionName}
+                    onChange={(e) => setAttractionName(e.target.value)}
+                  >
+                    <option value="">Please select an attraction</option>
+                    {attractions.map((attraction, index) => (
+                      <option key={index} value={attraction.NameOfAttraction}>
+                        {attraction.NameOfAttraction}
+                      </option>
+                    ))}
+                  </select>
                 </div>
-              </div>
-            </form>)}
+                <div className="flex flex-wrap -mx-3 mt-6">
+                  <div className="w-full px-3 text-center">
+                    <button
+                      id="button"
+                      type="submit"
+                      className="btn btn-primary"
+                    >
+                      Delete Attraction
+                    </button>
+                  </div>
+                </div>
+              </form>
+            )}
 
             {creationSuccess && (
               <div className="alert alert-success my-3" role="alert">
@@ -113,5 +125,5 @@ export default function DeleteAttraction() {
         </div>
       </div>
     </div>
-    )
+  );
 }
