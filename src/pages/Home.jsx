@@ -1,37 +1,63 @@
 import React from "react";
 import classes from "../components/UI/Home.module.css";
 import { useAuth } from "../context/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 export default function Home() {
   const { currentUser } = useAuth();
 
+  const scrollToSection = (sectionId) => {
+    const section = document.getElementById(sectionId);
+    if (section) {
+      section.scrollIntoView({ behavior: "smooth" });
+    }
+  };
+
   const handleBuyTickets = () => {
+    const navigate = useNavigate(); // Initialize the navigate function
+
     if (!currentUser) {
       window.alert("You need to sign in to access the Buy Tickets page.");
     } else {
-      window.location.href = "/ticketPurchase";
+      navigate("/ticketPurchase"); // Use navigate for client-side redirection
     }
   };
+
   return (
     <div className={classes.homepage}>
       <header>
         <h1>Welcome to Wonderland!</h1>
         <nav>
           <ul>
-            <li>
-              <a href="#about">About Us</a>
+            <li
+              onClick={() => scrollToSection("about")}
+              style={{ cursor: "pointer", color: "black", fontWeight: "bold" }}
+            >
+              About Us
             </li>
-            <li>
-              <a href="#attractions">Attractions</a>
+            <li
+              onClick={() => scrollToSection("attractions")}
+              style={{ cursor: "pointer", color: "black", fontWeight: "bold" }}
+            >
+              Attractions
             </li>
-            <li>
-              <a href="#vendors">Vendors</a>
+            <li
+              onClick={() => scrollToSection("vendors")}
+              style={{ cursor: "pointer", color: "black", fontWeight: "bold" }}
+            >
+              Vendors
             </li>
-            <li>
-              <a href="#tickets">Tickets</a>
+            <li
+              onClick={() => scrollToSection("tickets")}
+              style={{ cursor: "pointer", color: "black", fontWeight: "bold" }}
+            >
+              Tickets
             </li>
-            <li>
-              <a href="#contact">Contact Us</a>
+            <li
+              onClick={() => scrollToSection("contact")}
+              style={{ cursor: "pointer", color: "black", fontWeight: "bold" }}
+            >
+              Contact Us
             </li>
           </ul>
         </nav>
