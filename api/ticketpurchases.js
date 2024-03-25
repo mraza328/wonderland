@@ -6,30 +6,28 @@ export default async (req, res) => {
     return;
   }
 
-  let products;
-
   try {
-    // Fetch products from the database
+    // Use the promise-based pool
     const pool = await poolPromise;
+
     const productQuery = `
       SELECT p.ItemID, p.NameOfItem, p.SalePrice, v.VendorType
       FROM Product p
       INNER JOIN Vendor v ON p.NameOfVendor = v.NameOfVendor
       `;
+
     const [productResults] = await pool.query(productQuery);
     const products = productResults;
-    console.log("Product Data:", products);
 
+    // GET and POST Methods
     if (req.method === "GET") {
       res.status(200).json(products);
     } else if (req.method === "POST") {
-      // Handle POST request
       const { userID, totalPrice, ticketPrices, ticketDetails, purchaseDate } =
         await new Promise((resolve, reject) => {
           let body = "";
           req.on("data", (chunk) => (body += chunk.toString()));
           req.on("end", () => {
-            console.log("Request body:", body); // Log the request body
             resolve(JSON.parse(body));
           });
           req.on("error", (err) => reject(err));
@@ -46,6 +44,7 @@ export default async (req, res) => {
         purchaseDate,
         totalPrice,
       ]);
+
       const saleId = saleResults.insertId;
 
       // Insert tickets into the database
