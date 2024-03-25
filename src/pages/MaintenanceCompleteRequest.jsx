@@ -3,12 +3,15 @@ import { useState, useEffect } from "react";
 import { useAuth } from "../context/AuthContext";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import { currentConfig } from "../config";
 
 export default function MaintenanceCompReq({ onSuccess }) {
   const [selectedRequest, setSelectedRequest] = useState("");
   const [requestsData, setRequestsData] = useState([]);
   const { currentUser } = useAuth();
   const [errorMessage, setErrorMessage] = useState("");
+  const baseURL = currentConfig.REACT_APP_API_BASE_URL;
+  console.log(currentConfig.REACT_APP_API_BASE_URL);
 
   const [formData, setFormData] = useState({
     userID: currentUser.UserID,
@@ -26,7 +29,7 @@ export default function MaintenanceCompReq({ onSuccess }) {
   useEffect(() => {
     const fetchMaintenanceIDs = async () => {
       try {
-        const response = await fetch("http://localhost:3001/maintenanceInfo");
+        const response = await fetch(`${baseURL}/fetchmaintenanceinfo`);
         if (!response.ok) {
           throw new Error("Error retrieving maintenance info");
         }
@@ -98,16 +101,13 @@ export default function MaintenanceCompReq({ onSuccess }) {
     console.log("Submitting:", updatedFormData);
 
     try {
-      const response = await fetch(
-        "http://localhost:3001/maintenanceUpdateRequest",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(updatedFormData),
-        }
-      );
+      const response = await fetch(`${baseURL}/editmaintenancerequest`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(updatedFormData),
+      });
       if (response.ok) {
         const responseData = await response.json();
         console.log("Request updated successfully:", responseData);

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Button, Table } from "react-bootstrap";
 import Form from "react-bootstrap/Form";
+import { currentConfig } from "../config";
 
 export default function MaintenanceDataReports() {
   const [startDate, setStartDate] = useState("");
@@ -18,6 +19,8 @@ export default function MaintenanceDataReports() {
   const [attractionOptions, setAttractionOptions] = useState([]);
   const [statusOptions, setStatusOptions] = useState([]);
   const [displayedMaintenanceData, setDisplayedMaintenanceData] = useState([]);
+  const baseURL = currentConfig.REACT_APP_API_BASE_URL;
+  console.log(currentConfig.REACT_APP_API_BASE_URL);
 
   const costOptions = [
     "$0-$500",
@@ -95,14 +98,17 @@ export default function MaintenanceDataReports() {
     });
 
     setDisplayedMaintenanceData(filteredData);
-    const total = filteredData.reduce((acc, curr) => acc + curr.totalCost, 0);
+    const total = filteredData.reduce(
+      (acc, curr) => acc + Number(curr.totalCost),
+      0
+    );
     setTotalCost(total);
   };
 
   useEffect(() => {
     const fetchMaintenanceData = async () => {
       try {
-        const response = await fetch("http://localhost:3001/maintenanceInfo");
+        const response = await fetch(`${baseURL}/fetchmaintenanceinfo`);
         const data = await response.json();
         const transformedData = data.map((item) => ({
           maintenanceIds: item.RequestID,
@@ -348,16 +354,16 @@ export default function MaintenanceDataReports() {
               <td>{entry.startDate}</td>
               <td>{entry.endDate}</td>
               <td>{entry.status}</td>
-              <td>${entry.totalCost.toFixed(2)}</td>
+              <td>${parseFloat(entry.totalCost).toFixed(2)}</td>
               <td>{entry.reason}</td>
             </tr>
           ))}
           <tr>
-            <td colSpan="6">
+            <td colSpan="7">
               <b>Total</b>
             </td>
             <td>
-              <b>${totalCost.toFixed(2)}</b>
+              <b>${parseFloat(totalCost).toFixed(2)}</b>
             </td>
             <td></td>
           </tr>
