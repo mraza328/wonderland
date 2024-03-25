@@ -30,9 +30,9 @@ export const Navbar = () => {
   return (
     <nav className="navbar navbar-expand-lg">
       <div className="container-fluid">
-        <a className="navbar-brand text-white" href="/">
+        <Link to="/" className="navbar-brand text-white">
           Wonderland
-        </a>
+        </Link>
         <button
           className="navbar-toggler"
           type="button"
@@ -50,14 +50,14 @@ export const Navbar = () => {
         >
           <ul className="navbar-nav ml-auto">
             <li className="nav-item">
-              <a className="nav-link text-white" href="/">
+              <Link to="/" className="nav-link text-white">
                 Home Page
-              </a>
+              </Link>
             </li>
             <li className="nav-item">
-              <a className="nav-link text-white" href="/parkInformation">
+              <Link to="/parkInformation" className="nav-link text-white">
                 Park Information
-              </a>
+              </Link>
             </li>
             <li className="nav-item">
               <button
