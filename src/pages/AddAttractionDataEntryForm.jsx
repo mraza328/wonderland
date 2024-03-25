@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { currentConfig } from "../config";
 
 export default function AddAttraction() {
   const [creationSuccess, setCreationSuccess] = useState(false);
@@ -18,6 +19,9 @@ export default function AddAttraction() {
 
   const attractionTypes = ["Ride", "Show"];
 
+  const baseURL = currentConfig.REACT_APP_API_BASE_URL;
+  console.log(currentConfig.REACT_APP_API_BASE_URL);
+
   const handleSubmit = async (event) => {
     event.preventDefault();
     setCreationSuccess(false);
@@ -35,7 +39,7 @@ export default function AddAttraction() {
     };
 
     try {
-      const response = await fetch("http://localhost:3001/addAttraction", {
+      const response = await fetch(`${baseURL}/addattraction`, {
         method: "POST",
         body: JSON.stringify(formData),
         headers: {
@@ -223,13 +227,15 @@ export default function AddAttraction() {
                   </button>
                 </div>
               </div>
-              {errors.length>0 ?  (
+              {errors.length > 0 ? (
                 <ul className="error">
                   {errors.map((error, index) => (
                     <li key={index}>{error}</li>
                   ))}
                 </ul>
-              ) : ""}
+              ) : (
+                ""
+              )}
             </form>
             {creationSuccess && (
               <div className="alert alert-success my-3" role="alert">
