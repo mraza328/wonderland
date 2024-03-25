@@ -1,21 +1,24 @@
 import React from "react";
 import { useAuth } from "../context/AuthContext";
+import { useNavigate, Link } from "react-router-dom";
 
 export const StaffNavbar = () => {
   const { currentUser, signOut } = useAuth();
   console.log("Current user:", currentUser);
+  const navigate = useNavigate();
 
   const handleSignOut = () => {
     signOut();
-    // Redirect to sign-in page.
-    window.location.href = "/StaffSignIn";
+
+    // Redirect to the sign-in page
+    navigate("/StaffSignIn");
   };
   return (
     <nav className="navbar navbar-expand-lg">
       <div className="container">
-        <a className="navbar-brand text-white" href="/">
+        <Link to="/" className="navbar-brand text-white">
           Wonderland
-        </a>
+        </Link>
         <button
           className="navbar-toggler"
           type="button"
@@ -33,9 +36,9 @@ export const StaffNavbar = () => {
         >
           <ul className="navbar-nav ml-auto">
             <li className="nav-item">
-              <a className="nav-link text-white" href="/employeeLanding">
+              <Link to="/employeeLanding" className="nav-link text-white">
                 Employee Portal
-              </a>
+              </Link>
             </li>
 
             {currentUser ? (
