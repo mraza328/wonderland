@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { currentConfig } from "../config";
 
 const TICKET_PRICES = {
   GA: 60,
@@ -14,12 +15,15 @@ export default function TicketPurchase() {
   const [totalPrice, setTotalPrice] = useState(0);
   const [ticketPrices, setTicketPrices] = useState([]);
 
+  const baseURL = currentConfig.REACT_APP_API_BASE_URL;
+  console.log(currentConfig.REACT_APP_API_BASE_URL);
+
   const userID = JSON.parse(localStorage.getItem("user")).UserID;
 
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await fetch("http://localhost:3001/ticketPurchase");
+        const response = await fetch(`${baseURL}/ticketpurchases`);
         if (!response.ok) {
           throw new Error("Failed to fetch products");
         }
@@ -75,8 +79,8 @@ export default function TicketPurchase() {
         ticketPrice += parseFloat(selectedMerch.SalePrice);
       }
 
-      totalPrice += ticketPrice; // Add ticket price to total price
-      ticketPrices.push(ticketPrice); // Add ticket price to the array
+      totalPrice += ticketPrice;
+      ticketPrices.push(ticketPrice);
     });
 
     console.log(ticketPrices);
@@ -85,9 +89,9 @@ export default function TicketPurchase() {
     setFormSubmitted(true);
   };
 
-  const buyTicket = async () => {
+  const buyTicket = async (event) => {
     try {
-      const response = await fetch("http://localhost:3001/ticketPurchase", {
+      const response = await fetch(`${baseURL}/ticketpurchases`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
