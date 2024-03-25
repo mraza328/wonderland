@@ -42,7 +42,7 @@ export default async (req, res) => {
       }
     }
 
-    const parkClose = "19:00";
+    const parkClose = "19:01";
     if (endOperatingHour > parkClose) {
       errors.push(
         "End Operating Hour cannot be after when the park closes: 7PM"
