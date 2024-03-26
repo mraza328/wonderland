@@ -1,15 +1,20 @@
 import React, { useState } from "react";
+import { currentConfig } from "../config";
 
 export default function DeleteEmployee() {
   const [employeeID, setEmployeeID] = useState("");
   const [status, setStatus] = useState("");
   const [creationSuccess, setCreationSuccess] = useState(false);
+  const [error, setError] = useState("")
 
   const reasons = ["Retired", "Inactive"];
+
+  const baseURL = currentConfig.REACT_APP_API_BASE_URL;
 
   const handleSubmit = async (event) => {
     event.preventDefault();
     setCreationSuccess(false);
+    setError(false);
 
     const formData = {
       employeeID, 
@@ -17,7 +22,7 @@ export default function DeleteEmployee() {
     };
 
     try {
-      const response = await fetch(`http://localhost:3001/deleteEmployee/${encodeURIComponent(employeeID)}`, {
+      const response = await fetch(`${baseURL}/deleteemployee`, {
         method: "PUT",
         body: JSON.stringify(formData),
         headers: {
@@ -28,7 +33,7 @@ export default function DeleteEmployee() {
       const json = await response.json();
 
       if (!response.ok) {
-        console.log(`Error: ${response.message}`)
+        setError(json.message);
       }
       if (response.ok) {
         setCreationSuccess(true);
@@ -99,6 +104,11 @@ export default function DeleteEmployee() {
             {creationSuccess && (
               <div className="alert alert-success my-3" role="alert">
                 Employee Deleted Successfully!
+              </div>
+            )}
+            {error && (
+              <div className="alert alert-danger my-3" role="alert">
+                {error}
               </div>
             )}
           </div>
