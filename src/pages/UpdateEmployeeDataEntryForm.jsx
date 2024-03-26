@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { currentConfig } from "../config";
 
 export default function UpdateEmployee() {
   const [employeeId, setEmployeeId] = useState("");
@@ -13,13 +14,15 @@ export default function UpdateEmployee() {
 
   const positions = ["Employee", "Maintenance", "Department Manager", "Admin"];
   const schedules = ["First Shift", "Second Shift"];
+
+  const baseURL = currentConfig.REACT_APP_API_BASE_URL;
   
   //var combinedObject = null;
   const [combinedObject, setCombinedObject] = useState(null);
 
   useEffect(() => {
     const fetchDepartments = async () => {
-      const response = await fetch("http://localhost:3001/getDepartments", {
+      const response = await fetch(`${baseURL}/getalldepartments`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -48,11 +51,14 @@ export default function UpdateEmployee() {
     setisSubmitted(false);
     setCreationSuccess(false);
 
+    const formData = {employeeId};
+
     try {
       const response = await fetch(
-        `http://localhost:3001/getEmployee/${encodeURIComponent(employeeId)}`,
+        `${baseURL}/getemployee`,
         {
-          method: "GET",
+          method: "POST",
+          body: JSON.stringify(formData),
           headers: {
             "Content-Type": "application/json",
           },
@@ -69,9 +75,10 @@ export default function UpdateEmployee() {
       }
 
       const res = await fetch(
-        `http://localhost:3001/getAccount/${encodeURIComponent(employeeId)}`,
+        `${baseURL}/getaccount`,
         {
-          method: "GET",
+          method: "POST",
+          body: JSON.stringify(formData),
           headers: {
             "Content-Type": "application/json",
           },
@@ -106,7 +113,7 @@ export default function UpdateEmployee() {
     const formData = combinedObject;
 
     try {
-      const response = await fetch(`http://localhost:3001/updateEmployee/${encodeURIComponent(employeeId)}`,
+      const response = await fetch(`${baseURL}/updateemployee`,
         {
           method: "PUT",
           body: JSON.stringify(formData),
@@ -328,11 +335,11 @@ export default function UpdateEmployee() {
                       name="position"
                       required
                       placeholder="Type to search..."
-                      value={combinedObject.position}
+                      value={combinedObject.Position}
                       onChange={(e) =>
                         setCombinedObject({
                           ...combinedObject,
-                          position: e.target.value,
+                          Position: e.target.value,
                         })
                       }
                     />
