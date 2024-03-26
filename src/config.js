@@ -7,4 +7,4 @@ const config = {
   },
 };
 
-export const currentConfig = config[process.env.NODE_ENV || "production"];
+export const currentConfig = config[process.env.NODE_ENV || "development"];
