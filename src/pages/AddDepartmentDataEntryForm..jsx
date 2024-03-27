@@ -1,10 +1,13 @@
 import React, { useState } from "react";
+import { currentConfig } from "../config";
 
 export default function AddDepartment() {
   const [name, setName] = useState("");
   const [hoursWorked, setHoursWorked] = useState('35');
   const [mggrUserID, setMggrUserID] = useState("");
   const [creationSuccess, setCreationSuccess] = useState(false);
+
+  const baseURL = currentConfig.REACT_APP_API_BASE_URL;
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -17,7 +20,7 @@ export default function AddDepartment() {
     };
     
     try {
-      const response = await fetch("http://localhost:3001/addDepartment", {
+      const response = await fetch(`${baseURL}/adddepartment`, {
         method: "POST",
         body: JSON.stringify(formData),
         headers: {
