@@ -11,8 +11,6 @@ export default function UpdateVendor() {
   const [isSet, setIsSet] = useState(false);
   const [creationSuccess, setCreationSuccess] = useState(false);
 
-  const vendorTypes = ["Concession Stand", "Gift Shop"];
-
   const baseURL = currentConfig.REACT_APP_API_BASE_URL;
 
   useEffect(() => {
