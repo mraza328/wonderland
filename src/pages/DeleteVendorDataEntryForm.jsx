@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { currentConfig } from "../config";
 
 export default function DeleteVendor() {
   const [vendorName, setVendorName] = useState("");
@@ -7,26 +8,29 @@ export default function DeleteVendor() {
   const [isSet, setIsSet] = useState(false);
   const [creationSuccess, setCreationSuccess] = useState(false);
 
-  const reasons = ["Out of Order", "Inactive"];
+
+  const baseURL = currentConfig.REACT_APP_API_BASE_URL;
 
   useEffect(() => {
     // Fetch vendor data from your backend based on the vendorName to be implemented later (backend)
     const fetchVendors = async () => {
-      const response = await fetch("http://localhost:3001/getVendors", {
+      const response = await fetch(`${baseURL}/getallvendors`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
         },
       });
 
+      const json = await response.json();
+
       if (!response.ok) {
         console.error("Failed to fetch vendor data");
         return;
       }
-
-      const json = await response.json();
-      setVendors(json);
-      setIsSet(true);
+      if (response.ok) {
+        setVendors(json);
+        setIsSet(true);
+      }
     };
 
     fetchVendors();
@@ -38,22 +42,25 @@ export default function DeleteVendor() {
 
     const formData = {
       vendorName,
-      status
+      status,
     };
 
     try {
-      const response = await fetch(`http://localhost:3001/deleteVendor/${encodeURIComponent(vendorName)}`, {
-        method: "PUT",
-        body: JSON.stringify(formData),
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
+      const response = await fetch(
+        `${baseURL}/deletevendor`,
+        {
+          method: "PUT",
+          body: JSON.stringify(formData),
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
 
       const json = await response.json();
 
       if (!response.ok) {
-        console.log(`Error: ${response.message}`)
+        console.log(`Error: ${response.message}`);
       }
       if (response.ok) {
         setCreationSuccess(true);
@@ -72,56 +79,59 @@ export default function DeleteVendor() {
               Delete Vendor
             </h1>
             <div className="text-center">
-              Please enter the Name of the Vendor you would like to
-              delete.
+              Please select the Name of the Vendor you would like to delete.
             </div>
 
             {isSet && (
-            <form onSubmit={handleSubmit}>
-              <div className="mb-3 mt-3">
-                <label htmlFor="vendorName" className="form-label">
-                  Vendor Name:
-                </label>
-                <input
-                  type="text"
-                  className="form-control"
-                  id="vendorName"
-                  name="vendorName"
-                  //placeholder="12345"
-                  maxLength="15"
-                  required
-                  value={vendorName}
-                  onChange={(e) => setVendorName(e.target.value)}
-                />
-              </div>
-              <div className="mb-3 mt-3">
-                <label htmlFor="status" className="form-label">
-                  Reason:
-                </label>
-                <input
-                  list="reasons"
-                  className="form-control"
-                  id="status"
-                  name="status"
-                  placeholder="Type to search..."
-                  required
-                  value={status}
-                  onChange={(e) => setStatus(e.target.value)}
-                />
-                <datalist id="reasons">
-                  {reasons.map((status, index) => (
-                    <option key={index} value={status} />
-                  ))}
-                </datalist>
-              </div>
-              <div className="flex flex-wrap -mx-3 mt-6">
-                <div className="w-full px-3 text-center">
-                  <button id="button" type="submit" className="btn btn-primary">
-                    Delete Vendor
-                  </button>
+              <form onSubmit={handleSubmit}>
+                <div className="mb-3 mt-3">
+                  <label htmlFor="vendorName" className="form-label">
+                    Vendor Name:
+                  </label>
+                  <input
+                    list="vendors"
+                    className="form-select"
+                    id="vendorName"
+                    name="vendorName"
+                    placeholder="Type to search..."
+                    required
+                    value={vendorName}
+                    onChange={(e) => setVendorName(e.target.value)}
+                  />
+                  <datalist id="vendors">
+                    {vendors.map((vendor, index) => (
+                      <option key={index} value={vendor.NameOfVendor} />
+                    ))}
+                  </datalist>
                 </div>
-              </div>
-            </form>)}
+                <div className="mb-3 mt-3">
+                  <label htmlFor="status" className="form-label">
+                    Reason:
+                  </label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    id="status"
+                    name="status"
+                    readOnly
+                    required
+                    value={status}
+                    onChange={(e) => setStatus(e.target.value)}
+                  />
+                </div>
+                <div className="flex flex-wrap -mx-3 mt-6">
+                  <div className="w-full px-3 text-center">
+                    <button
+                      id="button"
+                      type="submit"
+                      className="btn btn-primary"
+                    >
+                      Delete Vendor
+                    </button>
+                  </div>
+                </div>
+              </form>
+            )}
 
             {creationSuccess && (
               <div className="alert alert-success my-3" role="alert">

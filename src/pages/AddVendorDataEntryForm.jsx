@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { currentConfig } from "../config";
 
 export default function AddVendor() {
   const [creationSuccess, setCreationSuccess] = useState(false);
@@ -10,7 +11,9 @@ export default function AddVendor() {
   const [errors, setErrors] = useState([]);
   const [errorFields, setErrorFields] = useState([]);
 
-  const vendorTypes = ["Concession Stand", "Gift Shop"]
+  const vendorTypes = ["Food", "Merchandise"]
+
+  const baseURL = currentConfig.REACT_APP_API_BASE_URL;
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -27,7 +30,7 @@ export default function AddVendor() {
 
 
   try {
-    const response = await fetch("http://localhost:3001/addVendor", {
+    const response = await fetch(`${baseURL}/addvendor`, {
       method: "POST",
       body: JSON.stringify(formData),
       headers: {

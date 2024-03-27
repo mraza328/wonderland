@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { currentConfig } from "../config";
 
 export default function UpdateVendor() {
   const [vendorName, setVendorName] = useState("");
@@ -6,17 +7,17 @@ export default function UpdateVendor() {
   const [isSubmitted, setisSubmitted] = useState(false);
   const [error, setError] = useState(null);
 
-  const [attractions, setVendors] = useState(null);
+  const [vendors, setVendors] = useState(null);
   const [isSet, setIsSet] = useState(false);
   const [creationSuccess, setCreationSuccess] = useState(false);
-  const [errors, setErrors] = useState([]);
-  const [errorFields, setErrorFields] = useState([]);
 
   const vendorTypes = ["Concession Stand", "Gift Shop"];
 
+  const baseURL = currentConfig.REACT_APP_API_BASE_URL;
+
   useEffect(() => {
     const fetchVendors = async () => {
-      const response = await fetch("http://localhost:3001/getVendors", {
+      const response = await fetch(`${baseURL}/getallvendors`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -24,10 +25,9 @@ export default function UpdateVendor() {
       });
 
       const json = await response.json();
-      console.log(json);
 
       if (!response.ok) {
-        console.log("Failed to fetch attraction data");
+        console.log("Failed to fetch vendor data");
       }
       if (response.ok) {
         setVendors(json);
@@ -43,15 +43,19 @@ export default function UpdateVendor() {
     setVendorData(null);
     setisSubmitted(false);
 
+    const formData = {vendorName};
+
     try {
-      const response = await fetch(`http://localhost:3001/getVendor/${encodeURIComponent(vendorName)}`, {
-        method: "GET",
+      const response = await fetch(`${baseURL}/getvendor`, {
+        method: "POST",
+        body: JSON.stringify(formData),
         headers: {
           "Content-Type": "application/json",
         },
       });
 
       const json = await response.json();
+      json[0].origVendorName = json[0].NameOfVendor;
       console.log(json);
 
       if (!response.ok) {
@@ -73,7 +77,7 @@ export default function UpdateVendor() {
     const formData = vendorData;
 
     try {
-      const response = await fetch(`http://localhost:3001/updateVendor/${encodeURIComponent(vendorName)}`, {
+      const response = await fetch(`${baseURL}/updatevendor`, {
         method: "PUT",
         body: JSON.stringify(formData),
         headers: {
@@ -84,12 +88,9 @@ export default function UpdateVendor() {
       const json = await response.json();
 
       if (!response.ok) {
-        setErrors(json.errors);
-        setErrorFields(json.errorFields);
+        console.log("There was an error");
       }
       if (response.ok) {
-        setErrors([]);
-        setErrorFields([]);
         setCreationSuccess(true);
       }
     } catch (error) {
@@ -106,24 +107,30 @@ export default function UpdateVendor() {
               Update Vendor
             </h1>
             <div className="text-center">
-              Please enter the Name of the Vendor you would like to update.
+              Please select the Name of the Vendor you would like to update.
             </div>
+
+            {isSet && (
             <form onSubmit={handleSubmitOne}>
               <div className="mb-3 mt-3">
                 <label htmlFor="vendorName" className="form-label">
-                  Enter Vendor Name:
+                  Select Vendor Name:
                 </label>
                 <input
-                  type="text"
-                  className="form-control"
+                  list="vendors"
+                  className="form-select"
                   id="vendorName"
                   name="vendorName"
-                  placeholder="ABC"
-                  maxLength="10"
+                  placeholder="Type to search..."
                   required
                   value={vendorName}
                   onChange={(e) => setVendorName(e.target.value)}
                 />
+                <datalist id="vendors">
+                    {vendors.map((vendor, index) => (
+                      <option key={index} value={vendor.NameOfVendor} />
+                    ))}
+                  </datalist>
               </div>
               <div className="flex flex-wrap -mx-3 mt-6">
                 <div className="w-full px-3 text-center">
@@ -132,23 +139,23 @@ export default function UpdateVendor() {
                   </button>
                 </div>
               </div>
-            </form>
+            </form>)}
 
             {isSubmitted && (
               <form onSubmit={handleSubmitTwo}>
                 <div className="row mb-3 mt-3">
                   <div className="col">
                     <label htmlFor="name" className="form-label">
-                      Enter a new name for the Vendor:
+                      Vendor Name:
                     </label>
                     <input
                       type="text"
                       className="form-control"
                       id="name"
                       name="name"
-                      value={vendorData.name}
+                      value={vendorData.NameOfVendor}
                       onChange={(e) =>
-                        setVendorData({ ...vendorData, name: e.target.value })
+                        setVendorData({ ...vendorData, NameOfVendor: e.target.value })
                       }
                     />
                   </div>
@@ -165,13 +172,6 @@ export default function UpdateVendor() {
                     </button>
                   </div>
                 </div>
-                {errors.length>0 ?  (
-                <ul className="error">
-                  {errors.map((error, index) => (
-                    <li key={index}>{error}</li>
-                  ))}
-                </ul>
-              ) : ""}
               </form>
             )}
             {creationSuccess && (
