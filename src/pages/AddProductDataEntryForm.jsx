@@ -1,30 +1,87 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { currentConfig } from "../config";
 
 export default function AddProduct() {
   const [name, setName] = useState("");
   const [vendor, setVendor] = useState("");
-  const [inventory, setInventory] = useState("");
-  const [acquisitinCost, setAcquisitinCost] = useState("");
+  const [acquisitionCost, setAcquisitionCost] = useState("");
   const [price, setPrice] = useState("");
   const [description, setDescription] = useState("");
   const [status, setStatus] = useState("Active");
 
-  const vendors = ["Adventure Bites Eatery", "Fantasy Finds Boutique"];
+  const [vendors, setVendors] = useState(null);
+  const [isSet, setIsSet] = useState(false);
+  const [creationSuccess, setCreationSuccess] = useState(false);
+  const [errors, setErrors] = useState([]);
+  const [errorFields, setErrorFields] = useState([]);
 
-  const handleSubmit = (event) => {
+  const baseURL = currentConfig.REACT_APP_API_BASE_URL;
+
+  useEffect(() => {
+    const fetchVendors = async () => {
+      const response = await fetch(`${baseURL}/getallvendors`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      const json = await response.json();
+      console.log(json);
+
+      if (!response.ok) {
+        console.log("Failed to fetch vendor data");
+      }
+      if (response.ok) {
+        setVendors(json);
+        setIsSet(true);
+      }
+    };
+
+    fetchVendors();
+  }, []);
+
+  const handleSubmit = async (event) => {
     event.preventDefault();
+    setCreationSuccess(false);
     // Submit data to backend or perform further processing
     const formData = {
       name,
       vendor,
-      inventory,
-      acquisitinCost,
+      acquisitionCost,
       price,
       description,
       status,
     };
-    console.log(formData);
-    alert("Product has been added");
+
+    try {
+      const response = await fetch(`${baseURL}/addproduct`, {
+        method: "POST",
+        body: JSON.stringify(formData),
+        headers: {
+          "Content-Type": "product/json",
+        },
+      });
+
+      const json = await response.json();
+
+      if (!response.ok) {
+        setErrors(json.errors);
+        setErrorFields(json.errorFields);
+      }
+      if (response.ok) {
+        setName("");
+        setVendor("");
+        setAcquisitionCost("");
+        setPrice("");
+        setDescription("");
+        setErrors([]);
+        setErrorFields([]);
+        setCreationSuccess(true);
+      }
+    } catch (error) {
+      console.log("Error:", error.message);
+    }
   };
 
   return (
@@ -35,15 +92,21 @@ export default function AddProduct() {
             <h1 className="my-2 text-center" style={{ color: "#2F4858" }}>
               Add Product
             </h1>
+
+            {isSet && (
             <form onSubmit={handleSubmit}>
               <div className="row mb-3 mt-3">
-                <div className="col">
+              <div className="col">
                   <label htmlFor="name" className="form-label">
                     Name of Product:
                   </label>
                   <input
                     type="text"
-                    className="form-control"
+                    className={
+                      errorFields.includes("name")
+                        ? "error form-control"
+                        : "form-control"
+                    }
                     id="name"
                     name="name"
                     placeholder="Pizza Delight Bundle"
@@ -68,51 +131,42 @@ export default function AddProduct() {
                   />
                   <datalist id="vendors">
                     {vendors.map((vendor, index) => (
-                      <option key={index} value={vendor} />
+                      <option key={index} value={vendor.NameOfVendor} />
                     ))}
                   </datalist>
                 </div>
               </div>
               <div className="row mb-3 mt-3">
                 <div className="col">
-                  <label htmlFor="inventory" className="form-label">
-                    Current Inventory:
-                  </label>
-                  <input
-                    type="number"
-                    className="form-control"
-                    id="inventory"
-                    name="inventory"
-                    placeholder="400"
-                    required
-                    value={inventory}
-                    onChange={(e) => setInventory(e.target.value)}
-                  />
-                </div>
-                <div className="col">
                   <label htmlFor="cost" className="form-label">
                     Acquisition Cost:
                   </label>
                   <input
                     type="number"
-                    className="form-control"
+                    className={
+                      errorFields.includes("acquisitionCost")
+                        ? "error form-control"
+                        : "form-control"
+                    }
                     id="cost"
                     name="cost"
                     placeholder="5.00"
                     required
-                    value={acquisitinCost}
-                    onChange={(e) => setAcquisitinCost(e.target.value)}
+                    value={acquisitionCost}
+                    onChange={(e) => setAcquisitionCost(e.target.value)}
                   />
                 </div>
-              </div>
-              <div className="row mb-3 mt-3">
                 <div className="col">
                   <label htmlFor="price" className="form-label">
                     Sale Price:
                   </label>
                   <input
                     type="number"
-                    className="form-control"
+                    className={
+                      errorFields.includes("price")
+                        ? "error form-control"
+                        : "form-control"
+                    }
                     id="price"
                     name="price"
                     placeholder="15.00"
@@ -121,6 +175,8 @@ export default function AddProduct() {
                     onChange={(e) => setPrice(e.target.value)}
                   />
                 </div>
+              </div>
+              <div className="row mb-3 mt-3">
                 <div className="col">
                   <label htmlFor="desc" className="form-label">
                     Description of Product:
@@ -144,7 +200,19 @@ export default function AddProduct() {
                   </button>
                 </div>
               </div>
-            </form>
+              {errors.length>0 ?  (
+                <ul className="error">
+                  {errors.map((error, index) => (
+                    <li key={index}>{error}</li>
+                  ))}
+                </ul>
+              ) : ""}
+            </form>)}
+            {creationSuccess && (
+              <div className="alert alert-success my-3" role="alert">
+                Product Created Successfully!
+              </div>
+            )}
           </div>
         </div>
       </div>
