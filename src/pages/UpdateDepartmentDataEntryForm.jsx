@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import UpdateEmployee from "./UpdateEmployeeDataEntryForm";
+import { currentConfig } from "../config";
 
 export default function UpdateDepartment() {
   const [department, setDepartment] = useState("");
@@ -14,9 +14,11 @@ export default function UpdateDepartment() {
   const [oldMggrUserID, setOldMggrUserID] = useState("");
   const positions = ["Employee", "Maintenance", "Admin"]
 
+  const baseURL = currentConfig.REACT_APP_API_BASE_URL;
+
   useEffect(() => {
     const fetchDepartments = async () => {
-      const response = await fetch("http://localhost:3001/getDepartments", {
+      const response = await fetch(`${baseURL}/getalldepartments`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -43,11 +45,14 @@ export default function UpdateDepartment() {
     setisSubmitted(false);
     setCreationSuccess(false);
     // Form submission logic
+
+    const formData = {department}
     try {
       const response = await fetch(
-        `http://localhost:3001/getDepartment/${encodeURIComponent(department)}`,
+        `${baseURL}/getdepartment`,
         {
-          method: "GET",
+          method: "POST",
+          body: JSON.stringify(formData),
           headers: {
             "Content-Type": "application/json",
           },
@@ -55,7 +60,6 @@ export default function UpdateDepartment() {
       );
 
       const json = await response.json();
-      console.log(json);
 
       if (!response.ok) {
         console.log("Failed to fetch employee data");
@@ -66,6 +70,7 @@ export default function UpdateDepartment() {
         setDepartmentData({
             ...departmentDataFromJson,
             OldManagerUserID: departmentDataFromJson.ManagerUserID,
+            OldDepartmentName: departmentDataFromJson.DepName,
             newDepartment: "",
             newPosition: "",
             newSupID: "",
@@ -87,9 +92,7 @@ export default function UpdateDepartment() {
 
     try {
       const response = await fetch(
-        `http://localhost:3001/updateDepartment/${encodeURIComponent(
-          department
-        )}`,
+        `${baseURL}/updatedepartment`,
         {
           method: "PUT",
           body: JSON.stringify(formData),
