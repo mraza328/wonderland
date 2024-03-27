@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Button, Form, Table } from "react-bootstrap";
+import { currentConfig } from "../config";
 
 export default function RevenueDataReports() {
   const [startDate, setStartDate] = useState("");
@@ -15,16 +16,18 @@ export default function RevenueDataReports() {
 
   const [products, setProducts] = useState([]);
 
+  const baseURL = currentConfig.REACT_APP_API_BASE_URL;
+
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await fetch("http://localhost:3001/ticketPurchase");
+        const response = await fetch(`${baseURL}/ticketpurchases`);
         if (!response.ok) {
           throw new Error("Failed to fetch products");
         }
         const data = await response.json();
-        let newFoodObj = {NameOfItem: "All", VendorType: "Food" }
-        let newMerchObj = {NameOfItem: "All", VendorType: "Merchandise" }
+        let newFoodObj = { NameOfItem: "All", VendorType: "Food" };
+        let newMerchObj = { NameOfItem: "All", VendorType: "Merchandise" };
         data.unshift(newFoodObj);
         data.unshift(newMerchObj);
         setProducts(data);
@@ -38,7 +41,7 @@ export default function RevenueDataReports() {
 
   useEffect(() => {
     const fetchRevenueData = async () => {
-      const response = await fetch("http://localhost:3001/getRevenueReport", {
+      const response = await fetch(`${baseURL}/revenuereports`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -100,7 +103,7 @@ export default function RevenueDataReports() {
     }
 
     // Calculate total revenue
-    const total = filteredData.reduce((acc, curr) => acc + curr.Revenue, 0);
+    const total = filteredData.reduce((acc, curr) => acc + parseFloat(curr.Revenue), 0).toFixed(2);
     setTotalRevenue(total);
 
     // Set revenue data
