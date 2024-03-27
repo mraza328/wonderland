@@ -103,7 +103,7 @@ export default function RevenueDataReports() {
     }
 
     // Calculate total revenue
-    const total = filteredData.reduce((acc, curr) => acc + curr.Revenue, 0);
+    const total = filteredData.reduce((acc, curr) => acc + parseFloat(curr.Revenue), 0).toFixed(2);
     setTotalRevenue(total);
 
     // Set revenue data
