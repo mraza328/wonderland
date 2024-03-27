@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { currentConfig } from "../config";
 
 export default function AddWeatherLog() {
   const [dateOfClosure, setDateOfClosure] = useState("");
@@ -13,6 +14,8 @@ export default function AddWeatherLog() {
 
   const weatherTypes = ['Rainy', 'Tornado Alert', 'Hurricane Alert', 'Excessive Heat Watch', 'Winter Storm', 'Flooding', 'Other'];
 
+  const baseURL = currentConfig.REACT_APP_API_BASE_URL;
+
   const handleSubmit = async (event) => {
     event.preventDefault();
     setCreationSuccess(false);
@@ -25,7 +28,7 @@ export default function AddWeatherLog() {
     };
   
     try {
-      const response = await fetch("http://localhost:3001/addWeatherLog", {
+      const response = await fetch(`${baseURL}/addweatherlog`, {
         method: "POST",
         body: JSON.stringify(formData),
         headers: {
