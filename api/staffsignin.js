@@ -1,6 +1,5 @@
-// Import bcrypt and the pool promise using ES Module syntax
 import bcrypt from "bcryptjs";
-import { poolPromise } from "./database.js"; // Adjust the path as necessary
+import { poolPromise } from "./database.js";
 
 export default async function handleStaffSignIn(req, res) {
   if (req.method !== "POST") {

@@ -23,7 +23,7 @@ export default async (req, res) => {
       req.on("error", (err) => reject(err));
     });
 
-    const stateID = 0; // Keeping this as in original code, assuming it's a fixed value
+    const stateID = 0;
 
     const maintenanceQuery = `
       INSERT INTO Maintenance (

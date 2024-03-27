@@ -1,4 +1,4 @@
-import mysql from "mysql2"; // Note the change here to mysql2
+import mysql from "mysql2";
 import fs from "fs/promises";
 import path from "path";
 import { fileURLToPath } from "url";
@@ -20,11 +20,11 @@ export const poolPromise = (async () => {
           ca: caCertificate,
         },
       })
-      .promise(); // This now correctly returns a promise-based pool
+      .promise();
 
     return pool;
   } catch (error) {
     console.error("Failed to initialize the database connection pool:", error);
-    throw error; // Ensure the promise is rejected on error
+    throw error;
   }
 })();

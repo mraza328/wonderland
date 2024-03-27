@@ -1,6 +1,5 @@
-// Import bcrypt and the pool promise using ES Module syntax
 import bcrypt from "bcryptjs";
-import { poolPromise } from "./database.js"; // Import poolPromise for consistency
+import { poolPromise } from "./database.js";
 
 export default async (req, res) => {
   if (req.method !== "POST") {
@@ -9,7 +8,6 @@ export default async (req, res) => {
   }
 
   try {
-    // Await the request body parsing as in signup.js
     const { email, password } = await new Promise((resolve, reject) => {
       let body = "";
       req.on("data", (chunk) => (body += chunk.toString()));
@@ -17,11 +15,9 @@ export default async (req, res) => {
       req.on("error", (err) => reject(err));
     });
 
-    // Use the promise-based pool
     const pool = await poolPromise;
     const query = "SELECT * FROM Account WHERE email = ?";
 
-    // Execute query using promise instead of callback
     const [results] = await pool.query(query, [email]);
 
     if (results.length === 0) {

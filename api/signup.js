@@ -1,5 +1,5 @@
 import bcrypt from "bcryptjs";
-import { poolPromise } from "./database.js"; // Import poolPromise instead of pool
+import { poolPromise } from "./database.js";
 
 export default async (req, res) => {
   if (req.method !== "POST") {
@@ -31,8 +31,7 @@ export default async (req, res) => {
     const accountQuery =
       "INSERT INTO Account (accountType, firstName, middleName, lastName, email, dateOfBirth, phoneNumber, password) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
-    const pool = await poolPromise; // This now gives you the promise-based pool directly
-    // Correct the order of values to match the table schema
+    const pool = await poolPromise;
     const [accountResult] = await pool.query(accountQuery, [
       accountType,
       firstName,
@@ -47,7 +46,6 @@ export default async (req, res) => {
     // Get the inserted account's UserID
     const userID = accountResult.insertId;
 
-    // Assuming you want to insert into Customer table here
     const customerQuery =
       "INSERT INTO Customer (UserID, FirstName, LastName, DateOfBirth) VALUES (?, ?, ?, ?)";
 

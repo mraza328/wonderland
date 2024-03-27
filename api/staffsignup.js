@@ -1,5 +1,5 @@
 import bcrypt from "bcryptjs";
-import { poolPromise } from "./database.js"; // Import poolPromise for promise-based pool
+import { poolPromise } from "./database.js";
 
 export default async (req, res) => {
   if (req.method !== "POST") {
@@ -44,8 +44,6 @@ export default async (req, res) => {
     ]);
 
     const userID = accountResult.insertId;
-
-    // Assuming additional operations for the employee account might be here
 
     res.status(201).json({
       message: "User created successfully",
