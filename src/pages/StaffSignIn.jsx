@@ -30,6 +30,7 @@ export default function StaffSignIn() {
       signIn({
         UserID: data.userID,
         FirstName: data.firstName,
+        MiddleName: data.middleName,
         LastName: data.lastName,
         DateOfBirth: data.dateOfBirth,
         Email: data.email,

@@ -31,6 +31,7 @@ export default function SignIn() {
       signIn({
         UserID: data.userID,
         FirstName: data.firstName,
+        MiddleName: data.middleName,
         LastName: data.lastName,
         Email: data.email,
         AccountType: data.accountType,

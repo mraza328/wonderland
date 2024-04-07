@@ -45,6 +45,7 @@ export default async (req, res) => {
       message: "Authentication successful",
       userID: user.UserID,
       firstName: user.FirstName,
+      middleName: user.MiddleName,
       lastName: user.LastName,
       email: user.Email,
       accountType: user.AccountType,

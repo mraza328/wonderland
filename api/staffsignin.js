@@ -65,6 +65,7 @@ WHERE
       message: "Authentication successful",
       userID: user.UserID,
       firstName: user.FirstName,
+      middleName: user.MiddleName,
       lastName: user.LastName,
       dateOfBirth: user.DateOfBirth,
       email: user.Email,

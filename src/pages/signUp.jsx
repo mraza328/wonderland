@@ -4,7 +4,7 @@ import { currentConfig } from "../config";
 
 export default function SignUp() {
   const [errorMessage, setErrorMessage] = useState("");
-  const navigate = useNavigate(); // This hook provides imperative navigation
+  const navigate = useNavigate();
   const baseURL = currentConfig.REACT_APP_API_BASE_URL;
   console.log(currentConfig.REACT_APP_API_BASE_URL);
 
