@@ -52,7 +52,7 @@ import { StaffNavbar } from "./components/StaffNavbar";
 function App() {
   const location = useLocation();
 
-  const staffPaths = ["/adminLanding"];
+  const staffPaths = ["/adminLanding", "/AdminLanding"];
 
   const isStaffPage = staffPaths.includes(location.pathname);
 
