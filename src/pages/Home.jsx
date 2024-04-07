@@ -10,7 +10,7 @@ export default function Home() {
   const acctType = currentUser?.AccountType;
 
   if (acctType == "Employee") {
-    navigate("/AdminLanding");
+    navigate("/adminLanding");
   }
 
   const scrollToSection = (sectionId) => {
