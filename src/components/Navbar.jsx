@@ -7,10 +7,17 @@ export const Navbar = () => {
   const { currentUser, signOut } = useAuth();
   const navigate = useNavigate();
 
+  const handleUpdateAccountInfo = () => {
+    // Redirect to Update Account Info page.
+    navigate("/updateaccount");
+    toggleDropdown();
+  };
+
   const handleSignOut = () => {
     signOut();
     // Redirect to sign-in page.
     navigate("/signIn");
+    toggleDropdown();
   };
 
   const handleBuyTickets = () => {
@@ -83,7 +90,10 @@ export const Navbar = () => {
                   className={`dropdown-menu ${isDropdownOpen ? "show" : ""}`}
                   aria-labelledby="navbarDropdown"
                 >
-                  <button className="dropdown-item">
+                  <button
+                    className="dropdown-item"
+                    onClick={handleUpdateAccountInfo}
+                  >
                     Update Account Information
                   </button>
                   <button className="dropdown-item" onClick={handleSignOut}>

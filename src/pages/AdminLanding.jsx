@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import { useAuth } from "../context/AuthContext";
+import { useNavigate } from "react-router-dom";
 import StaffSideNavbar from "../components/StaffSideNavbar";
 import AdminDashboard from "./AdminDashboard";
 import AdminDataReports from "./AdminDataReports";
@@ -32,6 +34,14 @@ import GenerateMaintRep from "./GenerateMaintenanceReport";
 const AdminLanding = () => {
   const [selectedPage, setSelectedPage] = useState("Dashboard");
   const [employeeData, setEmployeeData] = useState(null);
+  const { currentUser } = useAuth();
+  const navigate = useNavigate();
+
+  const acctType = currentUser?.AccountType;
+
+  if (acctType == "Customer") {
+    navigate("/");
+  }
 
   const transitionToAddEmployee = (employeeData) => {
     console.log("Transitioning with data:", employeeData);

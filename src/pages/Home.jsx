@@ -5,6 +5,13 @@ import { useNavigate } from "react-router-dom";
 
 export default function Home() {
   const { currentUser } = useAuth();
+  const navigate = useNavigate();
+
+  const acctType = currentUser?.AccountType;
+
+  if (acctType == "Employee") {
+    navigate("/AdminLanding");
+  }
 
   const scrollToSection = (sectionId) => {
     const section = document.getElementById(sectionId);
@@ -14,12 +21,10 @@ export default function Home() {
   };
 
   const handleBuyTickets = () => {
-    const navigate = useNavigate(); // Initialize the navigate function
-
     if (!currentUser) {
       window.alert("You need to sign in to access the Buy Tickets page.");
     } else {
-      navigate("/ticketPurchase"); // Use navigate for client-side redirection
+      navigate("/ticketPurchase");
     }
   };
 
