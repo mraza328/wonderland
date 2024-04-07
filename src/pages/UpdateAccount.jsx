@@ -10,11 +10,12 @@ export default function UpdateAccount() {
   console.log(currentUser);
 
   const [formData, setFormData] = useState({
+    userID: currentUser?.UserID || "",
     firstName: currentUser?.FirstName || "",
     middleName: currentUser?.MiddleName || "",
     lastName: currentUser?.LastName || "",
     email: currentUser?.Email || "",
-    dateOfBirth: currentUser?.DateOfBirth.split("T")[0] || "",
+    dateOfBirth: currentUser?.DateOfBirth?.split("T")[0] || "",
     phoneNumber: currentUser?.PhoneNumber || "",
     password: "",
     confirmPassword: "",
@@ -39,18 +40,24 @@ export default function UpdateAccount() {
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
-      const response = await fetch(`${baseURL}/updatecustomeraccount`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-      });
-
-      if (response.ok) {
-        navigate("/");
+      if (currentUser.AccountType == "Employee") {
+        setErrorMessage(
+          "Cannot update employee information through customer portal"
+        );
       } else {
-        setErrorMessage("Update unsuccessful, try again later");
+        const response = await fetch(`${baseURL}/updatecustomeraccount`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(formData),
+        });
+
+        if (response.ok) {
+          navigate("/");
+        } else {
+          setErrorMessage("Update unsuccessful, try again later");
+        }
       }
     } catch (error) {
       console.error("Error:", error);
@@ -73,6 +80,21 @@ export default function UpdateAccount() {
             )}
             <form onSubmit={handleSubmit}>
               <div className="row mt-5 mb-3">
+                <div className="row-auto mb-3">
+                  <label htmlFor="userID" className="form-label">
+                    User ID
+                  </label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    id="userID"
+                    name="userID"
+                    required
+                    value={formData.userID}
+                    onChange={handleChange}
+                    readOnly
+                  />
+                </div>
                 <div className="col">
                   <label htmlFor="firstName" className="form-label">
                     First Name

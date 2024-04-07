@@ -47,6 +47,7 @@ export default async (req, res) => {
       firstName: user.FirstName,
       middleName: user.MiddleName,
       lastName: user.LastName,
+      dateOfBirth: user.DateOfBirth,
       email: user.Email,
       accountType: user.AccountType,
       phoneNumber: user.PhoneNumber,

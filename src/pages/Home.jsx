@@ -7,6 +7,12 @@ export default function Home() {
   const { currentUser } = useAuth();
   const navigate = useNavigate();
 
+  const acctType = currentUser?.AccountType;
+
+  if (acctType == "Employee") {
+    navigate("/AdminLanding");
+  }
+
   const scrollToSection = (sectionId) => {
     const section = document.getElementById(sectionId);
     if (section) {
