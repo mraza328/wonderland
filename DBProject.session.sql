@@ -244,22 +244,12 @@ CREATE TRIGGER saleDiscount
 BEFORE INSERT ON Sale
 FOR EACH ROW
 BEGIN
-    DECLARE spentAmount DECIMAL(6, 2);
     DECLARE discountPercent DECIMAL(6, 2);
     DECLARE newTotal DECIMAL(6, 2);
     DECLARE discountApplied BOOLEAN DEFAULT 0; -- Default to 0
 
-    -- Calculate total amount spent by the customer excluding the current row being inserted
-    SELECT SUM(TotalPrice) INTO spentAmount
-    FROM Sale
-    WHERE UserID = NEW.UserID AND SaleID <> NEW.SaleID; -- Exclude the current row being inserted
-
-    -- If spentAmount is null, set it to 0
-    IF spentAmount IS NULL THEN
-        SET spentAmount = 0;
-    END IF;
-
-    IF spentAmount >= 120 THEN
+    -- Check if the total price of the current sale is greater than or equal to 120
+    IF NEW.TotalPrice >= 120 THEN
         -- Apply percent discount
         SET discountPercent = 25;
         SET newTotal = NEW.TotalPrice * (1 - discountPercent / 100);
