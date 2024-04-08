@@ -14,40 +14,51 @@ export default function TicketPurchase() {
   const [formSubmitted, setFormSubmitted] = useState(false);
   const [totalPrice, setTotalPrice] = useState(0);
   const [ticketPrices, setTicketPrices] = useState([]);
+  const [attractions, setAttractions] = useState([]);
+  const [selectedAttractions, setSelectedAttractions] = useState([]);
 
   const baseURL = currentConfig.REACT_APP_API_BASE_URL;
-  console.log(currentConfig.REACT_APP_API_BASE_URL);
-
   const userID = JSON.parse(localStorage.getItem("user")).UserID;
 
   useEffect(() => {
-    const fetchProducts = async () => {
+    const fetchProductsAndAttractions = async () => {
       try {
-        const response = await fetch(`${baseURL}/ticketpurchases`);
-        if (!response.ok) {
-          throw new Error("Failed to fetch products");
+        const [productsResponse, attractionsResponse] = await Promise.all([
+          fetch(`${baseURL}/ticketpurchases`),
+          fetch(`${baseURL}/getallattractions`),
+        ]);
+
+        if (!productsResponse.ok || !attractionsResponse.ok) {
+          throw new Error("Failed to fetch products or attractions");
         }
-        const data = await response.json();
-        setProducts(data);
+
+        const [productsData, attractionsData] = await Promise.all([
+          productsResponse.json(),
+          attractionsResponse.json(),
+        ]);
+
+        setProducts(productsData);
+        setAttractions(attractionsData);
       } catch (error) {
-        console.error("Error fetching products:", error);
+        console.error("Error fetching data:", error);
       }
     };
 
-    fetchProducts();
+    fetchProductsAndAttractions();
   }, []);
+
+  useEffect(() => {
+    setSelectedAttractions(Array.from({ length: numTickets }, () => []));
+  }, [numTickets]);
 
   const handleNumTicketsChange = (e) => {
     const num = parseInt(e.target.value);
     setNumTickets(num);
-    const newTicketDetails = [];
-    for (let i = 0; i < num; i++) {
-      newTicketDetails.push({
-        ticketType: "",
-        foodBundle: "",
-        merchBundle: "",
-      });
-    }
+    const newTicketDetails = Array.from({ length: num }, () => ({
+      ticketType: "",
+      foodBundle: "",
+      merchBundle: "",
+    }));
     setTicketDetails(newTicketDetails);
   };
 
@@ -57,12 +68,27 @@ export default function TicketPurchase() {
     setTicketDetails(updatedTicketDetails);
   };
 
+  const handleAttractionsChange = (ticketIndex, attraction, checked) => {
+    setSelectedAttractions((prevAttractions) => {
+      const updatedAttractions = [...prevAttractions];
+      if (checked) {
+        updatedAttractions[ticketIndex] = [
+          ...(updatedAttractions[ticketIndex] || []),
+          attraction,
+        ];
+      } else {
+        updatedAttractions[ticketIndex] = updatedAttractions[
+          ticketIndex
+        ].filter((item) => item !== attraction);
+      }
+      return updatedAttractions;
+    });
+  };
+
   const getTotalCost = () => {
     let totalPrice = 0;
-    const ticketPrices = []; // Array to store individual ticket prices
-
-    ticketDetails.forEach((ticket) => {
-      const ticketTypeCost = TICKET_PRICES[ticket.ticketType];
+    const ticketPrices = ticketDetails.map((ticket) => {
+      const ticketTypeCost = TICKET_PRICES[ticket.ticketType] || 0;
       let ticketPrice = ticketTypeCost;
 
       const selectedFood = products.find(
@@ -80,17 +106,40 @@ export default function TicketPurchase() {
       }
 
       totalPrice += ticketPrice;
-      ticketPrices.push(ticketPrice);
+      return ticketPrice;
     });
 
-    console.log(ticketPrices);
     setTicketPrices(ticketPrices);
     setTotalPrice(totalPrice);
     setFormSubmitted(true);
   };
 
-  const buyTicket = async (event) => {
+  const sendAttractionsData = async () => {
     try {
+      const response = await fetch(`${baseURL}/attractionlog`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          attractions: selectedAttractions.flat(),
+          date: selectedDate,
+        }),
+      });
+      if (!response.ok) {
+        throw new Error("Failed to update attraction log");
+      }
+      const data = await response.json();
+      console.log("Attraction log updated:", data);
+    } catch (error) {
+      console.error("Error updating attraction log:", error);
+    }
+  };
+
+  const buyTicket = async () => {
+    try {
+      await sendAttractionsData();
+
       const response = await fetch(`${baseURL}/ticketpurchases`, {
         method: "POST",
         headers: {
@@ -205,6 +254,37 @@ export default function TicketPurchase() {
                       <option value="GA">General Admission (GA)</option>
                       <option value="KI">Kid (KI)</option>
                     </select>
+                  </div>
+                  <div className="mt-2 mb-3">
+                    <label className="form-label">
+                      Ticket {index + 1} Attractions
+                    </label>
+                    {attractions.map((attraction, attractionIndex) => (
+                      <div
+                        key={attractionIndex}
+                        className="attraction-checkbox"
+                      >
+                        <label>
+                          <input
+                            type="checkbox"
+                            value={attraction.NameOfAttraction}
+                            checked={selectedAttractions[index]?.includes(
+                              attraction.NameOfAttraction
+                            )}
+                            onChange={(e) =>
+                              handleAttractionsChange(
+                                index,
+                                attraction.NameOfAttraction,
+                                e.target.checked
+                              )
+                            }
+                          />
+                          <span className="attraction-name">
+                            {attraction.NameOfAttraction}
+                          </span>
+                        </label>
+                      </div>
+                    ))}
                   </div>
                   <div className="mt-2 mb-3">
                     <label

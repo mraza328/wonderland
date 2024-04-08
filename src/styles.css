@@ -223,3 +223,6 @@ body {
     border: 1px solid red;
   }
   
+  .attraction-name {
+    margin-left: 5px;
+  }
