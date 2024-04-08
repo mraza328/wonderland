@@ -150,7 +150,7 @@ export default function TicketPurchase() {
           totalPrice,
           ticketPrices,
           ticketDetails,
-          purchaseDate: selectedDate,
+          dateSelected: selectedDate,
         }),
       });
       if (!response.ok) {
@@ -195,13 +195,13 @@ export default function TicketPurchase() {
               admission to Wonderland.
             </div>
             <div className="mt-2 mb-3">
-              <label htmlFor="purchaseDate" className="form-label">
+              <label htmlFor="dateSelected" className="form-label">
                 Choose Date
               </label>
               <input
                 type="date"
                 className="form-control"
-                id="purchaseDate"
+                id="dateSelected"
                 value={selectedDate}
                 onChange={(e) => setSelectedDate(e.target.value)}
                 required

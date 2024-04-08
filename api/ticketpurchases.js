@@ -23,7 +23,7 @@ export default async (req, res) => {
     if (req.method === "GET") {
       res.status(200).json(products);
     } else if (req.method === "POST") {
-      const { userID, totalPrice, ticketPrices, ticketDetails, purchaseDate } =
+      const { userID, totalPrice, ticketPrices, ticketDetails, dateSelected } =
         await new Promise((resolve, reject) => {
           let body = "";
           req.on("data", (chunk) => (body += chunk.toString()));
@@ -36,13 +36,16 @@ export default async (req, res) => {
       // Use the promise-based pool
       const pool = await poolPromise;
 
+      const currentDate = new Date().toISOString().slice(0, 10);
+
       // Insert sale into the database
       const saleQuery =
-        "INSERT INTO Sale (UserID, DateTimeSold, TotalPrice) VALUES (?, ?, ?)";
+        "INSERT INTO Sale (UserID, TotalPrice, DateSold, DateValid) VALUES (?, ?, ?, ?)";
       const [saleResults] = await pool.query(saleQuery, [
         userID,
-        purchaseDate,
         totalPrice,
+        currentDate,
+        dateSelected,
       ]);
 
       const saleId = saleResults.insertId;
