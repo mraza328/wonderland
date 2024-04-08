@@ -47,6 +47,10 @@ export default function TicketPurchase() {
     fetchProductsAndAttractions();
   }, []);
 
+  useEffect(() => {
+    setSelectedAttractions(Array.from({ length: numTickets }, () => []));
+  }, [numTickets]);
+
   const handleNumTicketsChange = (e) => {
     const num = parseInt(e.target.value);
     setNumTickets(num);
@@ -64,19 +68,21 @@ export default function TicketPurchase() {
     setTicketDetails(updatedTicketDetails);
   };
 
-  const handleAttractionsChange = (index, attraction, checked) => {
-    const updatedSelectedAttractions = [...selectedAttractions];
-    if (checked) {
-      if (!updatedSelectedAttractions[index]) {
-        updatedSelectedAttractions[index] = [];
+  const handleAttractionsChange = (ticketIndex, attraction, checked) => {
+    setSelectedAttractions((prevAttractions) => {
+      const updatedAttractions = [...prevAttractions];
+      if (checked) {
+        updatedAttractions[ticketIndex] = [
+          ...(updatedAttractions[ticketIndex] || []),
+          attraction,
+        ];
+      } else {
+        updatedAttractions[ticketIndex] = updatedAttractions[
+          ticketIndex
+        ].filter((item) => item !== attraction);
       }
-      updatedSelectedAttractions[index].push(attraction);
-    } else {
-      updatedSelectedAttractions[index] = updatedSelectedAttractions[
-        index
-      ].filter((item) => item !== attraction);
-    }
-    setSelectedAttractions(updatedSelectedAttractions);
+      return updatedAttractions;
+    });
   };
 
   const getTotalCost = () => {
@@ -108,7 +114,7 @@ export default function TicketPurchase() {
     setFormSubmitted(true);
   };
 
-  const sendAttractionsData = async (attractionsData) => {
+  const sendAttractionsData = async () => {
     try {
       const response = await fetch(`${baseURL}/attractionlog`, {
         method: "POST",
@@ -116,8 +122,8 @@ export default function TicketPurchase() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          attractions: attractionsData.selectedAttractions,
-          date: attractionsData.purchaseDate,
+          attractions: selectedAttractions.flat(),
+          date: selectedDate,
         }),
       });
       if (!response.ok) {
@@ -132,10 +138,7 @@ export default function TicketPurchase() {
 
   const buyTicket = async () => {
     try {
-      const attractionsData = {
-        selectedAttractions: selectedAttractions.flat(),
-        purchaseDate: selectedDate,
-      };
+      await sendAttractionsData();
 
       const response = await fetch(`${baseURL}/ticketpurchases`, {
         method: "POST",
@@ -165,8 +168,6 @@ export default function TicketPurchase() {
       } else {
         alert("Tickets have been purchased!");
       }
-
-      await sendAttractionsData(attractionsData);
     } catch (error) {
       console.error("Error purchasing tickets:", error);
       alert("Failed to purchase tickets");
@@ -258,8 +259,11 @@ export default function TicketPurchase() {
                     <label className="form-label">
                       Ticket {index + 1} Attractions
                     </label>
-                    {attractions.map((attraction, index) => (
-                      <div key={index} className="attraction-checkbox">
+                    {attractions.map((attraction, attractionIndex) => (
+                      <div
+                        key={attractionIndex}
+                        className="attraction-checkbox"
+                      >
                         <label>
                           <input
                             type="checkbox"
