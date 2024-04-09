@@ -159,14 +159,14 @@ export default function TicketPurchase() {
 
       const data = await response.json();
 
-      if (data.discountApplied) {
-        alert(
-          `Congratulations! You've received a 25% discount on your purchase because you've spent $120 or more!\n\nDiscount applied: $${data.discountAmount.toFixed(
-            2
-          )}\nNew total: $${data.newTotal.toFixed(2)}`
-        );
-      } else {
-        alert("Tickets have been purchased!");
+      if (response.status === 200 || response.status === 201) {
+        if (data.message === "Discount applied successfully!") {
+          alert(
+            `Congratulations! You've received a 25% discount on your purchase because you've spent $120 or more!`
+          );
+        } else {
+          alert("Tickets have been purchased!");
+        }
       }
     } catch (error) {
       console.error("Error purchasing tickets:", error);
