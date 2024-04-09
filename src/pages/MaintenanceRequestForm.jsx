@@ -92,6 +92,7 @@ export default function MaintenanceRequestForm({ onSuccess }) {
                           aria-label="Numeric ID assigned to each employee"
                           value={currentUser.UserID}
                           onChange={handleChange}
+                          readOnly
                         ></input>
                       </div>
 
@@ -186,6 +187,7 @@ export default function MaintenanceRequestForm({ onSuccess }) {
                             onChange={(date) => setSubmissionDate(date)}
                             className="form-control"
                             dateFormat="MMMM d, yyyy"
+                            readOnly
                           />
                         </div>
                       </div>
