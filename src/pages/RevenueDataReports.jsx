@@ -52,7 +52,7 @@ export default function RevenueDataReports() {
       console.log(json);
 
       if (!response.ok) {
-        console.log("Failed to fetch attraction data");
+        console.log("Failed to fetch revenue data");
       }
       if (response.ok) {
         setFetchedData(json);
