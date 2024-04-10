@@ -239,7 +239,7 @@ ADD COLUMN DiscountApplied BOOLEAN NOT NULL DEFAULT 0;
 -- @block DELETE DISCOUNT TRIGGER
 DROP TRIGGER IF EXISTS saleDiscount;
 
--- @block DISCOUNT TRIGGER
+-- @block NEW DISCOUNT TRIGGER
 CREATE TRIGGER saleDiscount
 BEFORE INSERT ON Sale
 FOR EACH ROW
@@ -256,7 +256,9 @@ BEGIN
 
         -- Update final sale price, including discount reduction
         SET NEW.TotalPrice = newTotal;
-        SET discountApplied = 1; -- Set discountApplied to true
+
+        -- Set discountApplied to true
+        SET discountApplied = 1;
     END IF;
 
     -- Set the DiscountApplied column value for the new row

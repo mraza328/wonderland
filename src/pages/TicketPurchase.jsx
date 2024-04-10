@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import Notification from "../components/Notification";
 import { currentConfig } from "../config";
 
 const TICKET_PRICES = {
@@ -16,6 +17,7 @@ export default function TicketPurchase() {
   const [ticketPrices, setTicketPrices] = useState([]);
   const [attractions, setAttractions] = useState([]);
   const [selectedAttractions, setSelectedAttractions] = useState([]);
+  const [notification, setNotification] = useState(null);
 
   const baseURL = currentConfig.REACT_APP_API_BASE_URL;
   const userID = JSON.parse(localStorage.getItem("user")).UserID;
@@ -153,24 +155,30 @@ export default function TicketPurchase() {
           dateSelected: selectedDate,
         }),
       });
+
       if (!response.ok) {
         throw new Error("Failed to purchase tickets");
       }
 
       const data = await response.json();
 
-      if (data.discountApplied) {
-        alert(
-          `Congratulations! You've received a 25% discount on your purchase because you've spent $120 or more!\n\nDiscount applied: $${data.discountAmount.toFixed(
-            2
-          )}\nNew total: $${data.newTotal.toFixed(2)}`
-        );
-      } else {
-        alert("Tickets have been purchased!");
+      if (response.status === 200 || response.status === 201) {
+        if (data.message === "Discount applied successfully!") {
+          const discountedTotalPrice = data.discountedTotalPrice;
+          setNotification({
+            message: `Congratulations! You've received a 25% discount on your purchase because you've spent $120 or more!<br><br>New total amount after discount: $${discountedTotalPrice}`,
+            type: "success",
+          });
+        } else {
+          setNotification({
+            message: "Tickets successfully purchased!",
+            type: "success",
+          });
+        }
       }
     } catch (error) {
       console.error("Error purchasing tickets:", error);
-      alert("Failed to purchase tickets");
+      setNotification({ message: "Failed to purchase tickets", type: "error" });
     }
   };
 
@@ -385,10 +393,16 @@ export default function TicketPurchase() {
                     className="btn btn-primary mx-auto mt-3"
                     onClick={buyTicket}
                   >
-                    Purchase
+                    Confirm Purchase
                   </button>
                 </div>
               </>
+            )}
+            {notification && (
+              <Notification
+                message={notification.message}
+                type={notification.type}
+              />
             )}
           </div>
         </div>

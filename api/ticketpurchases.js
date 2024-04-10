@@ -7,7 +7,6 @@ export default async (req, res) => {
   }
 
   try {
-    // Use the promise-based pool
     const pool = await poolPromise;
 
     const productQuery = `
@@ -19,7 +18,6 @@ export default async (req, res) => {
     const [productResults] = await pool.query(productQuery);
     const products = productResults;
 
-    // GET and POST Methods
     if (req.method === "GET") {
       res.status(200).json(products);
     } else if (req.method === "POST") {
@@ -32,9 +30,6 @@ export default async (req, res) => {
           });
           req.on("error", (err) => reject(err));
         });
-
-      // Use the promise-based pool
-      const pool = await poolPromise;
 
       const currentDate = new Date().toISOString().slice(0, 10);
 
@@ -84,25 +79,38 @@ export default async (req, res) => {
         ]);
       }
 
-      // Check if discount applies
-      let discountApplied = false;
-      let discountAmount = 0;
-      let newTotal = totalPrice;
+      // Select DiscountApplied for the newly inserted sale
+      const selectDiscountAppliedQuery =
+        "SELECT DiscountApplied FROM Sale WHERE SaleID = ?";
+      const [discountAppliedRows] = await pool.query(
+        selectDiscountAppliedQuery,
+        [saleId]
+      );
 
-      if (totalPrice > 120) {
-        discountApplied = true;
-        const discountPercentage = 0.25;
-        discountAmount = totalPrice * discountPercentage;
-        newTotal = totalPrice - discountAmount;
+      // Check if DiscountApplied is set to 1
+      const discountApplied = discountAppliedRows[0]?.DiscountApplied === 1;
+
+      if (discountApplied) {
+        const selectDiscountedTotalPriceQuery =
+          "SELECT TotalPrice FROM Sale WHERE SaleID = ?";
+        const [discountedTotalPriceRows] = await pool.query(
+          selectDiscountedTotalPriceQuery,
+          [saleId]
+        );
+
+        const discountedTotalPrice = discountedTotalPriceRows[0]?.TotalPrice;
+
+        res.status(201).json({
+          message: "Discount applied successfully!",
+          saleId,
+          discountedTotalPrice,
+        });
+      } else {
+        res.status(200).json({
+          message: "Ticket purchase processed successfully",
+          saleId,
+        });
       }
-
-      res.status(200).json({
-        message: "Ticket purchase processed successfully",
-        saleId,
-        discountApplied,
-        discountAmount,
-        newTotal,
-      });
     }
   } catch (error) {
     console.error("Error processing request:", error);
