@@ -197,6 +197,12 @@ const StaffSideNavbar = ({ onItemClick }) => {
                 >
                   Revenue Reports
                 </li>
+                <li
+                  className="list-group-submenu-item"
+                  onClick={() => onItemClick("Maintenance Reporting Portal")}
+                >
+                  Maintenance Reports
+                </li>
               </ul>
             )}
           </li>

@@ -2,7 +2,11 @@ import { poolPromise } from "./database.js";
 
 export default async (req, res) => {
   try {
-    const query = `SELECT * FROM Maintenance`;
+    const query = `
+      SELECT maintenance.*, employee.FirstName, employee.LastName, 
+        (SELECT SUM(Expense) FROM maintenance WHERE MaintenanceStatus = 'Completed') AS TotalCost
+      FROM maintenance
+      LEFT JOIN employee ON maintenance.UserID = employee.UserID`;
     const pool = await poolPromise;
     const [results] = await pool.query(query);
 

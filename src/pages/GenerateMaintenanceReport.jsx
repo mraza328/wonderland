@@ -98,10 +98,8 @@ export default function MaintenanceDataReports() {
     });
 
     setDisplayedMaintenanceData(filteredData);
-    const total = filteredData.reduce(
-      (acc, curr) => acc + Number(curr.totalCost),
-      0
-    );
+    const total =
+      filteredData.length > 0 ? parseFloat(filteredData[0].finalCost) : 0;
     setTotalCost(total);
   };
 
@@ -113,16 +111,20 @@ export default function MaintenanceDataReports() {
         const transformedData = data.map((item) => ({
           maintenanceIds: item.RequestID,
           employeeIds: item.UserID,
+          firstName: item.FirstName,
+          lastName: item.LastName,
           attractionNames: item.NameOfAttraction,
-          startDate: item.Date,
-          endDate: item.DateCompleted,
+          startDate: item.Date.split("T")[0],
+          endDate: item.DateCompleted ? item.DateCompleted.split("T")[0] : null,
           status: item.MaintenanceStatus,
           totalCost: item.Expense || 0,
           reason: item.DescriptionOfRequest || "No reason provided",
           stateId: item.StateID,
+          finalCost: item.TotalCost,
         }));
 
         setMaintenanceData(transformedData);
+        console.log(transformedData);
 
         setEmployeeOptions(
           Array.from(new Set(transformedData.map((item) => item.employeeIds)))
@@ -336,6 +338,8 @@ export default function MaintenanceDataReports() {
             <th>Maintenance ID</th>
             <th>State ID</th>
             <th>Employee ID</th>
+            <th>First Name</th>
+            <th>Last Name</th>
             <th>Attraction Name</th>
             <th>Start Date</th>
             <th>Completion Date</th>
@@ -350,6 +354,8 @@ export default function MaintenanceDataReports() {
               <td>{entry.maintenanceIds}</td>
               <td>{entry.stateId}</td>
               <td>{entry.employeeIds}</td>
+              <td>{entry.firstName}</td>
+              <td>{entry.lastName}</td>
               <td>{entry.attractionNames}</td>
               <td>{entry.startDate}</td>
               <td>{entry.endDate}</td>
@@ -359,7 +365,7 @@ export default function MaintenanceDataReports() {
             </tr>
           ))}
           <tr>
-            <td colSpan="7">
+            <td colSpan="9">
               <b>Total</b>
             </td>
             <td>
