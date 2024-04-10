@@ -33,7 +33,7 @@ export default async (req, res) => {
     if (!passwordIsValid || user.AccountType !== "Customer") {
       res.status(401).json({
         message:
-          user.accountType !== "Customer"
+          user.AccountType !== "Customer"
             ? "Please use Staff Log In Portal"
             : "Incorrect User ID or Password",
       });
