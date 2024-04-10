@@ -155,6 +155,7 @@ export default function TicketPurchase() {
           dateSelected: selectedDate,
         }),
       });
+
       if (!response.ok) {
         throw new Error("Failed to purchase tickets");
       }
@@ -163,8 +164,9 @@ export default function TicketPurchase() {
 
       if (response.status === 200 || response.status === 201) {
         if (data.message === "Discount applied successfully!") {
+          const discountedTotalPrice = data.discountedTotalPrice;
           setNotification({
-            message: `Congratulations! You've received a 25% discount on your purchase because you've spent $120 or more!`,
+            message: `Congratulations! You've received a 25% discount on your purchase because you've spent $120 or more!<br><br>New total amount after discount: $${discountedTotalPrice}`,
             type: "success",
           });
         } else {

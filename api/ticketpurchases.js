@@ -91,9 +91,19 @@ export default async (req, res) => {
       const discountApplied = discountAppliedRows[0]?.DiscountApplied === 1;
 
       if (discountApplied) {
+        const selectDiscountedTotalPriceQuery =
+          "SELECT TotalPrice FROM Sale WHERE SaleID = ?";
+        const [discountedTotalPriceRows] = await pool.query(
+          selectDiscountedTotalPriceQuery,
+          [saleId]
+        );
+
+        const discountedTotalPrice = discountedTotalPriceRows[0]?.TotalPrice;
+
         res.status(201).json({
           message: "Discount applied successfully!",
           saleId,
+          discountedTotalPrice,
         });
       } else {
         res.status(200).json({
