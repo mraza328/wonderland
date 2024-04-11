@@ -5,7 +5,7 @@ export default function DeleteEmployee() {
   const [employeeID, setEmployeeID] = useState("");
   const [status, setStatus] = useState("");
   const [creationSuccess, setCreationSuccess] = useState(false);
-  const [error, setError] = useState("")
+  const [error, setError] = useState("");
 
   const reasons = ["Retired", "Inactive"];
 
@@ -17,8 +17,8 @@ export default function DeleteEmployee() {
     setError(false);
 
     const formData = {
-      employeeID, 
-      status
+      employeeID,
+      status,
     };
 
     try {
@@ -73,24 +73,24 @@ export default function DeleteEmployee() {
                 />
               </div>
               <div className="mb-3 mt-3">
-              <label htmlFor="status" className="form-label">
-                Reason:
-              </label>
-              <input
-                list="reasons"
-                className="form-control"
-                id="status"
-                name="status"
-                placeholder="Type to search..."
-                required
-                value={status}
-                onChange={(e) => setStatus(e.target.value)}
-              />
-              <datalist id="reasons">
-                {reasons.map((status, index) => (
-                  <option key={index} value={status} />
-                ))}
-              </datalist>
+                <label htmlFor="status" className="form-label">
+                  Reason:
+                </label>
+                <input
+                  list="reasons"
+                  className="form-control"
+                  id="status"
+                  name="status"
+                  placeholder="Type to search..."
+                  required
+                  value={status}
+                  onChange={(e) => setStatus(e.target.value)}
+                />
+                <datalist id="reasons">
+                  {reasons.map((status, index) => (
+                    <option key={index} value={status} />
+                  ))}
+                </datalist>
               </div>
               <div className="flex flex-wrap -mx-3 mt-6">
                 <div className="w-full px-3 text-center">

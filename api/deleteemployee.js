@@ -25,7 +25,7 @@ export default async (req, res) => {
       });
     } else {
       res.status(404).json({
-        message: "Employee Not Found",
+        message: "Employee not found, please enter a valid Employee ID.",
       });
     }
   } catch (error) {
