@@ -154,7 +154,7 @@ export default function Home() {
           </p>
         </section>
         <section id="attractions" className={classes.attraction}>
-          <h2>Last Month's Most Popular Attractions!</h2>
+          <h2>Last Month's Most Popular Attractions</h2>
           {topAttractions.map((attraction, index) => (
             <div key={index}>
               <h3>{attraction.NameOfAttraction}</h3>
