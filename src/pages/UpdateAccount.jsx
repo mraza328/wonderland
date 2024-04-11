@@ -4,7 +4,7 @@ import { currentConfig } from "../config";
 import { useAuth } from "../context/AuthContext";
 
 export default function UpdateAccount() {
-  const { currentUser } = useAuth();
+  const { currentUser, signOut } = useAuth();
   const navigate = useNavigate();
   const baseURL = currentConfig.REACT_APP_API_BASE_URL;
   console.log(currentUser);
@@ -22,6 +22,7 @@ export default function UpdateAccount() {
   });
 
   const [errorMessage, setErrorMessage] = useState("");
+  const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
     // This effect runs once on component mount, and logs the current user
@@ -54,7 +55,8 @@ export default function UpdateAccount() {
         });
 
         if (response.ok) {
-          navigate("/");
+          setShowModal(true);
+          signOut();
         } else {
           setErrorMessage("Update unsuccessful, try again later");
         }
@@ -65,8 +67,43 @@ export default function UpdateAccount() {
     }
   };
 
+  const handleRedirect = () => {
+    navigate("/"); // Redirect user to home page
+  };
+
   return (
     <div className="row justify-content-center">
+      {errorMessage && (
+        <div className="alert alert-danger" role="alert">
+          {errorMessage}
+        </div>
+      )}
+      <div
+        className="modal"
+        tabIndex="-1"
+        role="dialog"
+        style={{ display: showModal ? "block" : "none" }}
+      >
+        <div className="modal-dialog" role="document">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h5 className="modal-title">Account Updated</h5>
+            </div>
+            <div className="modal-body">
+              <p>You are required to sign back in after account updates.</p>
+            </div>
+            <div className="modal-footer">
+              <button
+                type="button"
+                className="btn btn-primary"
+                onClick={handleRedirect}
+              >
+                Go to Home Page
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
       <div className="col md-4 mb-4">
         <div className="card sign-up">
           <div className="card-body">
