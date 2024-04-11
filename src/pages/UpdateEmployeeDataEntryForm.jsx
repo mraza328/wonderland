@@ -451,10 +451,9 @@ export default function UpdateEmployee() {
                   </div>
                 </div>
                 <div className="row mb-3">
-                  <div className="mb-2">Address</div>
                   <div className="col">
                     <label htmlFor="street" className="form-label">
-                      Street:
+                      Street Address:
                     </label>
                     <input
                       type="text"
