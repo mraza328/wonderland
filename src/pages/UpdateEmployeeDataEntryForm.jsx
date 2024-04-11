@@ -11,12 +11,13 @@ export default function UpdateEmployee() {
   const [departments, setDepartments] = useState(null);
   const [isSet, setIsSet] = useState(false);
   const [creationSuccess, setCreationSuccess] = useState(false);
+  const [notFound, setNotFound] = useState(false);
 
   const positions = ["Employee", "Maintenance", "Department Manager", "Admin"];
   const schedules = ["First Shift", "Second Shift"];
 
   const baseURL = currentConfig.REACT_APP_API_BASE_URL;
-  
+
   //var combinedObject = null;
   const [combinedObject, setCombinedObject] = useState(null);
 
@@ -50,40 +51,36 @@ export default function UpdateEmployee() {
     setCombinedObject(null);
     setisSubmitted(false);
     setCreationSuccess(false);
+    setNotFound(false);
 
-    const formData = {employeeId};
+    const formData = { employeeId };
 
     try {
-      const response = await fetch(
-        `${baseURL}/getemployee`,
-        {
-          method: "POST",
-          body: JSON.stringify(formData),
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      const response = await fetch(`${baseURL}/getemployee`, {
+        method: "POST",
+        body: JSON.stringify(formData),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
 
       const json = await response.json();
 
       if (!response.ok) {
+        setNotFound(true);
         console.log("Failed to fetch employee data");
       }
       if (response.ok) {
         setEmployeeData(json[0]);
       }
 
-      const res = await fetch(
-        `${baseURL}/getaccount`,
-        {
-          method: "POST",
-          body: JSON.stringify(formData),
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      const res = await fetch(`${baseURL}/getaccount`, {
+        method: "POST",
+        body: JSON.stringify(formData),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
 
       const js = await res.json();
       js[0].DateOfBirth = js[0].DateOfBirth.substring(0, 10);
@@ -101,8 +98,8 @@ export default function UpdateEmployee() {
 
   useEffect(() => {
     if (employeeData !== null && accountData !== null) {
-        setCombinedObject(Object.assign({}, employeeData, accountData));
-        setisSubmitted(true);
+      setCombinedObject(Object.assign({}, employeeData, accountData));
+      setisSubmitted(true);
     }
   }, [employeeData, accountData]);
 
@@ -113,15 +110,13 @@ export default function UpdateEmployee() {
     const formData = combinedObject;
 
     try {
-      const response = await fetch(`${baseURL}/updateemployee`,
-        {
-          method: "PUT",
-          body: JSON.stringify(formData),
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      const response = await fetch(`${baseURL}/updateemployee`, {
+        method: "PUT",
+        body: JSON.stringify(formData),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
 
       const json = await response.json();
 
@@ -184,6 +179,12 @@ export default function UpdateEmployee() {
               </form>
             )}
 
+            {notFound && (
+              <div className="alert alert-danger mt-3" role="alert">
+                Employee with the provided ID does not exist.
+              </div>
+            )}
+
             {isSubmitted && (
               <form onSubmit={handleSubmitTwo}>
                 <div className="row mb-3 mt-3">
@@ -222,7 +223,8 @@ export default function UpdateEmployee() {
                       onChange={(e) =>
                         setCombinedObject({
                           ...combinedObject,
-                          MiddleName: (e.target.value)==="" ? null : e.target.value,
+                          MiddleName:
+                            e.target.value === "" ? null : e.target.value,
                         })
                       }
                     />
@@ -362,7 +364,8 @@ export default function UpdateEmployee() {
                       onChange={(e) =>
                         setCombinedObject({
                           ...combinedObject,
-                          SupUserID: (e.target.value)==="" ? null : e.target.value,
+                          SupUserID:
+                            e.target.value === "" ? null : e.target.value,
                         })
                       }
                     />
