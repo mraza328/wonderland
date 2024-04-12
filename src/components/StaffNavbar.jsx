@@ -16,7 +16,7 @@ export const StaffNavbar = () => {
   return (
     <nav className="navbar navbar-expand-lg">
       <div className="container">
-        <Link to="/" className="navbar-brand text-white">
+        <Link to="/adminLanding" className="navbar-brand text-white">
           Wonderland
         </Link>
         <button
@@ -35,12 +35,6 @@ export const StaffNavbar = () => {
           id="navbarNav"
         >
           <ul className="navbar-nav ml-auto">
-            <li className="nav-item">
-              <Link to="/employeeLanding" className="nav-link text-white">
-                Employee Portal
-              </Link>
-            </li>
-
             {currentUser ? (
               <>
                 <li className="nav-item">
