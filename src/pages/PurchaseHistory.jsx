@@ -33,6 +33,11 @@ export default function PurchaseHistory() {
     fetchPurchaseHistory();
   }, [userID, baseURL]);
 
+  const formatDate = (dateString) => {
+    const options = { year: "numeric", month: "long", day: "numeric" };
+    return new Date(dateString).toLocaleDateString(undefined, options);
+  };
+
   return (
     <div className="container mt-5">
       <h1 className="my-2 text-center" style={{ color: "#2F4858" }}>
@@ -42,19 +47,19 @@ export default function PurchaseHistory() {
         <p className="text-center">Fetching past orders...</p>
       ) : (
         <div className="table-responsive">
-          <table className="table mt-3 rounded">
+          <table className="table mt-3 table-hover rounded">
             <thead>
               <tr>
-                <th style={{ backgroundColor: "#86BBD8" }}>#</th>
-                <th style={{ backgroundColor: "#86BBD8" }}>Date</th>
-                <th style={{ backgroundColor: "#86BBD8" }}>Total Price</th>
+                <th style={{ backgroundColor: "#86BBD8" }}>Order Number</th>
+                <th style={{ backgroundColor: "#86BBD8" }}>Valid For</th>
+                <th style={{ backgroundColor: "#86BBD8" }}>Total Sale Price</th>
               </tr>
             </thead>
             <tbody>
               {purchaseHistory.map((purchase, index) => (
                 <tr key={index}>
                   <td>{index + 1}</td>
-                  <td>{purchase.date}</td>
+                  <td>{formatDate(purchase.date)}</td>
                   <td>${purchase.totalPrice}</td>
                 </tr>
               ))}

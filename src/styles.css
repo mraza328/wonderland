@@ -226,3 +226,7 @@ body {
   .attraction-name {
     margin-left: 5px;
   }
+
+  .table-hover tbody tr:hover {
+    background-color: #f2f2f2;
+  }
