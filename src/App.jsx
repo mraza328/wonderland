@@ -13,6 +13,7 @@ import SignIn from "./pages/SignIn";
 import SignUp from "./pages/signUp";
 import UpdateAccount from "./pages/UpdateAccount";
 import TicketPurchase from "./pages/TicketPurchase";
+import PurchaseHistory from "./pages/PurchaseHistory";
 
 import AdminLanding from "./pages/AdminLanding";
 import AdminDashboard from "./pages/AdminDashboard";
@@ -68,6 +69,7 @@ function App() {
           <Route path="/signUp" element={<SignUp />} />
           <Route path="/updateaccount" element={<UpdateAccount />} />
           <Route path="/ticketPurchase" element={<TicketPurchase />} />
+          <Route path="/purchasehistory" element={<PurchaseHistory />} />
           <Route
             path="/staffticketpurchase"
             element={<StaffTicketPurchase />}
