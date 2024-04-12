@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import classes from "../components/UI/Home.module.css";
 import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
@@ -6,12 +6,42 @@ import { useNavigate } from "react-router-dom";
 export default function Home() {
   const { currentUser } = useAuth();
   const navigate = useNavigate();
+  const [topAttractions, setTopAttractions] = useState([]);
+  const [topProducts, setTopProducts] = useState([]);
+
+  useEffect(() => {
+    fetchTopAttractions();
+  }, []);
+
+  useEffect(() => {
+    fetchTopProducts();
+  }, []);
 
   const acctType = currentUser?.AccountType;
 
   if (acctType == "Employee") {
     navigate("/adminLanding");
   }
+
+  const fetchTopAttractions = async () => {
+    try {
+      const response = await fetch("/api/topAttractions");
+      const data = await response.json();
+      setTopAttractions(data.topAttractions);
+    } catch (error) {
+      console.error("Error fetching top attractions:", error);
+    }
+  };
+
+  const fetchTopProducts = async () => {
+    try {
+      const response = await fetch("/api/topProducts");
+      const data = await response.json();
+      setTopProducts(data.topProducts);
+    } catch (error) {
+      console.error("Error fetching top products:", error);
+    }
+  };
 
   const scrollToSection = (sectionId) => {
     const section = document.getElementById(sectionId);
@@ -124,88 +154,23 @@ export default function Home() {
           </p>
         </section>
         <section id="attractions" className={classes.attraction}>
-          <h2>Popular Attractions</h2>
-          <div>
-            <h3>Legendary Arena</h3>
-            <img
-              src="https://www.ocregister.com/wp-content/uploads/2019/10/silver-dollar-city-mystic-rivers-falls-1.jpg?w=750"
-              alt="Legendary Arena"
-            />
-            <p>
-              Lengendary Arena is an exhilarating journey through the heart of
-              mythical battles and legendary creatures. As riders traverse the
-              arena, they are transported to a realm where ancient legends come
-              to life. The ride includes a dramatic entrance into a grand
-              coliseum, adorned with towering statues of legendary warriors and
-              mythical beasts.
-            </p>
-          </div>
-          <div>
-            <h3>Thrillseeker's Torment</h3>
-            <img
-              src="https://assets3.thrillist.com/v1/image/3130699/1200x630/flatten;crop_down;webp=auto;jpeg_quality=70"
-              alt="Thrillseeker's Tormet"
-            />
-            <p>
-              Thrillseeker's Torment is a heart-pounding roller coaster ride
-              that takes daring adventurers on a wild journey through loops,
-              drops, and unexpected twists. Brace yourself for an
-              adrenaline-fueled experience that will leave you breathless and
-              begging for more.
-            </p>
-          </div>
-          <div>
-            <h3>Enchanted Theater</h3>
-            <img
-              src="https://www.themeparktourist.com/files/u235/Shows/5_13_DL_05240_.jpg"
-              alt="Enchanted Theater"
-            />
-            <p>
-              Enchanted Theater is a mesmerizing magic show that transports
-              audiences into a world of wonder and amazement. Set in a mystical
-              theater filled with enchanting illusions and spellbinding
-              performances, this captivating spectacle brings dreams to life
-              before your very eyes. Prepare to be dazzled by mind-bending
-              tricks, mysterious disappearances, and the uncanny abilities of
-              masterful magicians.
-            </p>
-          </div>
+          <h2>Last Month's Most Popular Attractions</h2>
+          {topAttractions.map((attraction, index) => (
+            <div key={index}>
+              <h3>{attraction.NameOfAttraction}</h3>
+              <p>Total Riders This Past Month: {attraction.TotalRiders}</p>
+            </div>
+          ))}
         </section>
         <section id="vendors" className={classes.vendor}>
-          <h2>Popular Vendors</h2>
-          <div>
-            <h3>Adventure Bites Eatery</h3>
-            <img
-              src="https://www.themeparkinsider.com/photos/images/tiffins.jpg"
-              alt="Adventure Bites Eatery"
-            />
-            <p>
-              Adventure Bites Eatery is your ultimate dining destination in the
-              heart of Wonderland. Fuel up for your next adventure with a
-              tantalizing array of flavors from around the world. From
-              mouthwatering burgers to delicious pizza, our diverse menu
-              promises something to satisfy every appetite. Enjoy your meal in a
-              vibrant and energetic atmosphere that captures the spirit of
-              adventure. At Adventure Bites Eatery, every bite is a journey
-              worth savoring.
-            </p>
-          </div>
-          <div>
-            <h3>Fantasy Finds Boutique</h3>
-            <img
-              src="https://buschgardens.com/tampa/-/media/busch-gardens-tampa/other-modules/490x225/shops/emporium/2017_buschgardenstampabay_shops_emporium2_490x225.ashx"
-              alt="Fantasy Finds Boutique"
-            />
-            <p>
-              Fantasy Finds Boutique is a whimsical treasure trove nestled
-              within the theme park, offering a delightful array of enchanted
-              souvenirs and magical mementos. From whimsical trinkets to
-              fantastical keepsakes, every item beckons with the promise of
-              adventure and imagination. Step inside and embark on a journey
-              through a realm of wonder, where each discovery brings a spark of
-              joy and enchantment.
-            </p>
-          </div>
+          <h2>Last Month's Most Popular Products</h2>
+          {topProducts.map((product, index) => (
+            <div key={index}>
+              <h3>{product.ProductName}</h3>
+              <p>Sold by: {product.VendorName}</p>
+              <p>Total Sales: {product.SalesCount}</p>
+            </div>
+          ))}
         </section>
         <section id="tickets" className={classes.ticket}>
           <h2>Get Your Tickets</h2>
