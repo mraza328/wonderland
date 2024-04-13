@@ -2,12 +2,14 @@ import React, { useState, useEffect } from "react";
 import classes from "../components/UI/Home.module.css";
 import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
+import { currentConfig } from "../config";
 
 export default function Home() {
   const { currentUser } = useAuth();
   const navigate = useNavigate();
   const [topAttractions, setTopAttractions] = useState([]);
   const [topProducts, setTopProducts] = useState([]);
+  const baseURL = currentConfig.REACT_APP_API_BASE_URL;
 
   useEffect(() => {
     fetchTopAttractions();
@@ -25,7 +27,7 @@ export default function Home() {
 
   const fetchTopAttractions = async () => {
     try {
-      const response = await fetch("/api/topAttractions");
+      const response = await fetch(`${baseURL}/topAttractions`);
       const data = await response.json();
       setTopAttractions(data.topAttractions);
     } catch (error) {
@@ -35,7 +37,7 @@ export default function Home() {
 
   const fetchTopProducts = async () => {
     try {
-      const response = await fetch("/api/topProducts");
+      const response = await fetch(`${baseURL}/topProducts`);
       const data = await response.json();
       setTopProducts(data.topProducts);
     } catch (error) {
