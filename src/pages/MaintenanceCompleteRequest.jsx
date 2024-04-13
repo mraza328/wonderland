@@ -422,7 +422,7 @@ export default function MaintenanceCompReq({ onSuccess }) {
               value={selectedRequest}
               onChange={handleSelectChange}
             >
-              <option defaultValue="">Select Maintenance ID to Update</option>
+              <option defaultValue="">Select Maintenance ID to Complete</option>
               {requestsData.map((item) => (
                 <option
                   key={`${item.RequestID}_${item.StateID}`}

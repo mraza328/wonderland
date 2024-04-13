@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { useAuth } from "../context/AuthContext";
 import { Table } from "react-bootstrap";
+import { currentConfig } from "../config";
 
 export default function AdminDashboard() {
   const { currentUser } = useAuth();
   const [maintenanceRequests, setMaintenanceRequests] = useState([]);
   const role = currentUser?.Position;
+  const baseURL = currentConfig.REACT_APP_API_BASE_URL;
 
   const [personalInfo, setPersonalInfo] = useState({
     name: "",
@@ -41,7 +43,7 @@ export default function AdminDashboard() {
   useEffect(() => {
     async function fetchMaintenanceRequests() {
       try {
-        const response = await fetch("/api/fetchpendingmaintreq");
+        const response = await fetch(`${baseURL}/fetchpendingmaintreq`);
         const data = await response.json();
         setMaintenanceRequests(data);
       } catch (error) {

@@ -52,6 +52,13 @@ export default async (req, res) => {
       stateID,
     ]);
 
+    const updateAttractionStatus = `
+    UPDATE Attraction
+    SET AttractionStatus = 'Out of Order'
+    WHERE NameOfAttraction = ?
+    `;
+    await pool.query(updateAttractionStatus, [nameOfAttraction]);
+
     // After the insert, retrieve the ManagerApproval for the newly inserted record
     const approvalQuery = `SELECT ManagerApproval FROM Maintenance WHERE UserID = ? AND Date = ? ORDER BY RequestID DESC LIMIT 1`;
     const [approvalResult] = await pool.query(approvalQuery, [userId, date]);

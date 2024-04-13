@@ -12,11 +12,18 @@ export default async (req, res) => {
       req.on("data", (chunk) => {
         data += chunk.toString();
       });
-      req.on("end", () => resolve(JSON.parse(data)));
+      req.on("end", () => {
+        try {
+          const parsedData = JSON.parse(data);
+          resolve(parsedData);
+        } catch (error) {
+          reject(error);
+        }
+      });
       req.on("error", (err) => reject(err));
     });
 
-    const { RequestID: requestId } = body;
+    const { RequestID: requestId, attractionName } = body;
 
     const updateStatusQuery = `
       UPDATE Maintenance
@@ -27,9 +34,18 @@ export default async (req, res) => {
     const pool = await poolPromise;
     const [updateResult] = await pool.query(updateStatusQuery, [requestId]);
 
+    const updateAttractionStatus = `
+    UPDATE Attraction
+    SET AttractionStatus = 'Active'
+    WHERE NameOfAttraction = ?
+    `;
+    const [attractionResult] = await pool.query(updateAttractionStatus, [
+      attractionName,
+    ]);
+
     if (updateResult.affectedRows > 0) {
       res.status(200).json({
-        message: "Maintenance status Completed successfully",
+        message: "Maintenance status completed successfully",
       });
     } else {
       res.status(404).json({
