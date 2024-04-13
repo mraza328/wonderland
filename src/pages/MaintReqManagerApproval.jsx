@@ -5,13 +5,11 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { currentConfig } from "../config";
 
-export default function MaintUpReq({ onSuccess }) {
+export default function ApproveMaintReq({ onSuccess }) {
   const [selectedRequest, setSelectedRequest] = useState("");
   const [requestsData, setRequestsData] = useState([]);
   const { currentUser } = useAuth();
   const [errorMessage, setErrorMessage] = useState("");
-  const [responseMessage, setResponseMessage] = useState("");
-  const [messageType, setMessageType] = useState("info");
   const baseURL = currentConfig.REACT_APP_API_BASE_URL;
   console.log(currentConfig.REACT_APP_API_BASE_URL);
 
@@ -31,27 +29,13 @@ export default function MaintUpReq({ onSuccess }) {
   useEffect(() => {
     const fetchMaintenanceIDs = async () => {
       try {
-        const response = await fetch(`${baseURL}/fetchmaintenanceinfo`);
+        const response = await fetch(`${baseURL}/fetchpendingmaintreq`);
         if (!response.ok) {
           throw new Error("Error retrieving maintenance info");
         }
         const data = await response.json();
-
-        // Filter out completed maintenance requests immediately after fetching
-        const nonCompletedData = data.filter(
-          (item) => item.MaintenanceStatus !== "Completed"
-        );
-
-        // Process non-completed data to get the highest stateID for each requestID
-        const filteredData = nonCompletedData.reduce((acc, item) => {
-          const existing = acc[item.RequestID];
-          if (!existing || existing.StateID < item.StateID) {
-            acc[item.RequestID] = item; // Store the item if it has a higher StateID or if it's the first occurrence
-          }
-          return acc;
-        }, {});
-
-        setRequestsData(Object.values(filteredData));
+        console.log("Fetched maintenance requests data:", data);
+        setRequestsData(data);
       } catch (error) {
         console.error("Error fetching maintenance requests:", error);
       }
@@ -117,29 +101,29 @@ export default function MaintUpReq({ onSuccess }) {
     console.log("Submitting:", updatedFormData);
 
     try {
-      const response = await fetch(`${baseURL}/editmaintenancerequest`, {
-        method: "POST",
+      const response = await fetch(`${baseURL}/approvemaintreq`, {
+        method: "PUT",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(updatedFormData),
       });
-      const responseData = await response.json();
-      if (response.status === 200 || response.status === 201) {
-        console.log("Request updated successfully:", responseData);
-        setResponseMessage(responseData.message);
-        setMessageType("success");
-        alert(responseData.message);
+      if (response.ok) {
+        const responseData = await response.json();
+        console.log("Request approved successfully:", responseData);
+
         if (onSuccess) {
           onSuccess();
         }
       } else {
-        console.error("Failed to update request:", responseData);
-        setResponseMessage("Failed to update request.");
-        setMessageType("danger");
+        const responseData = await response.json();
+        const message = "Failed to approve request.";
+        setErrorMessage(message);
+        console.error("Failed to update request");
+        return;
       }
     } catch (error) {
-      console.error("Error updating maintenance request:", error);
+      console.error("Error approving maintenance request:", error);
     }
   };
 
@@ -376,7 +360,7 @@ export default function MaintUpReq({ onSuccess }) {
 
                   <div className="d-grid gap-2 col-6 mx-auto">
                     <button className="btn btn-primary" type="submit">
-                      Submit
+                      Approve
                     </button>
                     <button
                       type="button"
@@ -402,7 +386,7 @@ export default function MaintUpReq({ onSuccess }) {
         <div className="card MaintReqUp">
           <div className="card-body">
             <h1 className="my-2 text-center" style={{ color: "#2F4858" }}>
-              Select Request to Update
+              Select Request to Approve
             </h1>
             <label
               htmlFor="userID"

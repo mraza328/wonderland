@@ -8,6 +8,8 @@ export default function MaintenanceRequestForm({ onSuccess }) {
   const { currentUser } = useAuth();
   const [SubmissionDate, setSubmissionDate] = useState(new Date());
   const [CompletionDate, setCompletionDate] = useState(new Date());
+  const [responseMessage, setResponseMessage] = useState("");
+  const [messageType, setMessageType] = useState("info");
   const baseURL = currentConfig.REACT_APP_API_BASE_URL;
   console.log(currentConfig.REACT_APP_API_BASE_URL);
 
@@ -45,15 +47,20 @@ export default function MaintenanceRequestForm({ onSuccess }) {
         },
         body: JSON.stringify(updatedFormData),
       });
-      if (response.ok) {
-        const responseData = await response.json();
-        console.log("Request added successfully:", responseData);
 
+      const responseData = await response.json();
+      if (response.status === 200 || response.status === 201) {
+        console.log("Request submitted successfully:", responseData);
+        setResponseMessage(responseData.message);
+        setMessageType("success");
+        alert(responseData.message);
         if (onSuccess) {
           onSuccess();
         }
       } else {
-        console.error("Failed to add request.");
+        console.error("Failed to add request:", responseData);
+        setResponseMessage("Failed to add request.");
+        setMessageType("danger");
       }
     } catch (error) {
       console.error("Error submitting maintenance request:", error);
@@ -69,6 +76,11 @@ export default function MaintenanceRequestForm({ onSuccess }) {
               <h1 className="my-2 text-center" style={{ color: "#2F4858" }}>
                 Create New Maintenance Request
               </h1>
+              {responseMessage && (
+                <div className={`alert alert-${messageType}`} role="alert">
+                  {responseMessage}
+                </div>
+              )}
               <>
                 <form onSubmit={handleSubmit}>
                   <div className="row">

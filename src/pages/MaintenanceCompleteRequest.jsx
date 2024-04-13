@@ -34,8 +34,22 @@ export default function MaintenanceCompReq({ onSuccess }) {
           throw new Error("Error retrieving maintenance info");
         }
         const data = await response.json();
-        console.log("Fetched maintenance requests data:", data);
-        setRequestsData(data);
+
+        // Filter out completed maintenance requests immediately after fetching
+        const nonCompletedData = data.filter(
+          (item) => item.MaintenanceStatus !== "Completed"
+        );
+
+        // Process non-completed data to get the highest stateID for each requestID
+        const filteredData = nonCompletedData.reduce((acc, item) => {
+          const existing = acc[item.RequestID];
+          if (!existing || existing.StateID < item.StateID) {
+            acc[item.RequestID] = item; // Store the item if it has a higher StateID or if it's the first occurrence
+          }
+          return acc;
+        }, {});
+
+        setRequestsData(Object.values(filteredData));
       } catch (error) {
         console.error("Error fetching maintenance requests:", error);
       }
@@ -101,8 +115,8 @@ export default function MaintenanceCompReq({ onSuccess }) {
     console.log("Submitting:", updatedFormData);
 
     try {
-      const response = await fetch(`${baseURL}/editmaintenancerequest`, {
-        method: "POST",
+      const response = await fetch(`${baseURL}/completemaintenancerequest`, {
+        method: "PUT",
         headers: {
           "Content-Type": "application/json",
         },
@@ -347,6 +361,7 @@ export default function MaintenanceCompReq({ onSuccess }) {
                               aria-label="$"
                               value={formData.estimatedCost}
                               onChange={handleChange}
+                              readOnly
                             ></input>
                           </div>
                         </div>
@@ -407,7 +422,7 @@ export default function MaintenanceCompReq({ onSuccess }) {
               value={selectedRequest}
               onChange={handleSelectChange}
             >
-              <option defaultValue="">Select Maintenance ID to Complete</option>
+              <option defaultValue="">Select Maintenance ID to Update</option>
               {requestsData.map((item) => (
                 <option
                   key={`${item.RequestID}_${item.StateID}`}
@@ -417,10 +432,6 @@ export default function MaintenanceCompReq({ onSuccess }) {
                 </option>
               ))}
             </select>
-
-            <div className="mt-3 text-center">
-              <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExbTloZXljcHZ0dGl1bTR2ODY4YXlscno0MWVnNnoxa3c4bHFtcmJiZyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/s3GoVSTwmGvZMlPDNY/giphy-downsized-large.gif" />
-            </div>
           </div>
         </div>
       </div>

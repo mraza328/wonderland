@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 
 const StaffSideNavbar = ({ onItemClick }) => {
@@ -213,7 +212,7 @@ const StaffSideNavbar = ({ onItemClick }) => {
           }`}
           onClick={toggleMaintenanceReportsDropdown}
         >
-          Maintenance Reports
+          Maintenance
           {isMaintenanceReportsOpen && (
             <ul className="list-group-submenu">
               <li
@@ -250,9 +249,9 @@ const StaffSideNavbar = ({ onItemClick }) => {
                 <>
                   <li
                     className="list-group-submenu-item"
-                    onClick={() => onItemClick("Maintenance Reporting Portal")}
+                    onClick={() => onItemClick("MaintReqManagerApproval")}
                   >
-                    Maintenance Reporting Portal
+                    Approve Requests
                   </li>
                 </>
               )}

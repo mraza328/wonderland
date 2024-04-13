@@ -23,6 +23,7 @@ import MaintenanceRequestForm from "./pages/MaintenanceRequestForm";
 import MaintenanceUpReq from "./pages/MaintenanceUpdateRequest";
 import MaintenanceCompReq from "./pages/MaintenanceCompleteRequest";
 import GenerateMaintRep from "./pages/GenerateMaintenanceReport";
+import MaintReqManagerApproval from "./pages/MaintReqManagerApproval";
 import StaffTicketPurchase from "./pages/StaffTicketPurchase";
 
 import TicketDataReports from "./pages/TicketDataReports";
@@ -95,6 +96,10 @@ function App() {
           <Route
             path="/GenerateMaintenanceReport"
             element={<GenerateMaintRep />}
+          />
+          <Route
+            path="/MaintReqManagerApproval"
+            element={<MaintReqManagerApproval />}
           />
           <Route path="/depManagement" element={<AdminDepManagement />} />
           <Route
