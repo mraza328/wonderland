@@ -40,7 +40,7 @@ export default async (req, res) => {
     `;
 
     const pool = await poolPromise;
-    await pool.query(maintenanceQuery, [
+    const [insertResult] = await pool.query(maintenanceQuery, [
       userId,
       depName,
       nameOfAttraction,
@@ -52,22 +52,27 @@ export default async (req, res) => {
       stateID,
     ]);
 
+    const requestId = insertResult.insertId; // Capture the RequestID from the insert operation
+
     const updateAttractionStatus = `
-    UPDATE Attraction
-    SET AttractionStatus = 'Out of Order'
-    WHERE NameOfAttraction = ?
+      UPDATE Attraction
+      SET AttractionStatus = 'Out of Order'
+      WHERE NameOfAttraction = ?
     `;
     await pool.query(updateAttractionStatus, [nameOfAttraction]);
 
-    // After the insert, retrieve the ManagerApproval for the newly inserted record
-    const approvalQuery = `SELECT ManagerApproval FROM Maintenance WHERE UserID = ? AND Date = ? ORDER BY RequestID DESC LIMIT 1`;
-    const [approvalResult] = await pool.query(approvalQuery, [userId, date]);
+    // Retrieve the ManagerApproval for the newly inserted record using RequestID and StateID
+    const approvalQuery = `SELECT ManagerApproval FROM Maintenance WHERE RequestID = ? AND StateID = ? LIMIT 1`;
+    const [approvalResult] = await pool.query(approvalQuery, [
+      requestId,
+      stateID,
+    ]);
     const managerApproval = approvalResult[0]?.ManagerApproval;
 
     if (managerApproval == 1) {
       res.status(201).json({
         message: "Cost exceeds $5000. Pending manager approval.",
-        managerApproval: managerApproval, // Return ManagerApproval from the database
+        managerApproval: managerApproval,
       });
     } else {
       res.status(200).json({
