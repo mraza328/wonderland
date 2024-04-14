@@ -15,7 +15,7 @@ export default async (req, res) => {
       phoneNumber,
       email,
       position,
-      supUserId,
+      supUserId: rawSupUserId,
       salary,
       address,
       department,
@@ -25,6 +25,8 @@ export default async (req, res) => {
       req.on("end", () => resolve(JSON.parse(body)));
       req.on("error", (err) => reject(err));
     });
+
+    const supUserId = rawSupUserId === "" ? null : rawSupUserId;
 
     const status = "Active";
     const { street, city, state, zipcode } = address;

@@ -30,6 +30,7 @@ import MaintenanceRequestForm from "./MaintenanceRequestForm";
 import MaintenanceUpReq from "./MaintenanceUpdateRequest";
 import MaintenanceCompReq from "./MaintenanceCompleteRequest";
 import GenerateMaintRep from "./GenerateMaintenanceReport";
+import MaintReqManagerApproval from "./MaintReqManagerApproval";
 
 const AdminLanding = () => {
   const [selectedPage, setSelectedPage] = useState("Dashboard");
@@ -137,6 +138,11 @@ const AdminLanding = () => {
             )}
             {selectedPage === "Maintenance Reporting Portal" && (
               <GenerateMaintRep />
+            )}
+            {selectedPage === "MaintReqManagerApproval" && (
+              <MaintReqManagerApproval
+                onSuccess={handleFormSubmissionSuccess}
+              />
             )}
             {/* Add more pages as needed */}
           </div>

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import Notification from "../components/Notification";
 import { currentConfig } from "../config";
 
 const TICKET_PRICES = {
@@ -14,40 +15,52 @@ export default function TicketPurchase() {
   const [formSubmitted, setFormSubmitted] = useState(false);
   const [totalPrice, setTotalPrice] = useState(0);
   const [ticketPrices, setTicketPrices] = useState([]);
+  const [attractions, setAttractions] = useState([]);
+  const [selectedAttractions, setSelectedAttractions] = useState([]);
+  const [notification, setNotification] = useState(null);
 
   const baseURL = currentConfig.REACT_APP_API_BASE_URL;
-  console.log(currentConfig.REACT_APP_API_BASE_URL);
-
   const userID = JSON.parse(localStorage.getItem("user")).UserID;
 
   useEffect(() => {
-    const fetchProducts = async () => {
+    const fetchProductsAndAttractions = async () => {
       try {
-        const response = await fetch(`${baseURL}/ticketpurchases`);
-        if (!response.ok) {
-          throw new Error("Failed to fetch products");
+        const [productsResponse, attractionsResponse] = await Promise.all([
+          fetch(`${baseURL}/ticketpurchases`),
+          fetch(`${baseURL}/getallattractions`),
+        ]);
+
+        if (!productsResponse.ok || !attractionsResponse.ok) {
+          throw new Error("Failed to fetch products or attractions");
         }
-        const data = await response.json();
-        setProducts(data);
+
+        const [productsData, attractionsData] = await Promise.all([
+          productsResponse.json(),
+          attractionsResponse.json(),
+        ]);
+
+        setProducts(productsData);
+        setAttractions(attractionsData);
       } catch (error) {
-        console.error("Error fetching products:", error);
+        console.error("Error fetching data:", error);
       }
     };
 
-    fetchProducts();
+    fetchProductsAndAttractions();
   }, []);
+
+  useEffect(() => {
+    setSelectedAttractions(Array.from({ length: numTickets }, () => []));
+  }, [numTickets]);
 
   const handleNumTicketsChange = (e) => {
     const num = parseInt(e.target.value);
     setNumTickets(num);
-    const newTicketDetails = [];
-    for (let i = 0; i < num; i++) {
-      newTicketDetails.push({
-        ticketType: "",
-        foodBundle: "",
-        merchBundle: "",
-      });
-    }
+    const newTicketDetails = Array.from({ length: num }, () => ({
+      ticketType: "",
+      foodBundle: "",
+      merchBundle: "",
+    }));
     setTicketDetails(newTicketDetails);
   };
 
@@ -57,12 +70,27 @@ export default function TicketPurchase() {
     setTicketDetails(updatedTicketDetails);
   };
 
+  const handleAttractionsChange = (ticketIndex, attraction, checked) => {
+    setSelectedAttractions((prevAttractions) => {
+      const updatedAttractions = [...prevAttractions];
+      if (checked) {
+        updatedAttractions[ticketIndex] = [
+          ...(updatedAttractions[ticketIndex] || []),
+          attraction,
+        ];
+      } else {
+        updatedAttractions[ticketIndex] = updatedAttractions[
+          ticketIndex
+        ].filter((item) => item !== attraction);
+      }
+      return updatedAttractions;
+    });
+  };
+
   const getTotalCost = () => {
     let totalPrice = 0;
-    const ticketPrices = []; // Array to store individual ticket prices
-
-    ticketDetails.forEach((ticket) => {
-      const ticketTypeCost = TICKET_PRICES[ticket.ticketType];
+    const ticketPrices = ticketDetails.map((ticket) => {
+      const ticketTypeCost = TICKET_PRICES[ticket.ticketType] || 0;
       let ticketPrice = ticketTypeCost;
 
       const selectedFood = products.find(
@@ -80,17 +108,40 @@ export default function TicketPurchase() {
       }
 
       totalPrice += ticketPrice;
-      ticketPrices.push(ticketPrice);
+      return ticketPrice;
     });
 
-    console.log(ticketPrices);
     setTicketPrices(ticketPrices);
     setTotalPrice(totalPrice);
     setFormSubmitted(true);
   };
 
-  const buyTicket = async (event) => {
+  const sendAttractionsData = async () => {
     try {
+      const response = await fetch(`${baseURL}/attractionlog`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          attractions: selectedAttractions.flat(),
+          date: selectedDate,
+        }),
+      });
+      if (!response.ok) {
+        throw new Error("Failed to update attraction log");
+      }
+      const data = await response.json();
+      console.log("Attraction log updated:", data);
+    } catch (error) {
+      console.error("Error updating attraction log:", error);
+    }
+  };
+
+  const buyTicket = async () => {
+    try {
+      await sendAttractionsData();
+
       const response = await fetch(`${baseURL}/ticketpurchases`, {
         method: "POST",
         headers: {
@@ -98,30 +149,37 @@ export default function TicketPurchase() {
         },
         body: JSON.stringify({
           userID,
-          totalPrice,
+          totalPrice: Number(totalPrice.toFixed(2)),
           ticketPrices,
           ticketDetails,
-          purchaseDate: selectedDate,
+          dateSelected: selectedDate,
+          numTickets,
         }),
       });
+
       if (!response.ok) {
         throw new Error("Failed to purchase tickets");
       }
 
       const data = await response.json();
 
-      if (data.discountApplied) {
-        alert(
-          `Congratulations! You've received a 25% discount on your purchase because you've spent $120 or more!\n\nDiscount applied: $${data.discountAmount.toFixed(
-            2
-          )}\nNew total: $${data.newTotal.toFixed(2)}`
-        );
-      } else {
-        alert("Tickets have been purchased!");
+      if (response.status === 200 || response.status === 201) {
+        if (data.message === "Discount applied successfully!") {
+          const discountedTotalPrice = data.discountedTotalPrice;
+          setNotification({
+            message: `Congratulations! You've received a 25% discount on your purchase because you've spent $120 or more!<br><br>New total amount after discount: $${discountedTotalPrice}`,
+            type: "success",
+          });
+        } else {
+          setNotification({
+            message: "Tickets successfully purchased!",
+            type: "success",
+          });
+        }
       }
     } catch (error) {
       console.error("Error purchasing tickets:", error);
-      alert("Failed to purchase tickets");
+      setNotification({ message: "Failed to purchase tickets", type: "error" });
     }
   };
 
@@ -146,13 +204,13 @@ export default function TicketPurchase() {
               admission to Wonderland.
             </div>
             <div className="mt-2 mb-3">
-              <label htmlFor="purchaseDate" className="form-label">
+              <label htmlFor="dateSelected" className="form-label">
                 Choose Date
               </label>
               <input
                 type="date"
                 className="form-control"
-                id="purchaseDate"
+                id="dateSelected"
                 value={selectedDate}
                 onChange={(e) => setSelectedDate(e.target.value)}
                 required
@@ -160,14 +218,14 @@ export default function TicketPurchase() {
             </div>
             <form onSubmit={(e) => e.preventDefault()}>
               <div className="mt-2 mb-3">
-                <label htmlFor="numOfTickets" className="form-label">
+                <label htmlFor="numTickets" className="form-label">
                   Number of Tickets
                 </label>
                 <input
                   type="number"
                   className="form-control"
-                  id="numOfTickets"
-                  name="numOfTickets"
+                  id="numTickets"
+                  name="numTickets"
                   placeholder="0"
                   value={numTickets}
                   onChange={handleNumTicketsChange}
@@ -207,6 +265,37 @@ export default function TicketPurchase() {
                     </select>
                   </div>
                   <div className="mt-2 mb-3">
+                    <label className="form-label">
+                      Ticket {index + 1} Attractions
+                    </label>
+                    {attractions.map((attraction, attractionIndex) => (
+                      <div
+                        key={attractionIndex}
+                        className="attraction-checkbox"
+                      >
+                        <label>
+                          <input
+                            type="checkbox"
+                            value={attraction.NameOfAttraction}
+                            checked={selectedAttractions[index]?.includes(
+                              attraction.NameOfAttraction
+                            )}
+                            onChange={(e) =>
+                              handleAttractionsChange(
+                                index,
+                                attraction.NameOfAttraction,
+                                e.target.checked
+                              )
+                            }
+                          />
+                          <span className="attraction-name">
+                            {attraction.NameOfAttraction}
+                          </span>
+                        </label>
+                      </div>
+                    ))}
+                  </div>
+                  <div className="mt-2 mb-3">
                     <label
                       htmlFor={`foodBundle${index}`}
                       className="form-label"
@@ -237,7 +326,8 @@ export default function TicketPurchase() {
                             key={product.ItemID}
                             value={product.NameOfItem}
                           >
-                            {product.NameOfItem} - ${product.SalePrice}
+                            {product.NameOfItem} - ${product.SalePrice} (
+                            {product.Description})
                           </option>
                         ))}
                     </select>
@@ -275,7 +365,8 @@ export default function TicketPurchase() {
                             key={product.ItemID}
                             value={product.NameOfItem}
                           >
-                            {product.NameOfItem} - ${product.SalePrice}
+                            {product.NameOfItem} - ${product.SalePrice} (
+                            {product.Description})
                           </option>
                         ))}
                     </select>
@@ -298,17 +389,23 @@ export default function TicketPurchase() {
             {formSubmitted && (
               <>
                 <div className="text-center text-white mt-3">
-                  Total Amount = ${totalPrice}
+                  Total Amount = ${totalPrice.toFixed(2)}
                 </div>
                 <div className="w-full px-3 text-center">
                   <button
                     className="btn btn-primary mx-auto mt-3"
                     onClick={buyTicket}
                   >
-                    Purchase
+                    Confirm Purchase
                   </button>
                 </div>
               </>
+            )}
+            {notification && (
+              <Notification
+                message={notification.message}
+                type={notification.type}
+              />
             )}
           </div>
         </div>

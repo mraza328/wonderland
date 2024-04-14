@@ -129,7 +129,7 @@ body {
     font-family: Arial, sans-serif;
 }
 
-.personal-info, .schedule-calendar, .feedback {
+.personal-info, .schedule-calendar, .feedback, .maintenance-requests {
     background-color: #f9f9f9;
     border-radius: 5px;
     padding: 15px;
@@ -223,3 +223,10 @@ body {
     border: 1px solid red;
   }
   
+  .attraction-name {
+    margin-left: 5px;
+  }
+
+  .table-hover tbody tr:hover {
+    background-color: #f2f2f2;
+  }

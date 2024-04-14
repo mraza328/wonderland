@@ -228,3 +228,13 @@ body, h1, h2, h3, p, ul, li {
     font-size: 14px;
     color: #666;
   }
+
+  .error {
+    background-color: red;
+    color: white;
+    font-size: 20px; /* Adjust the font size as needed */
+    border-radius: 10px; /* Adjust the border radius as needed */
+    padding: 10px; /* Adjust the padding as needed */
+    margin-bottom: 20px;
+    text-align: center;
+  }

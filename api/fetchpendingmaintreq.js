@@ -6,7 +6,8 @@ export default async (req, res) => {
       SELECT maintenance.*, employee.FirstName, employee.LastName, 
         (SELECT SUM(Expense) FROM maintenance WHERE MaintenanceStatus = 'Completed') AS TotalCost
       FROM maintenance
-      LEFT JOIN employee ON maintenance.UserID = employee.UserID`;
+      LEFT JOIN employee ON maintenance.UserID = employee.UserID
+      WHERE maintenance.ManagerApproval = 1`;
     const pool = await poolPromise;
     const [results] = await pool.query(query);
 

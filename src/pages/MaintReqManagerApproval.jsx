@@ -5,7 +5,7 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { currentConfig } from "../config";
 
-export default function MaintenanceCompReq({ onSuccess }) {
+export default function ApproveMaintReq({ onSuccess }) {
   const [selectedRequest, setSelectedRequest] = useState("");
   const [requestsData, setRequestsData] = useState([]);
   const { currentUser } = useAuth();
@@ -29,27 +29,13 @@ export default function MaintenanceCompReq({ onSuccess }) {
   useEffect(() => {
     const fetchMaintenanceIDs = async () => {
       try {
-        const response = await fetch(`${baseURL}/fetchmaintenanceinfo`);
+        const response = await fetch(`${baseURL}/fetchpendingmaintreq`);
         if (!response.ok) {
           throw new Error("Error retrieving maintenance info");
         }
         const data = await response.json();
-
-        // Filter out completed maintenance requests immediately after fetching
-        const nonCompletedData = data.filter(
-          (item) => item.MaintenanceStatus !== "Completed"
-        );
-
-        // Process non-completed data to get the highest stateID for each requestID
-        const filteredData = nonCompletedData.reduce((acc, item) => {
-          const existing = acc[item.RequestID];
-          if (!existing || existing.StateID < item.StateID) {
-            acc[item.RequestID] = item; // Store the item if it has a higher StateID or if it's the first occurrence
-          }
-          return acc;
-        }, {});
-
-        setRequestsData(Object.values(filteredData));
+        console.log("Fetched maintenance requests data:", data);
+        setRequestsData(data);
       } catch (error) {
         console.error("Error fetching maintenance requests:", error);
       }
@@ -115,7 +101,7 @@ export default function MaintenanceCompReq({ onSuccess }) {
     console.log("Submitting:", updatedFormData);
 
     try {
-      const response = await fetch(`${baseURL}/completemaintenancerequest`, {
+      const response = await fetch(`${baseURL}/approvemaintreq`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -124,20 +110,20 @@ export default function MaintenanceCompReq({ onSuccess }) {
       });
       if (response.ok) {
         const responseData = await response.json();
-        console.log("Request updated successfully:", responseData);
+        console.log("Request approved successfully:", responseData);
 
         if (onSuccess) {
           onSuccess();
         }
       } else {
         const responseData = await response.json();
-        const message = responseData.message || "Failed to update request.";
+        const message = "Failed to approve request.";
         setErrorMessage(message);
-        console.error("Failed to update request:", message);
+        console.error("Failed to update request");
         return;
       }
     } catch (error) {
-      console.error("Error submitting maintenance request:", error);
+      console.error("Error approving maintenance request:", error);
     }
   };
 
@@ -152,7 +138,7 @@ export default function MaintenanceCompReq({ onSuccess }) {
           <div className="card MaintReq">
             <div className="card-body">
               <h1 className="my-2 text-center" style={{ color: "#2F4858" }}>
-                Complete Maintenance Request {selectedRequest}
+                Update Maintenance Request {selectedRequest}
               </h1>
               <>
                 <form onSubmit={handleSubmit}>
@@ -331,13 +317,11 @@ export default function MaintenanceCompReq({ onSuccess }) {
                               onChange={handleChange}
                             >
                               <option value="">Select Menu</option>
-                              <option value="Pending" disabled>
-                                Pending
+                              <option value="Pending">Pending</option>
+                              <option value="Active">Active</option>
+                              <option value="Completed" disabled>
+                                Completed
                               </option>
-                              <option value="Active" disabled>
-                                Active
-                              </option>
-                              <option value="Completed">Completed</option>
                             </select>
                           </div>
 
@@ -361,7 +345,6 @@ export default function MaintenanceCompReq({ onSuccess }) {
                               aria-label="$"
                               value={formData.estimatedCost}
                               onChange={handleChange}
-                              readOnly
                             ></input>
                           </div>
                         </div>
@@ -377,7 +360,7 @@ export default function MaintenanceCompReq({ onSuccess }) {
 
                   <div className="d-grid gap-2 col-6 mx-auto">
                     <button className="btn btn-primary" type="submit">
-                      Submit
+                      Approve
                     </button>
                     <button
                       type="button"
@@ -403,7 +386,7 @@ export default function MaintenanceCompReq({ onSuccess }) {
         <div className="card MaintReqUp">
           <div className="card-body">
             <h1 className="my-2 text-center" style={{ color: "#2F4858" }}>
-              Select Request to Complete
+              Select Request to Approve
             </h1>
             <label
               htmlFor="userID"
@@ -422,7 +405,7 @@ export default function MaintenanceCompReq({ onSuccess }) {
               value={selectedRequest}
               onChange={handleSelectChange}
             >
-              <option defaultValue="">Select Maintenance ID to Complete</option>
+              <option defaultValue="">Select Maintenance ID to Update</option>
               {requestsData.map((item) => (
                 <option
                   key={`${item.RequestID}_${item.StateID}`}

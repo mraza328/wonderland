@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Button, Form, Table } from "react-bootstrap";
+import { currentConfig } from "../config";
 
 export default function RideDataReports() {
   const [startDate, setStartDate] = useState("");
@@ -7,34 +8,49 @@ export default function RideDataReports() {
   const [selectedRide, setSelectedRide] = useState("All");
   const [rideData, setRideData] = useState([]);
   const [totalRiders, setTotalRiders] = useState(0);
+  const [attractions, setAttractions] = useState([]);
 
-  const handleGenerateReport = () => {
-    // Perform data fetching based on startDate, endDate, and selectedRide
-    // Replace this with your actual data fetching logic
-    const fetchedData = [
-      { date: "2024-03-10", ride: "Roller Coaster", riders: 150 },
-      { date: "2024-03-10", ride: "Ferris Wheel", riders: 80 },
-      { date: "2024-03-11", ride: "Carousel", riders: 120 },
-      { date: "2024-03-12", ride: "Water Slide", riders: 200 },
-    ];
+  const baseURL = currentConfig.REACT_APP_API_BASE_URL;
 
-    // Filter fetched data based on date range and selectedRide
-    let filteredData = fetchedData.filter(
-      (entry) => entry.date >= startDate && entry.date <= endDate
-    );
+  useEffect(() => {
+    fetchAttractions();
+  }, []);
 
-    if (selectedRide !== "All") {
-      filteredData = filteredData.filter(
-        (entry) => entry.ride === selectedRide
-      );
+  const fetchAttractions = async () => {
+    try {
+      const response = await fetch(`${baseURL}/getallattractions`);
+      if (!response.ok) {
+        throw new Error("Failed to fetch attractions data");
+      }
+      const attractionsData = await response.json();
+      setAttractions(attractionsData);
+    } catch (error) {
+      console.error("Error fetching attractions data:", error);
     }
+  };
 
-    // Sum up total riders
-    const total = filteredData.reduce((acc, curr) => acc + curr.riders, 0);
-    setTotalRiders(total);
-
-    // Set ride data
-    setRideData(filteredData);
+  const handleGenerateReport = async () => {
+    try {
+      const response = await fetch(`${baseURL}/ridereport`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          startDate,
+          endDate,
+          selectedRide,
+        }),
+      });
+      if (!response.ok) {
+        throw new Error("Failed to generate report");
+      }
+      const data = await response.json();
+      setRideData(data.rideData);
+      setTotalRiders(data.totalRiders);
+    } catch (error) {
+      console.error("Error generating report:", error);
+    }
   };
 
   return (
@@ -64,10 +80,14 @@ export default function RideDataReports() {
             onChange={(e) => setSelectedRide(e.target.value)}
           >
             <option value="All">All Rides</option>
-            <option value="Roller Coaster">Roller Coaster</option>
-            <option value="Ferris Wheel">Ferris Wheel</option>
-            <option value="Carousel">Carousel</option>
-            <option value="Water Slide">Water Slide</option>
+            {attractions.map((attraction) => (
+              <option
+                key={attraction.AttractionID}
+                value={attraction.NameOfAttraction}
+              >
+                {attraction.NameOfAttraction}
+              </option>
+            ))}
           </Form.Select>
         </Form.Group>
         <Button
@@ -91,9 +111,9 @@ export default function RideDataReports() {
         <tbody>
           {rideData.map((entry, index) => (
             <tr key={index}>
-              <td>{entry.date}</td>
-              <td>{entry.ride}</td>
-              <td>{entry.riders}</td>
+              <td>{entry.Date}</td>
+              <td>{entry.NameOfAttraction}</td>
+              <td>{parseInt(entry.TotalRiders)}</td>
             </tr>
           ))}
           <tr>

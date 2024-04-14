@@ -7,15 +7,18 @@ export const Navbar = () => {
   const { currentUser, signOut } = useAuth();
   const navigate = useNavigate();
 
+  const handlePurchaseHistory = () => {
+    navigate("/purchasehistory");
+    toggleDropdown();
+  };
+
   const handleUpdateAccountInfo = () => {
-    // Redirect to Update Account Info page.
     navigate("/updateaccount");
     toggleDropdown();
   };
 
   const handleSignOut = () => {
     signOut();
-    // Redirect to sign-in page.
     navigate("/signIn");
     toggleDropdown();
   };
@@ -36,7 +39,7 @@ export const Navbar = () => {
 
   return (
     <nav className="navbar navbar-expand-lg">
-      <div className="container-fluid">
+      <div className="container">
         <Link to="/" className="navbar-brand text-white">
           Wonderland
         </Link>
@@ -92,6 +95,12 @@ export const Navbar = () => {
                 >
                   <button
                     className="dropdown-item"
+                    onClick={handlePurchaseHistory}
+                  >
+                    View Purchase History
+                  </button>
+                  <button
+                    className="dropdown-item"
                     onClick={handleUpdateAccountInfo}
                   >
                     Update Account Information
@@ -99,7 +108,6 @@ export const Navbar = () => {
                   <button className="dropdown-item" onClick={handleSignOut}>
                     Logout
                   </button>
-                  {/* Add more menu items here */}
                 </div>
               </li>
             ) : (
