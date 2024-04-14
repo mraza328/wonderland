@@ -40,7 +40,6 @@ import DeleteAttraction from "./pages/DeleteAttractionDataEntryForm";
 import AddVendor from "./pages/AddVendorDataEntryForm";
 import UpdateVendor from "./pages/UpdateVendorDataEntryForm";
 import DeleteVendor from "./pages/DeleteVendorDataEntryForm";
-import AddAttractionLog from "./pages/AddAttractionLogDataEntryForm";
 import AddWeatherLog from "./pages/AddWeatherLogDataEntryForm";
 import AddDepartment from "./pages/AddDepartmentDataEntryForm.";
 import UpdateDepartment from "./pages/UpdateDepartmentDataEntryForm";
@@ -130,10 +129,6 @@ function App() {
           <Route path="/addvendordataentryform" element={<AddVendor />} />
           <Route path="/updatevendordataentryform" element={<UpdateVendor />} />
           <Route path="/deletevendordataentryform" element={<DeleteVendor />} />
-          <Route
-            path="/addattractionlogdataentryform"
-            element={<AddAttractionLog />}
-          />
           <Route
             path="/addweatherlogdataentryform"
             element={<AddWeatherLog />}

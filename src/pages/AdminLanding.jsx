@@ -18,7 +18,6 @@ import DeleteAttraction from "./DeleteAttractionDataEntryForm";
 import AddVendor from "./AddVendorDataEntryForm";
 import UpdateVendor from "./UpdateVendorDataEntryForm";
 import DeleteVendor from "./DeleteVendorDataEntryForm";
-import AddAttractionLog from "./AddAttractionLogDataEntryForm";
 import AddWeatherLog from "./AddWeatherLogDataEntryForm";
 import AddDepartment from "./AddDepartmentDataEntryForm.";
 import UpdateDepartment from "./UpdateDepartmentDataEntryForm";
@@ -106,9 +105,6 @@ const AdminLanding = () => {
             )}
             {selectedPage === "Delete Vendor Data Entry Form" && (
               <DeleteVendor />
-            )}
-            {selectedPage === "Add Attraction Log Data Entry Form" && (
-              <AddAttractionLog />
             )}
             {selectedPage === "Add Weather Log Data Entry Form" && (
               <AddWeatherLog />

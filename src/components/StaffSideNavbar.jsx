@@ -118,18 +118,6 @@ const StaffSideNavbar = ({ onItemClick }) => {
                 </li>
                 </>
                 )}
-                {((depName === "Attraction" && role === "Department Manager") || (depName === "Central" && role === "Department Manager") || (role === "Admin" || role === "Park Manager")) &&(
-                  <>
-                <li
-                  className="list-group-submenu-item"
-                  onClick={() =>
-                    onItemClick("Add Attraction Log Data Entry Form")
-                  }
-                >
-                  Add to Attraction Log
-                </li>
-                </>
-                )}
 
                 {(role === "Admin" || role === "Park Manager" ) && (
                   <>
