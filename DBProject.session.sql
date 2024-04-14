@@ -306,6 +306,7 @@ VALUES
     ('Fun Finds Boutique', 'Merchandise', 'Active', 'Vendor'),
     ('Wonderland Essentials', 'Merchandise', 'Active', 'Vendor');
 
+-- @block Product Entries
 INSERT INTO Product(ItemID, NameOfItem, NameOfVendor, AcquisitionCost, SalePrice, Profit, Description, ProductStatus)
 VALUES
     (1, 'Burger Deluxe Combo', 'Joe''s Burger Shack', 5.00, 10.99, 5.99, 'A delicious burger with fries and a drink.', 'Active'),
