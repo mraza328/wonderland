@@ -94,120 +94,127 @@ export default function AddProduct() {
             </h1>
 
             {isSet && (
-            <form onSubmit={handleSubmit}>
-              <div className="row mb-3 mt-3">
-              <div className="col">
-                  <label htmlFor="name" className="form-label">
-                    Name of Product:
-                  </label>
-                  <input
-                    type="text"
-                    className={
-                      errorFields.includes("name")
-                        ? "error form-control"
-                        : "form-control"
-                    }
-                    id="name"
-                    name="name"
-                    placeholder="Pizza Delight Bundle"
-                    required
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                  />
+              <form onSubmit={handleSubmit}>
+                <div className="row mb-3 mt-3">
+                  <div className="col">
+                    <label htmlFor="name" className="form-label">
+                      Name of Product:
+                    </label>
+                    <input
+                      type="text"
+                      className={
+                        errorFields.includes("name")
+                          ? "error form-control"
+                          : "form-control"
+                      }
+                      id="name"
+                      name="name"
+                      placeholder="Pizza Delight Bundle"
+                      required
+                      value={name}
+                      onChange={(e) => setName(e.target.value)}
+                    />
+                  </div>
+                  <div className="col">
+                    <label htmlFor="vendor" className="form-label">
+                      Select Vendor:
+                    </label>
+                    <select
+                      className="form-select"
+                      id="vendor"
+                      name="vendor"
+                      required
+                      value={vendor}
+                      onChange={(e) => setVendor(e.target.value)}
+                    >
+                      <option value="">Select vendor...</option>
+                      {vendors.map((vendor, index) => (
+                        <option key={index} value={vendor.NameOfVendor}>
+                          {vendor.NameOfVendor}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
                 </div>
-                <div className="col">
-                  <label htmlFor="vendor" className="form-label">
-                    Select Vendor:
-                  </label>
-                  <input
-                    list="vendors"
-                    className="form-control"
-                    id="vendor"
-                    name="vendor"
-                    placeholder="Type to search..."
-                    required
-                    value={vendor}
-                    onChange={(e) => setVendor(e.target.value)}
-                  />
-                  <datalist id="vendors">
-                    {vendors.map((vendor, index) => (
-                      <option key={index} value={vendor.NameOfVendor} />
+                <div className="row mb-3 mt-3">
+                  <div className="col">
+                    <label htmlFor="cost" className="form-label">
+                      Acquisition Cost:
+                    </label>
+                    <input
+                      type="number"
+                      className={
+                        errorFields.includes("acquisitionCost")
+                          ? "error form-control"
+                          : "form-control"
+                      }
+                      id="cost"
+                      name="cost"
+                      placeholder="5.00"
+                      required
+                      value={acquisitionCost}
+                      onChange={(e) => setAcquisitionCost(e.target.value)}
+                    />
+                  </div>
+                  <div className="col">
+                    <label htmlFor="price" className="form-label">
+                      Sale Price:
+                    </label>
+                    <input
+                      type="number"
+                      className={
+                        errorFields.includes("price")
+                          ? "error form-control"
+                          : "form-control"
+                      }
+                      id="price"
+                      name="price"
+                      placeholder="15.00"
+                      required
+                      value={price}
+                      onChange={(e) => setPrice(e.target.value)}
+                    />
+                  </div>
+                </div>
+                <div className="row mb-3 mt-3">
+                  <div className="col">
+                    <label htmlFor="desc" className="form-label">
+                      Description of Product:
+                    </label>
+                    <textarea
+                      className="form-control"
+                      id="desc"
+                      name="desc"
+                      rows="5"
+                      placeholder="Type the description of the product here..."
+                      required
+                      value={description}
+                      onChange={(e) => setDescription(e.target.value)}
+                    />
+                  </div>
+                </div>
+                <div className="flex flex-wrap -mx-3 mt-6">
+                  <div className="w-full px-3 text-center">
+                    <button
+                      id="button"
+                      type="submit"
+                      className="btn btn-primary"
+                    >
+                      Add Product
+                    </button>
+                  </div>
+                </div>
+                {errors.length > 0 ? (
+                  <ul className="error">
+                    {errors.map((error, index) => (
+                      <li key={index}>{error}</li>
                     ))}
-                  </datalist>
-                </div>
-              </div>
-              <div className="row mb-3 mt-3">
-                <div className="col">
-                  <label htmlFor="cost" className="form-label">
-                    Acquisition Cost:
-                  </label>
-                  <input
-                    type="number"
-                    className={
-                      errorFields.includes("acquisitionCost")
-                        ? "error form-control"
-                        : "form-control"
-                    }
-                    id="cost"
-                    name="cost"
-                    placeholder="5.00"
-                    required
-                    value={acquisitionCost}
-                    onChange={(e) => setAcquisitionCost(e.target.value)}
-                  />
-                </div>
-                <div className="col">
-                  <label htmlFor="price" className="form-label">
-                    Sale Price:
-                  </label>
-                  <input
-                    type="number"
-                    className={
-                      errorFields.includes("price")
-                        ? "error form-control"
-                        : "form-control"
-                    }
-                    id="price"
-                    name="price"
-                    placeholder="15.00"
-                    required
-                    value={price}
-                    onChange={(e) => setPrice(e.target.value)}
-                  />
-                </div>
-              </div>
-              <div className="row mb-3 mt-3">
-                <div className="col">
-                  <label htmlFor="desc" className="form-label">
-                    Description of Product:
-                  </label>
-                  <textarea
-                    className="form-control"
-                    id="desc"
-                    name="desc"
-                    rows="5"
-                    placeholder="Type the description of the product here..."
-                    required
-                    value={description}
-                    onChange={(e) => setDescription(e.target.value)}
-                  />
-                </div>
-              </div>
-              <div className="flex flex-wrap -mx-3 mt-6">
-                <div className="w-full px-3 text-center">
-                  <button id="button" type="submit" className="btn btn-primary">
-                    Add Product
-                  </button>
-                </div>
-              </div>
-              {errors.length>0 ?  (
-                <ul className="error">
-                  {errors.map((error, index) => (
-                    <li key={index}>{error}</li>
-                  ))}
-                </ul>
-              ) : ""}
-            </form>)}
+                  </ul>
+                ) : (
+                  ""
+                )}
+              </form>
+            )}
             {creationSuccess && (
               <div className="alert alert-success my-3" role="alert">
                 Product Created Successfully!

@@ -8,7 +8,6 @@ export default function DeleteVendor() {
   const [isSet, setIsSet] = useState(false);
   const [creationSuccess, setCreationSuccess] = useState(false);
 
-
   const baseURL = currentConfig.REACT_APP_API_BASE_URL;
 
   useEffect(() => {
@@ -46,16 +45,13 @@ export default function DeleteVendor() {
     };
 
     try {
-      const response = await fetch(
-        `${baseURL}/deletevendor`,
-        {
-          method: "PUT",
-          body: JSON.stringify(formData),
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      const response = await fetch(`${baseURL}/deletevendor`, {
+        method: "PUT",
+        body: JSON.stringify(formData),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
 
       const json = await response.json();
 
@@ -88,21 +84,21 @@ export default function DeleteVendor() {
                   <label htmlFor="vendorName" className="form-label">
                     Vendor Name:
                   </label>
-                  <input
-                    list="vendors"
+                  <select
                     className="form-select"
                     id="vendorName"
                     name="vendorName"
-                    placeholder="Type to search..."
                     required
                     value={vendorName}
                     onChange={(e) => setVendorName(e.target.value)}
-                  />
-                  <datalist id="vendors">
+                  >
+                    <option value="">Please select...</option>
                     {vendors.map((vendor, index) => (
-                      <option key={index} value={vendor.NameOfVendor} />
+                      <option key={index} value={vendor.NameOfVendor}>
+                        {vendor.NameOfVendor}
+                      </option>
                     ))}
-                  </datalist>
+                  </select>
                 </div>
                 <div className="mb-3 mt-3">
                   <label htmlFor="status" className="form-label">

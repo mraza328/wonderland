@@ -213,9 +213,8 @@ export default function UpdateAttraction() {
                   <label htmlFor="type" className="form-label">
                     Attraction Type:
                   </label>
-                  <input
-                    list="types"
-                    className="form-control"
+                  <select
+                    className="form-select"
                     id="type"
                     name="type"
                     value={attractionData.AttractionType}
@@ -225,12 +224,14 @@ export default function UpdateAttraction() {
                         AttractionType: e.target.value,
                       })
                     }
-                  />
-                  <datalist id="types">
+                  >
+                    <option value="">Please select...</option>
                     {attractionTypes.map((type, index) => (
-                      <option key={index} value={type} />
+                      <option key={index} value={type}>
+                        {type}
+                      </option>
                     ))}
-                  </datalist>
+                  </select>
                 </div>
                 <div className="mb-3">
                   <label htmlFor="height" className="form-label">

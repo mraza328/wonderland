@@ -41,7 +41,7 @@ export default function UpdateVendor() {
     setVendorData(null);
     setisSubmitted(false);
 
-    const formData = {vendorName};
+    const formData = { vendorName };
 
     try {
       const response = await fetch(`${baseURL}/getvendor`, {
@@ -109,35 +109,40 @@ export default function UpdateVendor() {
             </div>
 
             {isSet && (
-            <form onSubmit={handleSubmitOne}>
-              <div className="mb-3 mt-3">
-                <label htmlFor="vendorName" className="form-label">
-                  Select Vendor Name:
-                </label>
-                <input
-                  list="vendors"
-                  className="form-select"
-                  id="vendorName"
-                  name="vendorName"
-                  placeholder="Type to search..."
-                  required
-                  value={vendorName}
-                  onChange={(e) => setVendorName(e.target.value)}
-                />
-                <datalist id="vendors">
+              <form onSubmit={handleSubmitOne}>
+                <div className="mb-3 mt-3">
+                  <label htmlFor="vendorName" className="form-label">
+                    Select Vendor Name:
+                  </label>
+                  <select
+                    className="form-select"
+                    id="vendorName"
+                    name="vendorName"
+                    required
+                    value={vendorName}
+                    onChange={(e) => setVendorName(e.target.value)}
+                  >
+                    <option value="">Please select...</option>
                     {vendors.map((vendor, index) => (
-                      <option key={index} value={vendor.NameOfVendor} />
+                      <option key={index} value={vendor.NameOfVendor}>
+                        {vendor.NameOfVendor}
+                      </option>
                     ))}
-                  </datalist>
-              </div>
-              <div className="flex flex-wrap -mx-3 mt-6">
-                <div className="w-full px-3 text-center">
-                  <button id="button" type="submit" className="btn btn-primary">
-                    Submit
-                  </button>
+                  </select>
                 </div>
-              </div>
-            </form>)}
+                <div className="flex flex-wrap -mx-3 mt-6">
+                  <div className="w-full px-3 text-center">
+                    <button
+                      id="button"
+                      type="submit"
+                      className="btn btn-primary"
+                    >
+                      Submit
+                    </button>
+                  </div>
+                </div>
+              </form>
+            )}
 
             {isSubmitted && (
               <form onSubmit={handleSubmitTwo}>
@@ -153,11 +158,13 @@ export default function UpdateVendor() {
                       name="name"
                       value={vendorData.NameOfVendor}
                       onChange={(e) =>
-                        setVendorData({ ...vendorData, NameOfVendor: e.target.value })
+                        setVendorData({
+                          ...vendorData,
+                          NameOfVendor: e.target.value,
+                        })
                       }
                     />
                   </div>
-                  
                 </div>
                 <div className="flex flex-wrap -mx-3 mt-6">
                   <div className="w-full px-3 text-center">
@@ -183,4 +190,3 @@ export default function UpdateVendor() {
     </div>
   );
 }
-

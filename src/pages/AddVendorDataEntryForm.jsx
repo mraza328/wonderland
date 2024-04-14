@@ -11,7 +11,7 @@ export default function AddVendor() {
   const [errors, setErrors] = useState([]);
   const [errorFields, setErrorFields] = useState([]);
 
-  const vendorTypes = ["Food", "Merchandise"]
+  const vendorTypes = ["Food", "Merchandise"];
 
   const baseURL = currentConfig.REACT_APP_API_BASE_URL;
 
@@ -28,33 +28,32 @@ export default function AddVendor() {
     //console.log(formData);
     //alert("Vendor has been added");
 
+    try {
+      const response = await fetch(`${baseURL}/addvendor`, {
+        method: "POST",
+        body: JSON.stringify(formData),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
 
-  try {
-    const response = await fetch(`${baseURL}/addvendor`, {
-      method: "POST",
-      body: JSON.stringify(formData),
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
+      const json = await response.json();
 
-    const json = await response.json();
-
-    if (!response.ok) {
-      setErrors(json.errors);
-      setErrorFields(json.errorFields);
+      if (!response.ok) {
+        setErrors(json.errors);
+        setErrorFields(json.errorFields);
+      }
+      if (response.ok) {
+        setName("");
+        setType("");
+        setErrors([]);
+        setErrorFields([]);
+        setCreationSuccess(true);
+      }
+    } catch (error) {
+      console.log("Error:", error.message);
     }
-    if (response.ok) {
-      setName("");
-      setType("");
-      setErrors([]);
-      setErrorFields([]);
-      setCreationSuccess(true);
-    }
-  } catch (error) {
-    console.log("Error:", error.message);
-  }
-};
+  };
 
   return (
     <div className="row justify-content-center">
@@ -85,21 +84,21 @@ export default function AddVendor() {
                   <label htmlFor="type" className="form-label">
                     Vendor Type:
                   </label>
-                  <input
-                    list="types"
+                  <select
                     className="form-control"
                     id="type"
                     name="type"
-                    placeholder="Type to search..."
-                    required
                     value={type}
                     onChange={(e) => setType(e.target.value)}
-                  />
-                  <datalist id="types">
+                    required
+                  >
+                    <option value="">Please select...</option>
                     {vendorTypes.map((type, index) => (
-                      <option key={index} value={type} />
+                      <option key={index} value={type}>
+                        {type}
+                      </option>
                     ))}
-                  </datalist>
+                  </select>
                 </div>
               </div>
               <div className="flex flex-wrap -mx-3 mt-6">
@@ -109,13 +108,15 @@ export default function AddVendor() {
                   </button>
                 </div>
               </div>
-              {errors.length>0 ?  (
+              {errors.length > 0 ? (
                 <ul className="error">
                   {errors.map((error, index) => (
                     <li key={index}>{error}</li>
                   ))}
                 </ul>
-              ) : ""}
+              ) : (
+                ""
+              )}
             </form>
             {creationSuccess && (
               <div className="alert alert-success my-3" role="alert">
