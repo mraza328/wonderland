@@ -52,7 +52,7 @@ export default async (req, res) => {
         });
       }
 
-      const capacity = 6;
+      const capacity = 100;
       const capacityReachedQuery = 'SELECT COUNT(*) AS COUNT FROM Ticket, Sale WHERE Sale.SaleID=Ticket.SaleID && DateValid = ?';
       const [capacityReachedResult] = await pool.query(capacityReachedQuery, [dateSelected]);
       if(capacityReachedResult[0].COUNT+numTickets>capacity){
