@@ -9,7 +9,43 @@ export default function Home() {
   const navigate = useNavigate();
   const [topAttractions, setTopAttractions] = useState([]);
   const [topProducts, setTopProducts] = useState([]);
+  const [parkClosed, setParkClosed] = useState(false);
+  const [parkInfo, setParkInfo] = useState(null);
   const baseURL = currentConfig.REACT_APP_API_BASE_URL;
+
+  useEffect(() => {
+    const currentDate = new Date();
+    const year = currentDate.getFullYear();
+    const month = ("0" + (currentDate.getMonth() + 1)).slice(-2);
+    const day = ("0" + currentDate.getDate()).slice(-2);
+
+    const formattedDate = year + "-" + month + "-" + day;
+
+    const formData = { formattedDate };
+
+    const fetchParkClosed = async () => {
+      const response = await fetch(`${baseURL}/checkparkclosed`, {
+        method: "POST",
+        body: JSON.stringify(formData),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      const json = await response.json();
+
+      if (!response.ok) {
+        console.error("Failed to fetch weatherlog data");
+      } else {
+        if (json.length > 0) {
+          setParkClosed(true);
+          setParkInfo(json[0]);
+        }
+      }
+    };
+
+    fetchParkClosed();
+  }, []);
 
   useEffect(() => {
     fetchTopAttractions();
@@ -62,6 +98,12 @@ export default function Home() {
 
   return (
     <div className={classes.homepage}>
+      {parkClosed ? (
+        <div className={classes.error}>
+          Park is closed today due to bad weather conditions:{" "}
+          {parkInfo.WeatherType}
+        </div>
+      ) : null}
       <header>
         <h1>Welcome to Wonderland!</h1>
         <nav>
