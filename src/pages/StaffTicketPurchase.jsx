@@ -1,71 +1,181 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import Notification from "../components/Notification";
+import { currentConfig } from "../config";
+
+const TICKET_PRICES = {
+  GA: 48,
+  KI: 32,
+};
 
 export default function StaffTicketPurchase() {
-  // State variables to manage form inputs
   const [numTickets, setNumTickets] = useState("");
-  const [ticketType, setTicketType] = useState([]);
   const [selectedDate, setSelectedDate] = useState("");
-  const [foodBundle, setFoodBundle] = useState([]);
-  const [merchBundle, setMerchBundle] = useState([]);
+  const [ticketDetails, setTicketDetails] = useState([]);
+  const [products, setProducts] = useState([]);
   const [formSubmitted, setFormSubmitted] = useState(false);
-  const [totalPrice, setTotalPrice] = useState("");
+  const [totalPrice, setTotalPrice] = useState(0);
+  const [ticketPrices, setTicketPrices] = useState([]);
+  const [attractions, setAttractions] = useState([]);
+  const [selectedAttractions, setSelectedAttractions] = useState([]);
+  const [notification, setNotification] = useState(null);
 
-  const prices = new Map([
-    ["DG", 48],
-    ["DK", 32],
-    ["NA", 0],
-    ["AB", 15],
-    ["DF", 25],
-    ["GG", 20],
-    ["FF", 15],
-    ["EE", 25],
-    ["MM", 20],
-  ]);
+  const baseURL = currentConfig.REACT_APP_API_BASE_URL;
+  const userID = JSON.parse(localStorage.getItem("user")).UserID;
 
-  // Function to handle form submission
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    var t = 0;
-    console.log(numTickets, selectedDate);
-    for (let i = 0; i < numTickets; i++) {
-      console.log(ticketType[i], foodBundle[i], merchBundle[i]);
-      t +=
-        prices.get(ticketType[i]) +
-        prices.get(foodBundle[i]) +
-        prices.get(merchBundle[i]);
-    }
-    setFormSubmitted(true);
-    setTotalPrice(t);
-  };
+  useEffect(() => {
+    const fetchProductsAndAttractions = async () => {
+      try {
+        const [productsResponse, attractionsResponse] = await Promise.all([
+          fetch(`${baseURL}/ticketpurchases`),
+          fetch(`${baseURL}/getallattractions`),
+        ]);
 
-  // Function to handle changes in number of tickets
+        if (!productsResponse.ok || !attractionsResponse.ok) {
+          throw new Error("Failed to fetch products or attractions");
+        }
+
+        const [productsData, attractionsData] = await Promise.all([
+          productsResponse.json(),
+          attractionsResponse.json(),
+        ]);
+
+        setProducts(productsData);
+        setAttractions(attractionsData);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    fetchProductsAndAttractions();
+  }, []);
+
+  useEffect(() => {
+    setSelectedAttractions(Array.from({ length: numTickets }, () => []));
+  }, [numTickets]);
+
   const handleNumTicketsChange = (e) => {
-    const value = parseInt(e.target.value);
-    setNumTickets(value >= 0 ? value : 0);
-    // Automatically set the first ticket type to "GA"
-    setTicketType(Array(value));
-    setFoodBundle(Array(value));
-    setMerchBundle(Array(value));
+    const num = parseInt(e.target.value);
+    setNumTickets(num);
+    const newTicketDetails = Array.from({ length: num }, () => ({
+      ticketType: "",
+      foodBundle: "",
+      merchBundle: "",
+    }));
+    setTicketDetails(newTicketDetails);
   };
 
-  // Function to handle changes in ticket type
-  const handleTicketTypeChange = (e, index) => {
-    console.log(index);
-    var newTicketType = ticketType;
-    newTicketType[index] = e.target.value;
-    setTicketType(newTicketType);
+  const handleTicketDetailsChange = (index, field, value) => {
+    const updatedTicketDetails = [...ticketDetails];
+    updatedTicketDetails[index][field] = value;
+    setTicketDetails(updatedTicketDetails);
   };
 
-  const handleFoodBundleChange = (e, index) => {
-    var newFoodBundle = foodBundle;
-    newFoodBundle[index] = e.target.value;
-    setFoodBundle(newFoodBundle);
+  const handleAttractionsChange = (ticketIndex, attraction, checked) => {
+    setSelectedAttractions((prevAttractions) => {
+      const updatedAttractions = [...prevAttractions];
+      if (checked) {
+        updatedAttractions[ticketIndex] = [
+          ...(updatedAttractions[ticketIndex] || []),
+          attraction,
+        ];
+      } else {
+        updatedAttractions[ticketIndex] = updatedAttractions[
+          ticketIndex
+        ].filter((item) => item !== attraction);
+      }
+      return updatedAttractions;
+    });
   };
 
-  const handleMerchBundleChange = (e, index) => {
-    var newMerchBundle = merchBundle;
-    newMerchBundle[index] = e.target.value;
-    setMerchBundle(newMerchBundle);
+  const getTotalCost = () => {
+    let totalPrice = 0;
+    const ticketPrices = ticketDetails.map((ticket) => {
+      const ticketTypeCost = TICKET_PRICES[ticket.ticketType] || 0;
+      let ticketPrice = ticketTypeCost;
+
+      const selectedFood = products.find(
+        (product) => product.NameOfItem === ticket.foodBundle
+      );
+      if (selectedFood && ticket.foodBundle !== "None") {
+        ticketPrice += parseFloat(selectedFood.SalePrice);
+      }
+
+      const selectedMerch = products.find(
+        (product) => product.NameOfItem === ticket.merchBundle
+      );
+      if (selectedMerch && ticket.merchBundle !== "None") {
+        ticketPrice += parseFloat(selectedMerch.SalePrice);
+      }
+
+      totalPrice += ticketPrice;
+      return ticketPrice;
+    });
+
+    setTicketPrices(ticketPrices);
+    setTotalPrice(totalPrice);
+    setFormSubmitted(true);
+  };
+
+  const sendAttractionsData = async () => {
+    try {
+      const response = await fetch(`${baseURL}/attractionlog`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          attractions: selectedAttractions.flat(),
+          date: selectedDate,
+        }),
+      });
+      if (!response.ok) {
+        throw new Error("Failed to update attraction log");
+      }
+      const data = await response.json();
+      console.log("Attraction log updated:", data);
+    } catch (error) {
+      console.error("Error updating attraction log:", error);
+    }
+  };
+
+  const buyTicket = async () => {
+    try {
+      await sendAttractionsData();
+
+      const response = await fetch(`${baseURL}/ticketpurchases`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          userID,
+          totalPrice: Number(totalPrice.toFixed(2)),
+          ticketPrices,
+          ticketDetails,
+          dateSelected: selectedDate,
+          numTickets,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to purchase tickets");
+      }
+
+      const data = await response.json();
+
+      if (response.status === 201) {
+        if (data.message === "Discount applied successfully!") {
+          const discountedTotalPrice = data.discountedTotalPrice;
+          setNotification({
+            message: `Tickets successfully purchased! Updated sale price with Wonderland employee discount: $${discountedTotalPrice}`,
+            type: "success",
+          });
+        }
+      }
+    } catch (error) {
+      console.error("Error purchasing tickets:", error);
+      setNotification({ message: "Failed to purchase tickets", type: "error" });
+    }
   };
 
   return (
@@ -76,14 +186,14 @@ export default function StaffTicketPurchase() {
             <h1 className="my-2 text-center" style={{ color: "#2F4858" }}>
               Purchase Tickets
             </h1>
-            <div className="text-center mb-1">
-              All employees enjoy a 20% discount on ticket prices
+            <div className="text-center">
+              All Wonderland employees get a discount of 15% on all sale orders!
             </div>
-            <div className="text-center mb-1">
+            <div className="text-center">
               General Admission Tickets (GA): $48, for all customers above 10
               years old
             </div>
-            <div className="text-center mb-1">
+            <div className="text-center">
               Kid Tickets (KI): $32, for all customers between 3 and 10 years
               old
             </div>
@@ -91,139 +201,184 @@ export default function StaffTicketPurchase() {
               **Customers under the age of 3 do not need a ticket and have free
               admission to Wonderland.
             </div>
-            <form onSubmit={handleSubmit}>
+            <div className="mt-2 mb-3">
+              <label htmlFor="dateSelected" className="form-label">
+                Choose Date
+              </label>
+              <input
+                type="date"
+                className="form-control"
+                id="dateSelected"
+                value={selectedDate}
+                onChange={(e) => setSelectedDate(e.target.value)}
+                required
+              />
+            </div>
+            <form onSubmit={(e) => e.preventDefault()}>
               <div className="mt-2 mb-3">
-                <label htmlFor="numOfTickets" className="form-label">
+                <label htmlFor="numTickets" className="form-label">
                   Number of Tickets
                 </label>
                 <input
                   type="number"
                   className="form-control"
-                  id="numOfTickets"
-                  name="numOfTickets"
+                  id="numTickets"
+                  name="numTickets"
                   placeholder="0"
                   value={numTickets}
-                  onChange={(e) => handleNumTicketsChange(e)}
+                  onChange={handleNumTicketsChange}
                   min="0"
                   maxLength="10"
                   required
                 />
               </div>
-              <div className="mt-2 mb-3">
-                <label htmlFor="dateValid" className="form-label">
-                  Date
-                </label>
-                <input
-                  id="dateValid"
-                  name="dateValid"
-                  type="date"
-                  className="form-control"
-                  maxLength="100"
-                  value={selectedDate}
-                  onChange={(e) => setSelectedDate(e.target.value)}
-                  required
-                />
-              </div>
-              <div className="row mb-3">
-                {Array.from({ length: numTickets }, (_, index) => (
-                  <div className="col" key={index}>
+              {ticketDetails.map((ticket, index) => (
+                <div key={index}>
+                  {index > 0 && <hr style={{ borderTop: "4px solid black" }} />}{" "}
+                  {/* Horizontal line */}
+                  <div className="mt-2 mb-3">
                     <label
                       htmlFor={`ticketType${index}`}
-                      className="form-label mb-2"
+                      className="form-label"
                     >
-                      Ticket {index + 1} Type
+                      Ticket Type {index + 1}
                     </label>
-                    <input
+                    <select
                       className="form-control"
-                      list={`datalistOptions${index}`}
                       id={`ticketType${index}`}
-                      placeholder="Type to search..."
-                      value={ticketType[index]}
-                      onChange={(e) => handleTicketTypeChange(e, index)}
+                      name={`ticketType${index}`}
+                      value={ticket.ticketType}
+                      onChange={(e) =>
+                        handleTicketDetailsChange(
+                          index,
+                          "ticketType",
+                          e.target.value
+                        )
+                      }
                       required
-                    ></input>
-                    <datalist id={`datalistOptions${index}`}>
-                      <option value="DG">General Admission (10+)</option>
-                      <option value="DK">Kids (3-10)</option>
-                    </datalist>
+                    >
+                      <option value="">Select Ticket Type</option>
+                      <option value="GA">General Admission (GA)</option>
+                      <option value="KI">Kid (KI)</option>
+                    </select>
                   </div>
-                ))}
-              </div>
-              <div className="row mb-3">
-                {Array.from({ length: numTickets }, (_, index) => (
-                  <div className="col" key={index}>
+                  <div className="mt-2 mb-3">
+                    <label className="form-label">
+                      Ticket {index + 1} Attractions
+                    </label>
+                    {attractions.map((attraction, attractionIndex) => (
+                      <div
+                        key={attractionIndex}
+                        className="attraction-checkbox"
+                      >
+                        <label>
+                          <input
+                            type="checkbox"
+                            value={attraction.NameOfAttraction}
+                            checked={selectedAttractions[index]?.includes(
+                              attraction.NameOfAttraction
+                            )}
+                            onChange={(e) =>
+                              handleAttractionsChange(
+                                index,
+                                attraction.NameOfAttraction,
+                                e.target.checked
+                              )
+                            }
+                          />
+                          <span className="attraction-name">
+                            {attraction.NameOfAttraction}
+                          </span>
+                        </label>
+                      </div>
+                    ))}
+                  </div>
+                  <div className="mt-2 mb-3">
                     <label
                       htmlFor={`foodBundle${index}`}
-                      className="form-label mb-2"
+                      className="form-label"
                     >
-                      Ticket {index + 1} Food Bundle
+                      Food Bundle {index + 1}
                     </label>
-                    <input
+                    <select
                       className="form-control"
-                      list={`datalistOption${index}`}
                       id={`foodBundle${index}`}
-                      placeholder="Type to search..."
-                      value={foodBundle[index]}
-                      onChange={(e) => handleFoodBundleChange(e, index)}
+                      value={ticket.foodBundle}
+                      onChange={(e) =>
+                        handleTicketDetailsChange(
+                          index,
+                          "foodBundle",
+                          e.target.value
+                        )
+                      }
                       required
-                    ></input>
-                    <datalist id={`datalistOption${index}`}>
-                      <option value="NA">None</option>
-                      <option value="AB">
-                        Adventure Bites Eatery ($15): Includes a burger meal or
-                        pizza meal with a drink.
+                    >
+                      <option value="" disable hidden>
+                        Select Food Bundle
                       </option>
-                      <option value="DF">
-                        Dragon's Flame Tavern ($25): Includes a selection of
-                        fire-grilled meats and skewers with a drink.
-                      </option>
-                      <option value="GG">
-                        Galactic Grub Hub ($20): Includes a hearty sandwhch with
-                        chips and a drink.
-                      </option>
-                    </datalist>
+                      <option value="None">None</option>
+                      {products
+                        .filter((product) => product.VendorType === "Food")
+                        .map((product) => (
+                          <option
+                            key={product.ItemID}
+                            value={product.NameOfItem}
+                          >
+                            {product.NameOfItem} - ${product.SalePrice} (
+                            {product.Description})
+                          </option>
+                        ))}
+                    </select>
                   </div>
-                ))}
-              </div>
-              <div className="row mb-3">
-                {Array.from({ length: numTickets }, (_, index) => (
-                  <div className="col" key={index}>
+                  <div className="mt-2 mb-3">
                     <label
                       htmlFor={`merchBundle${index}`}
-                      className="form-label mb-2"
+                      className="form-label"
                     >
-                      Ticket {index + 1} Merch Bundle
+                      Merch Bundle {index + 1}
                     </label>
-                    <input
+                    <select
                       className="form-control"
-                      list={`datalistMerch${index}`}
                       id={`merchBundle${index}`}
-                      placeholder="Type to search..."
-                      value={merchBundle[index]}
-                      onChange={(e) => handleMerchBundleChange(e, index)}
+                      value={ticket.merchBundle}
+                      onChange={(e) =>
+                        handleTicketDetailsChange(
+                          index,
+                          "merchBundle",
+                          e.target.value
+                        )
+                      }
                       required
-                    ></input>
-                    <datalist id={`datalistMerch${index}`}>
-                      <option value="NA">None</option>
-                      <option value="FF">
-                        Fantasy Finds Boutique ($15): Includes a shirt with a
-                        picture of one of our rides.
+                    >
+                      <option value="" disabled hidden>
+                        Select Merch Bundle
                       </option>
-                      <option value="EE">
-                        Enchanted Emporium ($25): Includes a wizard robe, a
-                        plush toy, and a wand.
-                      </option>
-                      <option value="MM">
-                        Mystic Marvels Marketplace ($20): Includes a specially
-                        crafted mug and a figurine.
-                      </option>
-                    </datalist>
+                      <option value="None">None</option>
+                      {products
+                        .filter(
+                          (product) => product.VendorType === "Merchandise"
+                        )
+                        .map((product) => (
+                          <option
+                            key={product.ItemID}
+                            value={product.NameOfItem}
+                          >
+                            {product.NameOfItem} - ${product.SalePrice} (
+                            {product.Description})
+                          </option>
+                        ))}
+                    </select>
                   </div>
-                ))}
-              </div>
+                </div>
+              ))}
               <div className="flex flex-wrap -mx-3 mt-6">
                 <div className="w-full px-3 text-center">
-                  <button id="button" type="submit" className="btn btn-primary">
+                  <button
+                    id="button"
+                    type="button"
+                    className="btn btn-primary"
+                    onClick={getTotalCost}
+                  >
                     Get Total Cost
                   </button>
                 </div>
@@ -232,17 +387,23 @@ export default function StaffTicketPurchase() {
             {formSubmitted && (
               <>
                 <div className="text-center text-white mt-3">
-                  Total Amount = ${totalPrice}
+                  Total Amount = ${totalPrice.toFixed(2)}
                 </div>
                 <div className="w-full px-3 text-center">
                   <button
                     className="btn btn-primary mx-auto mt-3"
-                    onClick={() => alert("Tickets have been purchased!")}
+                    onClick={buyTicket}
                   >
-                    Purchase
+                    Confirm Purchase
                   </button>
                 </div>
               </>
+            )}
+            {notification && (
+              <Notification
+                message={notification.message}
+                type={notification.type}
+              />
             )}
           </div>
         </div>

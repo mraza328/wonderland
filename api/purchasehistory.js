@@ -13,10 +13,10 @@ export default async (req, res) => {
     const pool = await poolPromise;
 
     const purchaseHistoryQuery = `
-      SELECT DateSold, TotalPrice
+      SELECT DateSold, DateValid, NumTickets, TotalPrice
       FROM Sale
       WHERE UserID = ?
-      ORDER BY DateSold DESC
+      ORDER BY DateValid ASC
     `;
 
     const [purchaseHistoryResults] = await pool.query(purchaseHistoryQuery, [
@@ -25,7 +25,9 @@ export default async (req, res) => {
 
     const purchaseHistory = purchaseHistoryResults.map((purchase) => ({
       date: purchase.DateSold,
+      dateValid: purchase.DateValid,
       totalPrice: purchase.TotalPrice,
+      numTickets: purchase.NumTickets,
     }));
 
     res.status(200).json(purchaseHistory);

@@ -149,10 +149,11 @@ export default function TicketPurchase() {
         },
         body: JSON.stringify({
           userID,
-          totalPrice,
+          totalPrice: Number(totalPrice.toFixed(2)),
           ticketPrices,
           ticketDetails,
           dateSelected: selectedDate,
+          numTickets,
         }),
       });
 
@@ -217,14 +218,14 @@ export default function TicketPurchase() {
             </div>
             <form onSubmit={(e) => e.preventDefault()}>
               <div className="mt-2 mb-3">
-                <label htmlFor="numOfTickets" className="form-label">
+                <label htmlFor="numTickets" className="form-label">
                   Number of Tickets
                 </label>
                 <input
                   type="number"
                   className="form-control"
-                  id="numOfTickets"
-                  name="numOfTickets"
+                  id="numTickets"
+                  name="numTickets"
                   placeholder="0"
                   value={numTickets}
                   onChange={handleNumTicketsChange}
@@ -325,7 +326,8 @@ export default function TicketPurchase() {
                             key={product.ItemID}
                             value={product.NameOfItem}
                           >
-                            {product.NameOfItem} - ${product.SalePrice}
+                            {product.NameOfItem} - ${product.SalePrice} (
+                            {product.Description})
                           </option>
                         ))}
                     </select>
@@ -363,7 +365,8 @@ export default function TicketPurchase() {
                             key={product.ItemID}
                             value={product.NameOfItem}
                           >
-                            {product.NameOfItem} - ${product.SalePrice}
+                            {product.NameOfItem} - ${product.SalePrice} (
+                            {product.Description})
                           </option>
                         ))}
                     </select>
@@ -386,7 +389,7 @@ export default function TicketPurchase() {
             {formSubmitted && (
               <>
                 <div className="text-center text-white mt-3">
-                  Total Amount = ${totalPrice}
+                  Total Amount = ${totalPrice.toFixed(2)}
                 </div>
                 <div className="w-full px-3 text-center">
                   <button

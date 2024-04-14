@@ -52,6 +52,10 @@ export default function PurchaseHistory() {
               <tr>
                 <th style={{ backgroundColor: "#86BBD8" }}>Order Number</th>
                 <th style={{ backgroundColor: "#86BBD8" }}>Valid For</th>
+                <th style={{ backgroundColor: "#86BBD8" }}>Date Sold</th>
+                <th style={{ backgroundColor: "#86BBD8" }}>
+                  Number of Tickets
+                </th>
                 <th style={{ backgroundColor: "#86BBD8" }}>Total Sale Price</th>
               </tr>
             </thead>
@@ -59,7 +63,9 @@ export default function PurchaseHistory() {
               {purchaseHistory.map((purchase, index) => (
                 <tr key={index}>
                   <td>{index + 1}</td>
+                  <td>{formatDate(purchase.dateValid)}</td>
                   <td>{formatDate(purchase.date)}</td>
+                  <td>{purchase.numTickets}</td>
                   <td>${purchase.totalPrice}</td>
                 </tr>
               ))}
