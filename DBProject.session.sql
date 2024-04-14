@@ -265,6 +265,48 @@ BEGIN
     SET NEW.DiscountApplied = discountApplied;
 END;
 
+-- @block Discount Trigger w/ Employee Discount Handling
+CREATE TRIGGER saleDiscount
+BEFORE INSERT ON Sale
+FOR EACH ROW
+BEGIN
+    DECLARE discountPercent DECIMAL(6, 2);
+    DECLARE newTotal DECIMAL(6, 2);
+    DECLARE discountApplied BOOLEAN DEFAULT 0;
+
+    DECLARE buyerType VARCHAR(50);
+
+    -- Get userid of the buyer
+    DECLARE buyerUserID INT;
+    SET buyerUserID = NEW.UserID;
+
+    -- Check if the buyer is an employee or a regular customer
+    SELECT AccountType INTO buyerType FROM Account WHERE UserID = buyerUserID;
+
+    IF buyerType = 'Employee' THEN
+        -- Apply employee discount
+        SET discountPercent = 15;
+        SET newTotal = NEW.TotalPrice * (1 - discountPercent / 100);
+        SET discountApplied = 1; -- Set discountApplied to true
+
+    ELSE
+        -- Check if the total price of the current sale is greater than or equal to 120
+        IF NEW.TotalPrice >= 120 THEN
+            -- Apply customer discount
+            SET discountPercent = 25;
+            SET newTotal = NEW.TotalPrice * (1 - discountPercent / 100);
+
+            -- Update final sale price, including discount reduction
+            SET NEW.TotalPrice = newTotal;
+
+            SET discountApplied = 1; -- Set discountApplied to true
+        END IF;
+    END IF;
+
+    -- Set the DiscountApplied column value for the new row
+    SET NEW.DiscountApplied = discountApplied;
+END;
+
 
 -- @block Update Initial to Admin
 UPDATE Account
