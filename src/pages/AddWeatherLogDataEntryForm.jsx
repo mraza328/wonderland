@@ -14,14 +14,22 @@ export default function AddWeatherLog() {
   const [errors, setErrors] = useState([]);
   const [errorFields, setErrorFields] = useState([]);
 
-  const weatherTypes = ['Rainy', 'Tornado Alert', 'Hurricane Alert', 'Excessive Heat Watch', 'Winter Storm', 'Flooding', 'Other'];
+  const weatherTypes = [
+    "Rainy",
+    "Tornado Alert",
+    "Hurricane Alert",
+    "Excessive Heat Watch",
+    "Winter Storm",
+    "Flooding",
+    "Other",
+  ];
 
   const baseURL = currentConfig.REACT_APP_API_BASE_URL;
 
   const handleSubmit = async (event) => {
     event.preventDefault();
     setCreationSuccess(false);
-    setUserID(currentUser.UserID,)
+    setUserID(currentUser.UserID);
     // Submit data to backend or perform further processing
     const formData = {
       userID,
@@ -29,7 +37,7 @@ export default function AddWeatherLog() {
       weatherType,
       reason,
     };
-  
+
     try {
       const response = await fetch(`${baseURL}/addweatherlog`, {
         method: "POST",
@@ -75,7 +83,11 @@ export default function AddWeatherLog() {
                   </label>
                   <input
                     type="date"
-                    className={errorFields.includes("dateOfClosure") ? "error form-control" : "form-control"}
+                    className={
+                      errorFields.includes("dateOfClosure")
+                        ? "error form-control"
+                        : "form-control"
+                    }
                     id="date"
                     name="date"
                     required
@@ -83,27 +95,31 @@ export default function AddWeatherLog() {
                     onChange={(e) => setDateOfClosure(e.target.value)}
                   />
                 </div>
-                </div>
-                <div className="mb-3 mt-3">
+              </div>
+              <div className="mb-3 mt-3">
                 <div className="col mb-3 mt-3">
                   <label htmlFor="weatherType" className="form-label">
                     Weather Type:
                   </label>
-                  <input
-                    list="weatherTypes"
-                    className={errorFields.includes("weatherType") ? "error form-control" : "form-control"}
+                  <select
+                    className={
+                      errorFields.includes("weatherType")
+                        ? "error form-select"
+                        : "form-select"
+                    }
                     id="weatherType"
                     name="weatherType"
-                    max-length="255"
                     required
                     value={weatherType}
                     onChange={(e) => setWeatherType(e.target.value)}
-                  />
-                  <datalist id="weatherTypes">
+                  >
+                    <option value="">Select weather conditions...</option>
                     {weatherTypes.map((type, index) => (
-                      <option key={index} value={type} />
+                      <option key={index} value={type}>
+                        {type}
+                      </option>
                     ))}
-                  </datalist>
+                  </select>
                 </div>
                 <div className="col mb-3 mt-3">
                   <label htmlFor="reason" className="form-label">
@@ -127,13 +143,15 @@ export default function AddWeatherLog() {
                   </button>
                 </div>
               </div>
-              {errors.length>0 ?  (
+              {errors.length > 0 ? (
                 <ul className="error">
                   {errors.map((error, index) => (
                     <li key={index}>{error}</li>
                   ))}
                 </ul>
-              ) : ""}
+              ) : (
+                ""
+              )}
             </form>
             {creationSuccess && (
               <div className="alert alert-success my-3" role="alert">

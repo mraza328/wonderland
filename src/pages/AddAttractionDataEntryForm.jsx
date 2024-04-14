@@ -137,8 +137,7 @@ export default function AddAttraction() {
                   <label htmlFor="type" className="form-label">
                     Attraction Type:
                   </label>
-                  <input
-                    list="types"
+                  <select
                     className={
                       errorFields.includes("type")
                         ? "error form-control"
@@ -146,16 +145,17 @@ export default function AddAttraction() {
                     }
                     id="type"
                     name="type"
-                    placeholder="Type to search..."
                     required
                     value={type}
                     onChange={(e) => setType(e.target.value)}
-                  />
-                  <datalist id="types">
+                  >
+                    <option value="">Select Attraction Type</option>
                     {attractionTypes.map((type, index) => (
-                      <option key={index} value={type} />
+                      <option key={index} value={type}>
+                        {type}
+                      </option>
                     ))}
-                  </datalist>
+                  </select>
                 </div>
               </div>
               <div className="row mb-3">

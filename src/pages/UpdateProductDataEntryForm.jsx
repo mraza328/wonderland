@@ -7,7 +7,7 @@ export default function UpdateProduct() {
   const [productData, setProductData] = useState(null);
   const [isSubmitted, setisSubmitted] = useState(false);
   const [error, setError] = useState(null);
-  
+
   const [vendors, setVendors] = useState(null);
   const [products, setProducts] = useState(null);
   const [isSet, setIsSet] = useState(false);
@@ -16,7 +16,7 @@ export default function UpdateProduct() {
   const [errorFields, setErrorFields] = useState([]);
 
   const baseURL = currentConfig.REACT_APP_API_BASE_URL;
-  
+
   useEffect(() => {
     const fetchProducts = async () => {
       const response = await fetch(`${baseURL}/getallproducts`, {
@@ -38,7 +38,7 @@ export default function UpdateProduct() {
     };
 
     fetchProducts();
-  },[]);// [itemID]);
+  }, []); // [itemID]);
 
   useEffect(() => {
     const fetchVendors = async () => {
@@ -61,13 +61,13 @@ export default function UpdateProduct() {
     };
 
     fetchVendors();
-  },[]);
+  }, []);
 
   useEffect(() => {
-    if(products && vendors){
+    if (products && vendors) {
       setIsSet(true);
     }
-  },[products, vendors]);
+  }, [products, vendors]);
 
   const handleSubmitOne = async (e) => {
     e.preventDefault();
@@ -75,7 +75,7 @@ export default function UpdateProduct() {
     setisSubmitted(false);
     // Form submission logic
 
-    const formData = {itemID};
+    const formData = { itemID };
 
     try {
       const response = await fetch(`${baseURL}/getproduct`, {
@@ -141,48 +141,54 @@ export default function UpdateProduct() {
               Update Product
             </h1>
             <div className="text-center">
-              Please slect the name of the Product you would like to
-              update.
+              Please select the name of the Product you would like to update.
             </div>
 
             {isSet && (
-            <form onSubmit={handleSubmitOne}>
-              <div className="mb-3 mt-3">
-                <label htmlFor="itemID" className="form-label">
-                  Select Product Name:
-                </label>
-                <input
-                  list="products"
-                  className="form-select"
-                  id="itemID"
-                  name="itemID"
-                  placeholder="12345"
-                  required
-                  value={productName}
-                  onChange={(e) => {
-                    const pName = e.target.value;
-                    setProductName(pName);
+              <form onSubmit={handleSubmitOne}>
+                <div className="mb-3 mt-3">
+                  <label htmlFor="itemID" className="form-label">
+                    Select Product Name:
+                  </label>
+                  <select
+                    className="form-select"
+                    id="itemID"
+                    name="itemID"
+                    required
+                    value={productName}
+                    onChange={(e) => {
+                      const pName = e.target.value;
+                      setProductName(pName);
 
-                    const foundProduct = products.find(product => product.NameOfItem === pName)
-                    if(foundProduct){
-                      setItemID(foundProduct.ItemID);
-                    }
-                  }}
-                />
-                <datalist id="products">
-                  {products.map((type, index) => (
-                    <option key={index} value={type.NameOfItem} />
-                  ))}
-                </datalist>
-              </div>
-              <div className="flex flex-wrap -mx-3 mt-6">
-                <div className="w-full px-3 text-center">
-                  <button id="button" type="submit" className="btn btn-primary">
-                    Submit
-                  </button>
+                      const foundProduct = products.find(
+                        (product) => product.NameOfItem === pName
+                      );
+                      if (foundProduct) {
+                        setItemID(foundProduct.ItemID);
+                      }
+                    }}
+                  >
+                    <option value="">Select product...</option>
+                    {products.map((product, index) => (
+                      <option key={index} value={product.NameOfItem}>
+                        {product.NameOfItem}
+                      </option>
+                    ))}
+                  </select>
                 </div>
-              </div>
-            </form>)}
+                <div className="flex flex-wrap -mx-3 mt-6">
+                  <div className="w-full px-3 text-center">
+                    <button
+                      id="button"
+                      type="submit"
+                      className="btn btn-primary"
+                    >
+                      Submit
+                    </button>
+                  </div>
+                </div>
+              </form>
+            )}
 
             {isSubmitted && (
               <form onSubmit={handleSubmitTwo}>
@@ -202,7 +208,10 @@ export default function UpdateProduct() {
                       name="name"
                       value={productData.NameOfItem}
                       onChange={(e) =>
-                        setProductData({ ...productData, NameOfItem: e.target.value })
+                        setProductData({
+                          ...productData,
+                          NameOfItem: e.target.value,
+                        })
                       }
                     />
                   </div>
@@ -284,7 +293,11 @@ export default function UpdateProduct() {
                       Description of Product:
                     </label>
                     <textarea
-                      className={errorFields.includes("Description") ? "error form-control" : "form-control"}
+                      className={
+                        errorFields.includes("Description")
+                          ? "error form-control"
+                          : "form-control"
+                      }
                       id="desc"
                       name="desc"
                       rows="5"
@@ -309,13 +322,15 @@ export default function UpdateProduct() {
                     </button>
                   </div>
                 </div>
-                {errors.length>0 ?  (
-                <ul className="error">
-                  {errors.map((error, index) => (
-                    <li key={index}>{error}</li>
-                  ))}
-                </ul>
-              ) : ""}
+                {errors.length > 0 ? (
+                  <ul className="error">
+                    {errors.map((error, index) => (
+                      <li key={index}>{error}</li>
+                    ))}
+                  </ul>
+                ) : (
+                  ""
+                )}
               </form>
             )}
             {creationSuccess && (

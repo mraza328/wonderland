@@ -3,9 +3,10 @@ import { currentConfig } from "../config";
 
 export default function DeleteEmployee() {
   const [employeeID, setEmployeeID] = useState("");
-  const [status, setStatus] = useState("");
+  const [reason, setReason] = useState("");
   const [creationSuccess, setCreationSuccess] = useState(false);
   const [error, setError] = useState("");
+  const [isReasonSelected, setIsReasonSelected] = useState(false);
 
   const reasons = ["Retired", "Inactive"];
 
@@ -14,11 +15,11 @@ export default function DeleteEmployee() {
   const handleSubmit = async (event) => {
     event.preventDefault();
     setCreationSuccess(false);
-    setError(false);
+    setError("");
 
     const formData = {
       employeeID,
-      status,
+      status: reason,
     };
 
     try {
@@ -41,6 +42,11 @@ export default function DeleteEmployee() {
     } catch (error) {
       console.log("Error:", error.message);
     }
+  };
+
+  const handleReasonChange = (e) => {
+    setReason(e.target.value);
+    setIsReasonSelected(e.target.value !== "");
   };
 
   return (
@@ -73,28 +79,33 @@ export default function DeleteEmployee() {
                 />
               </div>
               <div className="mb-3 mt-3">
-                <label htmlFor="status" className="form-label">
+                <label htmlFor="reason" className="form-label">
                   Reason:
                 </label>
-                <input
-                  list="reasons"
-                  className="form-control"
-                  id="status"
-                  name="status"
-                  placeholder="Type to search..."
+                <select
+                  className="form-select"
+                  id="reason"
+                  name="reason"
+                  value={reason}
+                  onChange={handleReasonChange}
                   required
-                  value={status}
-                  onChange={(e) => setStatus(e.target.value)}
-                />
-                <datalist id="reasons">
-                  {reasons.map((status, index) => (
-                    <option key={index} value={status} />
+                >
+                  <option value="">Select Reason</option>
+                  {reasons.map((reason, index) => (
+                    <option key={index} value={reason}>
+                      {reason}
+                    </option>
                   ))}
-                </datalist>
+                </select>
               </div>
               <div className="flex flex-wrap -mx-3 mt-6">
                 <div className="w-full px-3 text-center">
-                  <button id="button" type="submit" className="btn btn-primary">
+                  <button
+                    id="button"
+                    type="submit"
+                    className="btn btn-primary"
+                    disabled={!isReasonSelected}
+                  >
                     Delete Employee
                   </button>
                 </div>

@@ -12,7 +12,7 @@ export default function UpdateDepartment() {
   const [isMggrChange, setIsMggrChange] = useState(false);
 
   const [oldMggrUserID, setOldMggrUserID] = useState("");
-  const positions = ["Employee", "Maintenance", "Admin"]
+  const positions = ["Employee", "Maintenance", "Admin"];
 
   const baseURL = currentConfig.REACT_APP_API_BASE_URL;
 
@@ -46,18 +46,15 @@ export default function UpdateDepartment() {
     setCreationSuccess(false);
     // Form submission logic
 
-    const formData = {department}
+    const formData = { department };
     try {
-      const response = await fetch(
-        `${baseURL}/getdepartment`,
-        {
-          method: "POST",
-          body: JSON.stringify(formData),
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      const response = await fetch(`${baseURL}/getdepartment`, {
+        method: "POST",
+        body: JSON.stringify(formData),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
 
       const json = await response.json();
 
@@ -65,17 +62,17 @@ export default function UpdateDepartment() {
         console.log("Failed to fetch employee data");
       }
       if (response.ok) {
-        const departmentDataFromJson = json[0]; 
+        const departmentDataFromJson = json[0];
 
         setDepartmentData({
-            ...departmentDataFromJson,
-            OldManagerUserID: departmentDataFromJson.ManagerUserID,
-            OldDepartmentName: departmentDataFromJson.DepName,
-            newDepartment: "",
-            newPosition: "",
-            newSupID: "",
+          ...departmentDataFromJson,
+          OldManagerUserID: departmentDataFromJson.ManagerUserID,
+          OldDepartmentName: departmentDataFromJson.DepName,
+          newDepartment: "",
+          newPosition: "",
+          newSupID: "",
         });
-    
+
         setisSubmitted(true);
       }
     } catch (error) {
@@ -91,16 +88,13 @@ export default function UpdateDepartment() {
     console.log(formData);
 
     try {
-      const response = await fetch(
-        `${baseURL}/updatedepartment`,
-        {
-          method: "PUT",
-          body: JSON.stringify(formData),
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      const response = await fetch(`${baseURL}/updatedepartment`, {
+        method: "PUT",
+        body: JSON.stringify(formData),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
 
       const json = await response.json();
 
@@ -131,23 +125,23 @@ export default function UpdateDepartment() {
               <form onSubmit={handleSubmitOne}>
                 <div className="mb-3 mt-3">
                   <label htmlFor="departmentS" className="form-label">
-                    Department:
+                    Select Department:
                   </label>
-                  <input
-                    list="departments"
-                    className="form-control"
+                  <select
+                    className="form-select"
                     id="departmentS"
                     name="departmentS"
-                    placeholder="Type to search..."
                     required
                     value={department}
                     onChange={(e) => setDepartment(e.target.value)}
-                  />
-                  <datalist id="departments">
+                  >
+                    <option value="">Select department...</option>
                     {departments.map((department, index) => (
-                      <option key={index} value={department.DepName} />
+                      <option key={index} value={department.DepName}>
+                        {department.DepName}
+                      </option>
                     ))}
-                  </datalist>
+                  </select>
                 </div>
                 <div className="flex flex-wrap -mx-3 mt-6">
                   <div className="w-full px-3 text-center">
@@ -210,90 +204,90 @@ export default function UpdateDepartment() {
 
                 {isMggrChange && (
                   <div>
-                  <div className="row mb-3 mt-3">
-                    <div className="col">
-                      <label htmlFor="oldmggr" className="form-label">
-                        Old Department Manager's EmployeeID:
-                      </label>
-                      <input
-                        type="number"
-                        className="form-control"
-                        id="oldmggr"
-                        name="oldmggr"
-                        value={departmentData.OldManagerUserID}
-                      />
+                    <div className="row mb-3 mt-3">
+                      <div className="col">
+                        <label htmlFor="oldmggr" className="form-label">
+                          Old Department Manager's EmployeeID:
+                        </label>
+                        <input
+                          type="number"
+                          className="form-control"
+                          id="oldmggr"
+                          name="oldmggr"
+                          value={departmentData.OldManagerUserID}
+                        />
+                      </div>
+                      <div className="col">
+                        <label htmlFor="newPosition" className="form-label">
+                          Old Manager's New Position:
+                        </label>
+                        <input
+                          list="positions"
+                          className="form-control"
+                          id="newPosition"
+                          name="newPosition"
+                          required
+                          value={departmentData.newPosition}
+                          onChange={(e) =>
+                            setDepartmentData({
+                              ...departmentData,
+                              newPosition: e.target.value,
+                            })
+                          }
+                        />
+                        <datalist id="positions">
+                          {positions.map((type, index) => (
+                            <option key={index} value={type} />
+                          ))}
+                        </datalist>
+                      </div>
                     </div>
-                    <div className="col">
-                      <label htmlFor="newPosition" className="form-label">
-                        Old Manager's New Position:
-                      </label>
-                      <input
-                        list="positions"
-                        className="form-control"
-                        id="newPosition"
-                        name="newPosition"
-                        required
-                        value={departmentData.newPosition}
-                        onChange={(e) =>
-                          setDepartmentData({
-                            ...departmentData,
-                            newPosition: e.target.value,
-                          })
-                        }
-                      />
-                      <datalist id="positions">
-                        {positions.map((type, index) => (
-                          <option key={index} value={type} />
-                        ))}
-                      </datalist>
+                    <div className="row mb-3 mt-3">
+                      <div className="col">
+                        <label htmlFor="oldmggr" className="form-label">
+                          Old Manager's New Supervisor's EmployeeID:
+                        </label>
+                        <input
+                          type="number"
+                          className="form-control"
+                          id="oldmggr"
+                          name="oldmggr"
+                          required
+                          value={departmentData.newSupID}
+                          onChange={(e) =>
+                            setDepartmentData({
+                              ...departmentData,
+                              newSupID: parseInt(e.target.value),
+                            })
+                          }
+                        />
+                      </div>
+                      <div className="col">
+                        <label htmlFor="departme" className="form-label">
+                          Old Manager's New Department:
+                        </label>
+                        <input
+                          list="departmes"
+                          className="form-control"
+                          id="departme"
+                          name="departme"
+                          required
+                          value={departmentData.newDepartment}
+                          onChange={(e) =>
+                            setDepartmentData({
+                              ...departmentData,
+                              newDepartment: e.target.value,
+                            })
+                          }
+                        />
+                        <datalist id="departmes">
+                          {departments.map((type, index) => (
+                            <option key={index} value={type.DepName} />
+                          ))}
+                        </datalist>
+                      </div>
                     </div>
                   </div>
-                  <div className="row mb-3 mt-3">
-                  <div className="col">
-                    <label htmlFor="oldmggr" className="form-label">
-                      Old Manager's New Supervisor's EmployeeID:
-                    </label>
-                    <input
-                      type="number"
-                      className="form-control"
-                      id="oldmggr"
-                      name="oldmggr"
-                      required
-                      value={departmentData.newSupID}
-                      onChange={(e) =>
-                        setDepartmentData({
-                          ...departmentData,
-                          newSupID: parseInt(e.target.value),
-                        })
-                      }
-                    />
-                  </div>
-                  <div className="col">
-                    <label htmlFor="departme" className="form-label">
-                      Old Manager's New Department:
-                    </label>
-                    <input
-                      list="departmes"
-                      className="form-control"
-                      id="departme"
-                      name="departme"
-                      required
-                      value={departmentData.newDepartment}
-                      onChange={(e) =>
-                        setDepartmentData({
-                          ...departmentData,
-                          newDepartment: e.target.value,
-                        })
-                      }
-                    />
-                    <datalist id="departmes">
-                      {departments.map((type, index) => (
-                        <option key={index} value={type.DepName} />
-                      ))}
-                    </datalist>
-                  </div>
-                </div>
-                </div>
                 )}
 
                 <div className="flex flex-wrap -mx-3 mt-6">
