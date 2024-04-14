@@ -137,7 +137,6 @@ export default function AddEmployee({ employeeData = {}, onSuccess }) {
                     className="form-control"
                     id="middleName"
                     name="middleName"
-                    placeholder="Bro"
                     maxLength="30"
                     value={middleName}
                     onChange={(e) => setLastName(e.target.value)}

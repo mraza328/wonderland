@@ -60,17 +60,26 @@ export default async (req, res) => {
       requestId,
     ]);
 
-    console.log(
-      `Maintenance request ${requestId} updated successfully with new StateID: ${incrementedStateID}`
-    );
+    // After the insert, retrieve the ManagerApproval for the newly inserted record
+    const approvalQuery = `SELECT ManagerApproval FROM maintenance WHERE RequestID = ? AND StateID = ? ORDER BY RequestID DESC LIMIT 1`;
+    const [approvalResult] = await pool.query(approvalQuery, [
+      requestId,
+      incrementedStateID,
+    ]);
+    const managerApproval = approvalResult[0]?.ManagerApproval;
 
-    res.status(201).json({
-      message: "Maintenance request submitted successfully",
-      RequestID: requestId,
-      IncrementedStateID: incrementedStateID,
-    });
+    if (managerApproval == 1) {
+      res.status(201).json({
+        message: "Cost exceeds $5000. Pending manager approval.",
+        managerApproval: managerApproval, // Return ManagerApproval from the database
+      });
+    } else {
+      res.status(200).json({
+        message: "Maintenance request submitted successfully",
+      });
+    }
   } catch (error) {
-    console.error("Failed to insert maintenance request:", error);
+    console.error("Failed to submit maintenance request:", error);
     res.status(500).json({
       message: "Failed to submit maintenance request",
       error: error.message,

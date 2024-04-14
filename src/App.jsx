@@ -13,6 +13,7 @@ import SignIn from "./pages/SignIn";
 import SignUp from "./pages/signUp";
 import UpdateAccount from "./pages/UpdateAccount";
 import TicketPurchase from "./pages/TicketPurchase";
+import PurchaseHistory from "./pages/PurchaseHistory";
 
 import AdminLanding from "./pages/AdminLanding";
 import AdminDashboard from "./pages/AdminDashboard";
@@ -22,6 +23,7 @@ import MaintenanceRequestForm from "./pages/MaintenanceRequestForm";
 import MaintenanceUpReq from "./pages/MaintenanceUpdateRequest";
 import MaintenanceCompReq from "./pages/MaintenanceCompleteRequest";
 import GenerateMaintRep from "./pages/GenerateMaintenanceReport";
+import MaintReqManagerApproval from "./pages/MaintReqManagerApproval";
 import StaffTicketPurchase from "./pages/StaffTicketPurchase";
 
 import TicketDataReports from "./pages/TicketDataReports";
@@ -68,6 +70,7 @@ function App() {
           <Route path="/signUp" element={<SignUp />} />
           <Route path="/updateaccount" element={<UpdateAccount />} />
           <Route path="/ticketPurchase" element={<TicketPurchase />} />
+          <Route path="/purchasehistory" element={<PurchaseHistory />} />
           <Route
             path="/staffticketpurchase"
             element={<StaffTicketPurchase />}
@@ -93,6 +96,10 @@ function App() {
           <Route
             path="/GenerateMaintenanceReport"
             element={<GenerateMaintRep />}
+          />
+          <Route
+            path="/MaintReqManagerApproval"
+            element={<MaintReqManagerApproval />}
           />
           <Route path="/depManagement" element={<AdminDepManagement />} />
           <Route

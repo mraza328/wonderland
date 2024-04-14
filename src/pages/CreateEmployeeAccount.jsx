@@ -75,7 +75,6 @@ export default function CreateEmployeeAccount({ onSuccess }) {
                     className="form-control"
                     id="middleName"
                     name="middleName"
-                    required
                   />
                 </div>
                 <div className="col">

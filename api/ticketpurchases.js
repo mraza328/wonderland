@@ -10,7 +10,7 @@ export default async (req, res) => {
     const pool = await poolPromise;
 
     const productQuery = `
-      SELECT p.ItemID, p.NameOfItem, p.SalePrice, v.VendorType
+      SELECT p.ItemID, p.NameOfItem, p.SalePrice, p.Description, v.VendorType
       FROM Product p
       INNER JOIN Vendor v ON p.NameOfVendor = v.NameOfVendor
       `;
@@ -21,26 +21,33 @@ export default async (req, res) => {
     if (req.method === "GET") {
       res.status(200).json(products);
     } else if (req.method === "POST") {
-      const { userID, totalPrice, ticketPrices, ticketDetails, dateSelected } =
-        await new Promise((resolve, reject) => {
-          let body = "";
-          req.on("data", (chunk) => (body += chunk.toString()));
-          req.on("end", () => {
-            resolve(JSON.parse(body));
-          });
-          req.on("error", (err) => reject(err));
+      const {
+        userID,
+        totalPrice,
+        ticketPrices,
+        ticketDetails,
+        dateSelected,
+        numTickets,
+      } = await new Promise((resolve, reject) => {
+        let body = "";
+        req.on("data", (chunk) => (body += chunk.toString()));
+        req.on("end", () => {
+          resolve(JSON.parse(body));
         });
+        req.on("error", (err) => reject(err));
+      });
 
       const currentDate = new Date().toISOString().slice(0, 10);
 
       // Insert sale into the database
       const saleQuery =
-        "INSERT INTO Sale (UserID, TotalPrice, DateSold, DateValid) VALUES (?, ?, ?, ?)";
+        "INSERT INTO Sale (UserID, TotalPrice, DateSold, DateValid, NumTickets) VALUES (?, ?, ?, ?, ?)";
       const [saleResults] = await pool.query(saleQuery, [
         userID,
         totalPrice,
         currentDate,
         dateSelected,
+        numTickets,
       ]);
 
       const saleId = saleResults.insertId;

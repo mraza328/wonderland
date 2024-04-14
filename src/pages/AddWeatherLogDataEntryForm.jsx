@@ -1,10 +1,12 @@
 import React, { useState } from "react";
 import { currentConfig } from "../config";
+import { useAuth } from "../context/AuthContext";
 
 export default function AddWeatherLog() {
+  const { currentUser } = useAuth();
   const [dateOfClosure, setDateOfClosure] = useState("");
   const [reason, setReason] = useState("");
-  const [userID, setUserID] = useState("");
+  const [userID, setUserID] = useState(currentUser.UserID);
   const [weatherType, setWeatherType] = useState("");
 
   const [creationSuccess, setCreationSuccess] = useState(false);
@@ -19,6 +21,7 @@ export default function AddWeatherLog() {
   const handleSubmit = async (event) => {
     event.preventDefault();
     setCreationSuccess(false);
+    setUserID(currentUser.UserID,)
     // Submit data to backend or perform further processing
     const formData = {
       userID,
@@ -66,20 +69,6 @@ export default function AddWeatherLog() {
             </h1>
             <form onSubmit={handleSubmit}>
               <div className="row mb-3 mt-3">
-                <div className="col">
-                  <label htmlFor="ids" className="form-label">
-                    Employee UserID:
-                  </label>
-                  <input
-                    type="number"
-                    className="form-control"
-                    id="ids"
-                    name="ids"
-                    required
-                    value={userID}
-                    onChange={(e) => setUserID(e.target.value)}
-                  />
-                </div>
                 <div className="col">
                   <label htmlFor="date" className="form-label">
                     Date of Closure:

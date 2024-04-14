@@ -10,6 +10,8 @@ export default function MaintUpReq({ onSuccess }) {
   const [requestsData, setRequestsData] = useState([]);
   const { currentUser } = useAuth();
   const [errorMessage, setErrorMessage] = useState("");
+  const [responseMessage, setResponseMessage] = useState("");
+  const [messageType, setMessageType] = useState("info");
   const baseURL = currentConfig.REACT_APP_API_BASE_URL;
   console.log(currentConfig.REACT_APP_API_BASE_URL);
 
@@ -34,8 +36,22 @@ export default function MaintUpReq({ onSuccess }) {
           throw new Error("Error retrieving maintenance info");
         }
         const data = await response.json();
-        console.log("Fetched maintenance requests data:", data);
-        setRequestsData(data);
+
+        // Filter out completed maintenance requests immediately after fetching
+        const nonCompletedData = data.filter(
+          (item) => item.MaintenanceStatus !== "Completed"
+        );
+
+        // Process non-completed data to get the highest stateID for each requestID
+        const filteredData = nonCompletedData.reduce((acc, item) => {
+          const existing = acc[item.RequestID];
+          if (!existing || existing.StateID < item.StateID) {
+            acc[item.RequestID] = item; // Store the item if it has a higher StateID or if it's the first occurrence
+          }
+          return acc;
+        }, {});
+
+        setRequestsData(Object.values(filteredData));
       } catch (error) {
         console.error("Error fetching maintenance requests:", error);
       }
@@ -108,22 +124,22 @@ export default function MaintUpReq({ onSuccess }) {
         },
         body: JSON.stringify(updatedFormData),
       });
-      if (response.ok) {
-        const responseData = await response.json();
+      const responseData = await response.json();
+      if (response.status === 200 || response.status === 201) {
         console.log("Request updated successfully:", responseData);
-
+        setResponseMessage(responseData.message);
+        setMessageType("success");
+        alert(responseData.message);
         if (onSuccess) {
           onSuccess();
         }
       } else {
-        const responseData = await response.json();
-        const message = responseData.message || "Failed to update request.";
-        setErrorMessage(message);
-        console.error("Failed to update request:", message);
-        return;
+        console.error("Failed to update request:", responseData);
+        setResponseMessage("Failed to update request.");
+        setMessageType("danger");
       }
     } catch (error) {
-      console.error("Error submitting maintenance request:", error);
+      console.error("Error updating maintenance request:", error);
     }
   };
 
@@ -415,10 +431,6 @@ export default function MaintUpReq({ onSuccess }) {
                 </option>
               ))}
             </select>
-
-            <div className="mt-3 text-center">
-              <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExMXp3cXM3aXNqZ21kajNwZWJvcWFqZzF5NHR1c3ByM3l0aTM0OTduMiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/G0bGhDeDDJhub3y6Ai/giphy-downsized-large.gif" />
-            </div>
           </div>
         </div>
       </div>
