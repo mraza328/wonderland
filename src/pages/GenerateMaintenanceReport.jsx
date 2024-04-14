@@ -97,10 +97,26 @@ export default function MaintenanceDataReports() {
       );
     });
 
+    const highestStateEntries = {};
+    filteredData.forEach((item) => {
+      if (item.status === "Completed") {
+        const existing = highestStateEntries[item.maintenanceIds];
+        if (
+          !existing ||
+          parseInt(item.stateId, 10) > parseInt(existing.stateId, 10)
+        ) {
+          highestStateEntries[item.maintenanceIds] = item;
+        }
+      }
+    });
+
+    const totalCost = Object.values(highestStateEntries).reduce(
+      (sum, item) => sum + parseFloat(item.totalCost),
+      0
+    );
+
     setDisplayedMaintenanceData(filteredData);
-    const total =
-      filteredData.length > 0 ? parseFloat(filteredData[0].finalCost) : 0;
-    setTotalCost(total);
+    setTotalCost(totalCost);
   };
 
   useEffect(() => {
