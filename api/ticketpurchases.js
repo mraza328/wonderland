@@ -39,6 +39,27 @@ export default async (req, res) => {
 
       const currentDate = new Date().toISOString().slice(0, 10);
 
+      const parkClosedQuery = `SELECT 
+        CASE 
+          WHEN EXISTS (SELECT 1 FROM weatherlog WHERE DateOfClosure = ?) 
+          THEN 'true' 
+          ELSE 'false' 
+      END AS DateOfClosureExists;`;
+      const [parkClosedResult] = await pool.query(parkClosedQuery, [dateSelected]);
+      if(parkClosedResult[0].DateOfClosureExists==='true'){
+        res.status(422).json({
+          message: `Park is closed on ${dateSelected}, please choose another date.`,
+        });
+      }
+
+      const capacity = 6;
+      const capacityReachedQuery = 'SELECT COUNT(*) AS COUNT FROM Ticket, Sale WHERE Sale.SaleID=Ticket.SaleID && DateValid = ?';
+      const [capacityReachedResult] = await pool.query(capacityReachedQuery, [dateSelected]);
+      if(capacityReachedResult[0].COUNT+numTickets>capacity){
+        res.status(422).json({
+          message: `Apologies, it seems we're at full or near-full capacity for ${dateSelected}. ${Math.abs(capacity-capacityReachedResult[0].COUNT)} ticket(s) remain available until our maximum capacity is reached. Please consider choosing another day or reducing the number of tickets you're purchasing.`,
+        })
+      }
       // Insert sale into the database
       const saleQuery =
         "INSERT INTO Sale (UserID, TotalPrice, DateSold, DateValid, NumTickets) VALUES (?, ?, ?, ?, ?)";

@@ -18,6 +18,7 @@ export default function TicketPurchase() {
   const [attractions, setAttractions] = useState([]);
   const [selectedAttractions, setSelectedAttractions] = useState([]);
   const [notification, setNotification] = useState(null);
+  const [error, setError] = useState(null);
 
   const baseURL = currentConfig.REACT_APP_API_BASE_URL;
   const userID = JSON.parse(localStorage.getItem("user")).UserID;
@@ -140,6 +141,8 @@ export default function TicketPurchase() {
 
   const buyTicket = async () => {
     try {
+      setError(null);
+      setNotification(null);
       await sendAttractionsData();
 
       const response = await fetch(`${baseURL}/ticketpurchases`, {
@@ -157,11 +160,16 @@ export default function TicketPurchase() {
         }),
       });
 
-      if (!response.ok) {
-        throw new Error("Failed to purchase tickets");
-      }
-
       const data = await response.json();
+
+      if (!response.ok) {
+        if(response.status===422){
+          setError(data.message);
+        }
+        else{
+          throw new Error("Failed to purchase tickets");
+        }
+      }
 
       if (response.status === 200 || response.status === 201) {
         if (data.message === "Discount applied successfully!") {
@@ -406,6 +414,11 @@ export default function TicketPurchase() {
                 message={notification.message}
                 type={notification.type}
               />
+            )}
+            {error && (
+              <div className="alert alert-danger mt-3">
+                {error}
+              </div>
             )}
           </div>
         </div>
