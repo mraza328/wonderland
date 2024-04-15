@@ -70,68 +70,83 @@ const StaffSideNavbar = ({ onItemClick }) => {
                 >
                   Delete Employee
                 </li>
-                {((depName === "Attraction" && role === "Department Manager") || (depName === "Central" && role === "Department Manager") || (role === "Admin" || role === "Park Manager")) &&(
+                {((depName === "Attraction" && role === "Department Manager") ||
+                  (depName === "Central" && role === "Department Manager") ||
+                  role === "Admin" ||
+                  role === "Park Manager") && (
                   <>
-                <li
-                  className="list-group-submenu-item"
-                  onClick={() => onItemClick("Add Attraction Data Entry Form")}
-                >
-                  Add Attraction
-                </li>
-                <li
-                  className="list-group-submenu-item"
-                  onClick={() =>
-                    onItemClick("Update Attraction Data Entry Form")
-                  }
-                >
-                  Update Attraction
-                </li>
-                <li
-                  className="list-group-submenu-item"
-                  onClick={() =>
-                    onItemClick("Delete Attraction Data Entry Form")
-                  }
-                >
-                  Delete Attraction
-                </li>
-                </>
+                    <li
+                      className="list-group-submenu-item"
+                      onClick={() =>
+                        onItemClick("Add Attraction Data Entry Form")
+                      }
+                    >
+                      Add Attraction
+                    </li>
+                    <li
+                      className="list-group-submenu-item"
+                      onClick={() =>
+                        onItemClick("Update Attraction Data Entry Form")
+                      }
+                    >
+                      Update Attraction
+                    </li>
+                    <li
+                      className="list-group-submenu-item"
+                      onClick={() =>
+                        onItemClick("Delete Attraction Data Entry Form")
+                      }
+                    >
+                      Delete Attraction
+                    </li>
+                  </>
                 )}
-                {((depName === "Vendor" && role === "Department Manager") || (depName === "Central" && role === "Department Manager") || (role === "Admin" || role === "Park Manager")) &&(
+                {((depName === "Vendor" && role === "Department Manager") ||
+                  (depName === "Central" && role === "Department Manager") ||
+                  role === "Admin" ||
+                  role === "Park Manager") && (
                   <>
-                <li
-                  className="list-group-submenu-item"
-                  onClick={() => onItemClick("Add Vendor Data Entry Form")}
-                >
-                  Add Vendor
-                </li>
-                <li
-                  className="list-group-submenu-item"
-                  onClick={() => onItemClick("Update Vendor Data Entry Form")}
-                >
-                  Update Vendor
-                </li>
-                <li
-                  className="list-group-submenu-item"
-                  onClick={() => onItemClick("Delete Vendor Data Entry Form")}
-                >
-                  Delete Vendor
-                </li>
-                </>
+                    <li
+                      className="list-group-submenu-item"
+                      onClick={() => onItemClick("Add Vendor Data Entry Form")}
+                    >
+                      Add Vendor
+                    </li>
+                    <li
+                      className="list-group-submenu-item"
+                      onClick={() =>
+                        onItemClick("Update Vendor Data Entry Form")
+                      }
+                    >
+                      Update Vendor
+                    </li>
+                    <li
+                      className="list-group-submenu-item"
+                      onClick={() =>
+                        onItemClick("Delete Vendor Data Entry Form")
+                      }
+                    >
+                      Delete Vendor
+                    </li>
+                  </>
                 )}
-                {((depName === "Attraction" && role === "Department Manager") || (depName === "Central" && role === "Department Manager") || (role === "Admin" || role === "Park Manager")) &&(
+                {((depName === "Attraction" && role === "Department Manager") ||
+                  (depName === "Central" && role === "Department Manager") ||
+                  role === "Admin" ||
+                  role === "Park Manager") && (
                   <>
-                <li
-                  className="list-group-submenu-item"
-                  onClick={() =>
-                    onItemClick("Add Attraction Log Data Entry Form")
-                  }
-                >
-                  Add to Attraction Log
-                </li>
-                </>
+                    <li
+                      className="list-group-submenu-item"
+                      onClick={() =>
+                        onItemClick("Add Attraction Log Data Entry Form")
+                      }
+                    >
+                      Add to Attraction Log
+                    </li>
+                  </>
                 )}
 
-                {(role === "Admin" || role === "Park Manager" ) && (
+                {(role === "Admin" || role === "Park Manager") && (
                   <>
                     <li
                       className="list-group-submenu-item"
@@ -141,10 +156,12 @@ const StaffSideNavbar = ({ onItemClick }) => {
                     >
                       Shut Down Park
                     </li>
-                    </>
+                  </>
                 )}
-                    {((depName === "Central" && role === "Department Manager") || (role === "Admin" || role === "Park Manager")) && (
-                      <>
+                {((depName === "Central" && role === "Department Manager") ||
+                  role === "Admin" ||
+                  role === "Park Manager") && (
+                  <>
                     <li
                       className="list-group-submenu-item"
                       onClick={() =>
@@ -161,29 +178,36 @@ const StaffSideNavbar = ({ onItemClick }) => {
                     >
                       Update Department
                     </li>
-                    </>
-                    )}
-                {((depName === "Vendor" && role === "Department Manager") || (depName === "Central" && role === "Department Manager") || (role === "Admin" || role === "Park Manager")) &&(
+                  </>
+                )}
+                {((depName === "Vendor" && role === "Department Manager") ||
+                  (depName === "Central" && role === "Department Manager") ||
+                  role === "Admin" ||
+                  role === "Park Manager") && (
                   <>
-                <li
-                  className="list-group-submenu-item"
-                  onClick={() => onItemClick("Add Product Data Entry Form")}
-                >
-                  Add Product
-                </li>
-                <li
-                  className="list-group-submenu-item"
-                  onClick={() => onItemClick("Update Product Data Entry Form")}
-                >
-                  Update Product
-                </li>
-                <li
-                  className="list-group-submenu-item"
-                  onClick={() => onItemClick("Delete Product Data Entry Form")}
-                >
-                  Delete Product
-                </li>
-                </>
+                    <li
+                      className="list-group-submenu-item"
+                      onClick={() => onItemClick("Add Product Data Entry Form")}
+                    >
+                      Add Product
+                    </li>
+                    <li
+                      className="list-group-submenu-item"
+                      onClick={() =>
+                        onItemClick("Update Product Data Entry Form")
+                      }
+                    >
+                      Update Product
+                    </li>
+                    <li
+                      className="list-group-submenu-item"
+                      onClick={() =>
+                        onItemClick("Delete Product Data Entry Form")
+                      }
+                    >
+                      Delete Product
+                    </li>
+                  </>
                 )}
               </ul>
             )}
@@ -206,9 +230,9 @@ const StaffSideNavbar = ({ onItemClick }) => {
                 </li>
                 <li
                   className="list-group-submenu-item"
-                  onClick={() => onItemClick("Ride Data Reports")}
+                  onClick={() => onItemClick("Analytics Data Reports")}
                 >
-                  Ride Reports
+                  Analytics Reports
                 </li>
                 <li
                   className="list-group-submenu-item"
@@ -241,8 +265,10 @@ const StaffSideNavbar = ({ onItemClick }) => {
               >
                 Create New Request
               </li>
-              {(role === "Admin"  ||
-                role === "Maintenance" || (role === "Department Manager" && depName === "Maintenance") || (role === "Department Manager" && depName === "Central")) && (
+              {(role === "Admin" ||
+                role === "Maintenance" ||
+                (role === "Department Manager" && depName === "Maintenance") ||
+                (role === "Department Manager" && depName === "Central")) && (
                 <>
                   <li
                     className="list-group-submenu-item"
@@ -264,7 +290,8 @@ const StaffSideNavbar = ({ onItemClick }) => {
               )}
               {(role === "Admin" ||
                 role === "Department Manager" ||
-                role === "Park Manager" || role === "Maintenance") && (
+                role === "Park Manager" ||
+                role === "Maintenance") && (
                 <>
                   <li
                     className="list-group-submenu-item"

@@ -329,6 +329,10 @@ VALUES
     ('Water Slide', '09:00', '21:00', 'Ride', 36.00, 70, 100, 'Active', 'Attraction'),
     ('Haunted House', '11:00', '17:00', 'Show', 36.00, 70, 65, 'Active', 'Attraction');
 
+-- @block Hot Fixes
+UPDATE Attraction
+SET AttractionType = 'Ride'
+WHERE NameOfAttraction = 'The Drop';
 
 -- @block
 SELECT *

@@ -27,7 +27,7 @@ import MaintReqManagerApproval from "./pages/MaintReqManagerApproval";
 import StaffTicketPurchase from "./pages/StaffTicketPurchase";
 
 import TicketDataReports from "./pages/TicketDataReports";
-import RideDataReports from "./pages/RideDataReports";
+import AnalyticsDataReports from "./pages/AnalyticsDataReports";
 import RevenueDataReports from "./pages/RevenueDataReports";
 
 import CreateEmployeeAccount from "./pages/CreateEmployeeAccount";
@@ -79,7 +79,10 @@ function App() {
           <Route path="/dashboard" element={<AdminDashboard />} />
           <Route path="/dataReports" element={<AdminDataReports />} />
           <Route path="/ticketDataReports" element={<TicketDataReports />} />
-          <Route path="/rideDataReports" element={<RideDataReports />} />
+          <Route
+            path="/analyticsDataReports"
+            element={<AnalyticsDataReports />}
+          />
           <Route path="/revenueDataReports" element={<RevenueDataReports />} />
           <Route
             path="/maintenanceRequestForm"
