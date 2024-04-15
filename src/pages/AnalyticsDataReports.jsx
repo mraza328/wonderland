@@ -2,13 +2,16 @@ import React, { useState, useEffect } from "react";
 import { Button, Form, Table } from "react-bootstrap";
 import { currentConfig } from "../config";
 
-export default function RideDataReports() {
+export default function AnalyticsDataReports() {
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [selectedRide, setSelectedRide] = useState("All");
+  const [selectedAttractionType, setSelectedAttractionType] = useState("All");
   const [rideData, setRideData] = useState([]);
   const [totalRiders, setTotalRiders] = useState(0);
   const [attractions, setAttractions] = useState([]);
+  const [showAttractionTypeSelect, setShowAttractionTypeSelect] =
+    useState(false);
 
   const baseURL = currentConfig.REACT_APP_API_BASE_URL;
 
@@ -31,7 +34,7 @@ export default function RideDataReports() {
 
   const handleGenerateReport = async () => {
     try {
-      const response = await fetch(`${baseURL}/ridereport`, {
+      const response = await fetch(`${baseURL}/analyticsreport`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -40,6 +43,7 @@ export default function RideDataReports() {
           startDate,
           endDate,
           selectedRide,
+          selectedAttractionType,
         }),
       });
       if (!response.ok) {
@@ -53,12 +57,16 @@ export default function RideDataReports() {
     }
   };
 
+  useEffect(() => {
+    setShowAttractionTypeSelect(selectedRide === "All");
+  }, [selectedRide]);
+
   return (
     <div className="ride-report-container">
-      <h1>Ride Data Report Page</h1>
+      <h1>Analytics Data Report Page</h1>
       <Form className="mt-3">
         <Form.Group controlId="startDate" className="mb-3">
-          <Form.Label>Start Date</Form.Label>
+          <Form.Label>Report Start Date</Form.Label>
           <Form.Control
             type="date"
             value={startDate}
@@ -66,7 +74,7 @@ export default function RideDataReports() {
           />
         </Form.Group>
         <Form.Group controlId="endDate" className="mb-3">
-          <Form.Label>End Date</Form.Label>
+          <Form.Label>Report End Date</Form.Label>
           <Form.Control
             type="date"
             value={endDate}
@@ -90,6 +98,19 @@ export default function RideDataReports() {
             ))}
           </Form.Select>
         </Form.Group>
+        {showAttractionTypeSelect && (
+          <Form.Group controlId="selectedAttractionType" className="mb-3">
+            <Form.Label>Select Attraction Type</Form.Label>
+            <Form.Select
+              value={selectedAttractionType}
+              onChange={(e) => setSelectedAttractionType(e.target.value)}
+            >
+              <option value="All">All Types</option>
+              <option value="Ride">Ride</option>
+              <option value="Show">Show</option>
+            </Form.Select>
+          </Form.Group>
+        )}
         <Button
           variant="primary"
           onClick={handleGenerateReport}
@@ -105,6 +126,7 @@ export default function RideDataReports() {
           <tr>
             <th>Date</th>
             <th>Ride</th>
+            <th>Attraction Type</th>
             <th>Riders</th>
           </tr>
         </thead>
@@ -113,11 +135,12 @@ export default function RideDataReports() {
             <tr key={index}>
               <td>{entry.Date}</td>
               <td>{entry.NameOfAttraction}</td>
+              <td>{entry.AttractionType}</td>
               <td>{parseInt(entry.TotalRiders)}</td>
             </tr>
           ))}
           <tr>
-            <td colSpan="2">
+            <td colSpan="3">
               <b>Total</b>
             </td>
             <td>

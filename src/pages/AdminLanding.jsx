@@ -6,7 +6,7 @@ import AdminDashboard from "./AdminDashboard";
 import AdminDataReports from "./AdminDataReports";
 import AdminDepManagement from "./AdminDepManagement";
 import TicketDataReports from "./TicketDataReports";
-import RideDataReports from "./RideDataReports";
+import AnalyticsDataReports from "./AnalyticsDataReports";
 import RevenueDataReports from "./RevenueDataReports";
 import CreateEmployeeAccount from "./CreateEmployeeAccount";
 import AddEmployee from "./AddEmployee";
@@ -72,7 +72,9 @@ const AdminLanding = () => {
             {selectedPage === "Department Management" && <AdminDepManagement />}
             {selectedPage === "Data Reports" && <AdminDataReports />}
             {selectedPage === "Ticket Data Reports" && <TicketDataReports />}
-            {selectedPage === "Ride Data Reports" && <RideDataReports />}
+            {selectedPage === "Analytics Data Reports" && (
+              <AnalyticsDataReports />
+            )}
             {selectedPage === "Revenue Data Reports" && <RevenueDataReports />}
             {selectedPage === "Create Employee Account" && (
               <CreateEmployeeAccount onSuccess={transitionToAddEmployee} />

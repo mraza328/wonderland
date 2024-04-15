@@ -70,7 +70,7 @@ body {
 .sidebar {
     position: absolute;
     left: 0;
-    height: 100vh;
+    height: 200vh;
     width: 50vh;
 
     background-color: #86BBD8; 
@@ -79,6 +79,9 @@ body {
 
     overflow-x: hidden; 
     transition: width 0.3s ease;
+
+    display: flex;
+    flex-direction: column;
 }
   
 .list-group-item {
