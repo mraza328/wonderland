@@ -13,6 +13,7 @@ export default async (req, res) => {
       SELECT p.ItemID, p.NameOfItem, p.SalePrice, p.Description, v.VendorType
       FROM Product p
       INNER JOIN Vendor v ON p.NameOfVendor = v.NameOfVendor
+      WHERE p.ProductStatus = 'Active'
       `;
 
     const [productResults] = await pool.query(productQuery);
@@ -45,20 +46,27 @@ export default async (req, res) => {
           THEN 'true' 
           ELSE 'false' 
       END AS DateOfClosureExists;`;
-      const [parkClosedResult] = await pool.query(parkClosedQuery, [dateSelected]);
-      if(parkClosedResult[0].DateOfClosureExists==='true'){
+      const [parkClosedResult] = await pool.query(parkClosedQuery, [
+        dateSelected,
+      ]);
+      if (parkClosedResult[0].DateOfClosureExists === "true") {
         res.status(422).json({
           message: `Park is closed on ${dateSelected}, please choose another date.`,
         });
       }
 
       const capacity = 100;
-      const capacityReachedQuery = 'SELECT COUNT(*) AS COUNT FROM Ticket, Sale WHERE Sale.SaleID=Ticket.SaleID && DateValid = ?';
-      const [capacityReachedResult] = await pool.query(capacityReachedQuery, [dateSelected]);
-      if(capacityReachedResult[0].COUNT+numTickets>capacity){
+      const capacityReachedQuery =
+        "SELECT COUNT(*) AS COUNT FROM Ticket, Sale WHERE Sale.SaleID=Ticket.SaleID && DateValid = ?";
+      const [capacityReachedResult] = await pool.query(capacityReachedQuery, [
+        dateSelected,
+      ]);
+      if (capacityReachedResult[0].COUNT + numTickets > capacity) {
         res.status(422).json({
-          message: `Apologies, it seems we're at full or near-full capacity for ${dateSelected}. ${Math.abs(capacity-capacityReachedResult[0].COUNT)} ticket(s) remain available until our maximum capacity is reached. Please consider choosing another day or reducing the number of tickets you're purchasing.`,
-        })
+          message: `Apologies, it seems we're at full or near-full capacity for ${dateSelected}. ${Math.abs(
+            capacity - capacityReachedResult[0].COUNT
+          )} ticket(s) remain available until our maximum capacity is reached. Please consider choosing another day or reducing the number of tickets you're purchasing.`,
+        });
       }
       // Insert sale into the database
       const saleQuery =
