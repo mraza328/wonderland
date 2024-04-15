@@ -112,6 +112,7 @@ export default function TicketDataReports() {
           <tr>
             <th>Date Sold</th>
             <th>Date Valid</th>
+            <th>Customer ID</th>
             <th>Name Of Customer</th>
             <th>General Admission Tickets Bought</th>
             <th>Kid Tickets Bought</th>
@@ -122,13 +123,14 @@ export default function TicketDataReports() {
             <tr key={index}>
               <td>{entry.DateSold.substring(0, 10)}</td>
               <td>{entry.DateValid.substring(0, 10)}</td>
+              <td>{entry.UserID}</td>
               <td>{entry.FullName}</td>
               <td>{entry.GA_Tickets}</td>
               <td>{entry.KI_Tickets}</td>
             </tr>
           ))}
           <tr>
-            <td colSpan="4">
+            <td colSpan="5">
               <b>Total General Admission Tickets</b>
             </td>
             <td>
@@ -136,7 +138,7 @@ export default function TicketDataReports() {
             </td>
           </tr>
           <tr>
-            <td colSpan="4">
+            <td colSpan="5">
               <b>Total Kid Admission Tickets</b>
             </td>
             <td>

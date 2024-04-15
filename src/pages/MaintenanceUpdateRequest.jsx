@@ -13,8 +13,8 @@ export default function MaintUpReq({ onSuccess }) {
   const [errorMessage, setErrorMessage] = useState("");
   const [responseMessage, setResponseMessage] = useState("");
   const [messageType, setMessageType] = useState("info");
+  const [isLoading, setIsLoading] = useState(false);
   const baseURL = currentConfig.REACT_APP_API_BASE_URL;
-  console.log(currentConfig.REACT_APP_API_BASE_URL);
 
   const [formData, setFormData] = useState({
     userID: currentUser.UserID,
@@ -31,6 +31,7 @@ export default function MaintUpReq({ onSuccess }) {
 
   useEffect(() => {
     const fetchMaintenanceIDs = async () => {
+      setIsLoading(true);
       try {
         const response = await fetch(`${baseURL}/fetchmaintenanceinfo`);
         if (!response.ok) {
@@ -56,10 +57,19 @@ export default function MaintUpReq({ onSuccess }) {
       } catch (error) {
         console.error("Error fetching maintenance requests:", error);
       }
+      setIsLoading(false);
     };
 
     fetchMaintenanceIDs();
   }, []);
+
+  useEffect(() => {
+    if (isLoading) {
+      document.body.style.cursor = "wait";
+    } else {
+      document.body.style.cursor = "default";
+    }
+  }, [isLoading]);
 
   const isValidDate = (date) => {
     return date instanceof Date && !isNaN(date);
@@ -105,6 +115,7 @@ export default function MaintUpReq({ onSuccess }) {
   const requestIDs = requestsData.map((item) => item.RequestID);
 
   const handleSubmit = async (event) => {
+    setIsLoading(true);
     event.preventDefault();
     setErrorMessage("");
     const { submissionDate, completionDate, ...restOfFormData } = formData;
@@ -158,6 +169,7 @@ export default function MaintUpReq({ onSuccess }) {
           }).then((result) => {
             if (result.value && onSuccess) {
               onSuccess();
+              setIsLoading(false);
             }
           });
         } else if (response.status === 201) {
@@ -170,9 +182,11 @@ export default function MaintUpReq({ onSuccess }) {
           }).then((result) => {
             if (result.value && onSuccess) {
               onSuccess();
+              setIsLoading(false);
             }
           });
         }
+        setIsLoading(false);
       } else {
         console.error("Failed to update request:", responseData);
         setResponseMessage("Failed to update request.");
@@ -181,6 +195,7 @@ export default function MaintUpReq({ onSuccess }) {
     } catch (error) {
       console.error("Error updating maintenance request:", error);
     }
+    setIsLoading(false);
   };
 
   const BackButtonClick = () => {

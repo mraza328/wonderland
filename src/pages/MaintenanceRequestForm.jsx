@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { useAuth } from "../context/AuthContext";
@@ -11,12 +11,26 @@ export default function MaintenanceRequestForm({ onSuccess }) {
   const [CompletionDate, setCompletionDate] = useState(new Date());
   const [responseMessage, setResponseMessage] = useState("");
   const [messageType, setMessageType] = useState("info");
+  const [attractions, setAttractions] = useState([]);
   const baseURL = currentConfig.REACT_APP_API_BASE_URL;
-  console.log(currentConfig.REACT_APP_API_BASE_URL);
+
+  useEffect(() => {
+    const fetchAttractions = async () => {
+      try {
+        const response = await fetch(`${baseURL}/getallattractions`);
+        const data = await response.json();
+        setAttractions(data.map((attraction) => attraction.NameOfAttraction));
+      } catch (error) {
+        console.error("Failed to fetch attractions:", error);
+      }
+    };
+
+    fetchAttractions();
+  }, [baseURL]);
 
   const [formData, setFormData] = useState({
     userID: currentUser.UserID,
-    departmentName: "",
+    departmentName: "Attraction",
     attractionName: "",
     reasonForRequest: "",
     submissionDate: SubmissionDate,
@@ -151,6 +165,7 @@ export default function MaintenanceRequestForm({ onSuccess }) {
                           aria-label="Name of Department"
                           value={formData.departmentName}
                           onChange={handleChange}
+                          readOnly
                         ></input>
                       </div>
 
@@ -166,15 +181,20 @@ export default function MaintenanceRequestForm({ onSuccess }) {
                         >
                           Attraction Name*
                         </label>
-                        <input
-                          className="form-control"
-                          type="text"
+                        <select
+                          className="form-select"
                           name="attractionName"
-                          placeholder="Name of Attraction"
-                          aria-label="Name of Attraction"
                           value={formData.attractionName}
                           onChange={handleChange}
-                        ></input>
+                          required
+                        >
+                          <option value="">Select Attraction</option>
+                          {attractions.map((name, index) => (
+                            <option key={index} value={name}>
+                              {name}
+                            </option>
+                          ))}
+                        </select>
                       </div>
 
                       <div className="mb-2">
@@ -196,6 +216,7 @@ export default function MaintenanceRequestForm({ onSuccess }) {
                             rows="3"
                             value={formData.reasonForRequest}
                             onChange={handleChange}
+                            required
                           ></textarea>
                         </div>
                       </div>
