@@ -50,45 +50,45 @@ export default function MaintenanceDataReports() {
   };
 
   const handleGenerateReport = () => {
+    console.log("Filtering data from:", startDate, "to", endDate);
+
+    // Filter maintenance data based on the user-selected date range and other filters
     let filteredData = maintenanceData.filter((item) => {
-      const isStartDateMatch = startDate
-        ? new Date(item.submissionDate) >= new Date(startDate)
-        : true;
-      const isEndDateMatch = endDate
-        ? new Date(item.completionDate) <= new Date(endDate)
-        : true;
-      const isMaintenanceIdMatch = maintenanceFilter
-        ? item.maintenanceIds.toString() === maintenanceFilter
-        : true;
-      const isEmployeeIdMatch = employeeFilter
-        ? item.employeeIds.toString() === employeeFilter
-        : true;
-      const isAttractionNameMatch = attractionFilter
-        ? item.attractionNames === attractionFilter
-        : true;
-      const isStatusMatch = statusFilter ? item.status === statusFilter : true;
-      const isCostMatch = costFilter
-        ? (() => {
-            let minCost, maxCost;
-            if (costFilter.includes("+")) {
-              minCost = parseFloat(costFilter.replace(/\D/g, ""));
-              maxCost = Infinity;
-            } else {
-              let parts = costFilter
-                .split("-")
-                .map((part) => parseFloat(part.replace(/\D/g, "")));
-              [minCost, maxCost] =
-                parts.length === 2 ? parts : [parseFloat(parts[0]), Infinity];
-            }
+      const itemStartDate = new Date(item.startDate);
+      const isStartDateWithinRange =
+        (!startDate || itemStartDate >= new Date(startDate)) &&
+        (!endDate || itemStartDate <= new Date(endDate));
 
-            const cost = parseFloat(item.totalCost);
-            return cost >= minCost && cost <= maxCost;
-          })()
-        : true;
+      // Apply other existing filters, ensuring each condition is correctly handled
+      const isMaintenanceIdMatch =
+        !maintenanceFilter ||
+        item.maintenanceIds.toString() === maintenanceFilter;
+      const isEmployeeIdMatch =
+        !employeeFilter || item.employeeIds.toString() === employeeFilter;
+      const isAttractionNameMatch =
+        !attractionFilter || item.attractionNames === attractionFilter;
+      const isStatusMatch = !statusFilter || item.status === statusFilter;
+      const isCostMatch =
+        !costFilter ||
+        (function () {
+          let minCost, maxCost;
+          if (costFilter.includes("+")) {
+            minCost = parseFloat(costFilter.replace(/\D/g, ""));
+            maxCost = Infinity;
+          } else {
+            let parts = costFilter
+              .split("-")
+              .map((part) => parseFloat(part.replace(/\D/g, "")));
+            [minCost, maxCost] =
+              parts.length === 2 ? parts : [parseFloat(parts[0]), Infinity];
+          }
+          const cost = parseFloat(item.totalCost);
+          return cost >= minCost && cost <= maxCost;
+        })();
 
+      // Return true if all filter conditions are met
       return (
-        isStartDateMatch &&
-        isEndDateMatch &&
+        isStartDateWithinRange &&
         isMaintenanceIdMatch &&
         isEmployeeIdMatch &&
         isAttractionNameMatch &&
