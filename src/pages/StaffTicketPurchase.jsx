@@ -28,7 +28,7 @@ export default function StaffTicketPurchase() {
       try {
         const [productsResponse, attractionsResponse] = await Promise.all([
           fetch(`${baseURL}/ticketpurchases`),
-          fetch(`${baseURL}/getallattractions`),
+          fetch(`${baseURL}/getallactiveattractions`),
         ]);
 
         if (!productsResponse.ok || !attractionsResponse.ok) {
@@ -160,14 +160,12 @@ export default function StaffTicketPurchase() {
         }),
       });
 
-
       const data = await response.json();
 
       if (!response.ok) {
-        if(response.status===422){
+        if (response.status === 422) {
           setError(data.message);
-        }
-        else{
+        } else {
           throw new Error("Failed to purchase tickets");
         }
       }
@@ -414,11 +412,7 @@ export default function StaffTicketPurchase() {
                 type={notification.type}
               />
             )}
-            {error && (
-              <div className="alert alert-danger mt-3">
-                {error}
-              </div>
-            )}
+            {error && <div className="alert alert-danger mt-3">{error}</div>}
           </div>
         </div>
       </div>
