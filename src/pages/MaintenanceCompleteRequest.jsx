@@ -4,6 +4,7 @@ import { useAuth } from "../context/AuthContext";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { currentConfig } from "../config";
+import Swal from "sweetalert2";
 
 export default function MaintenanceCompReq({ onSuccess }) {
   const [selectedRequest, setSelectedRequest] = useState("");
@@ -35,21 +36,21 @@ export default function MaintenanceCompReq({ onSuccess }) {
         }
         const data = await response.json();
 
-        // Filter out completed maintenance requests immediately after fetching
-        const nonCompletedData = data.filter(
-          (item) => item.MaintenanceStatus !== "Completed"
-        );
-
-        // Process non-completed data to get the highest stateID for each requestID
-        const filteredData = nonCompletedData.reduce((acc, item) => {
+        // Process to get the highest stateID for each requestID
+        const highestStateData = data.reduce((acc, item) => {
           const existing = acc[item.RequestID];
           if (!existing || existing.StateID < item.StateID) {
-            acc[item.RequestID] = item; // Store the item if it has a higher StateID or if it's the first occurrence
+            acc[item.RequestID] = item; // Store the item if it has a higher StateID
           }
           return acc;
         }, {});
 
-        setRequestsData(Object.values(filteredData));
+        // Filter out completed maintenance requests after identifying the highest stateID
+        const nonCompletedData = Object.values(highestStateData).filter(
+          (item) => item.MaintenanceStatus !== "Completed"
+        );
+
+        setRequestsData(nonCompletedData);
       } catch (error) {
         console.error("Error fetching maintenance requests:", error);
       }
@@ -116,7 +117,7 @@ export default function MaintenanceCompReq({ onSuccess }) {
 
     try {
       const response = await fetch(`${baseURL}/completemaintenancerequest`, {
-        method: "PUT",
+        method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
@@ -126,9 +127,16 @@ export default function MaintenanceCompReq({ onSuccess }) {
         const responseData = await response.json();
         console.log("Request updated successfully:", responseData);
 
-        if (onSuccess) {
-          onSuccess();
-        }
+        Swal.fire({
+          title: "Success!",
+          text: responseData.message,
+          icon: "success",
+          confirmButtonText: "OK",
+        }).then((result) => {
+          if (result.value && onSuccess) {
+            onSuccess();
+          }
+        });
       } else {
         const responseData = await response.json();
         const message = responseData.message || "Failed to update request.";
@@ -177,6 +185,7 @@ export default function MaintenanceCompReq({ onSuccess }) {
                           aria-label="Numeric ID assigned to each employee"
                           value={currentUser.UserID}
                           onChange={handleChange}
+                          readOnly
                         ></input>
                       </div>
 
@@ -200,6 +209,7 @@ export default function MaintenanceCompReq({ onSuccess }) {
                           aria-label="Name of Department"
                           value={formData.departmentName}
                           onChange={handleChange}
+                          readOnly
                         ></input>
                       </div>
 
@@ -223,6 +233,7 @@ export default function MaintenanceCompReq({ onSuccess }) {
                           aria-label="Name of Attraction"
                           value={formData.attractionName}
                           onChange={handleChange}
+                          readOnly
                         ></input>
                       </div>
 
@@ -245,6 +256,7 @@ export default function MaintenanceCompReq({ onSuccess }) {
                             rows="3"
                             value={formData.reasonForRequest}
                             onChange={handleChange}
+                            readOnly
                           ></textarea>
                         </div>
                       </div>
@@ -277,6 +289,7 @@ export default function MaintenanceCompReq({ onSuccess }) {
                             }
                             className="form-control"
                             dateFormat="MMMM d, yyyy"
+                            readOnly
                           />
                         </div>
                       </div>
@@ -361,7 +374,6 @@ export default function MaintenanceCompReq({ onSuccess }) {
                               aria-label="$"
                               value={formData.estimatedCost}
                               onChange={handleChange}
-                              readOnly
                             ></input>
                           </div>
                         </div>

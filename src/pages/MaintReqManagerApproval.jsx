@@ -4,6 +4,7 @@ import { useAuth } from "../context/AuthContext";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { currentConfig } from "../config";
+import Swal from "sweetalert2";
 
 export default function ApproveMaintReq({ onSuccess }) {
   const [selectedRequest, setSelectedRequest] = useState("");
@@ -112,9 +113,16 @@ export default function ApproveMaintReq({ onSuccess }) {
         const responseData = await response.json();
         console.log("Request approved successfully:", responseData);
 
-        if (onSuccess) {
-          onSuccess();
-        }
+        Swal.fire({
+          title: "Success!",
+          text: responseData.message,
+          icon: "success",
+          confirmButtonText: "OK",
+        }).then((result) => {
+          if (result.value && onSuccess) {
+            onSuccess();
+          }
+        });
       } else {
         const responseData = await response.json();
         const message = "Failed to approve request.";
@@ -138,7 +146,7 @@ export default function ApproveMaintReq({ onSuccess }) {
           <div className="card MaintReq">
             <div className="card-body">
               <h1 className="my-2 text-center" style={{ color: "#2F4858" }}>
-                Update Maintenance Request {selectedRequest}
+                Approve Maintenance Request {selectedRequest}
               </h1>
               <>
                 <form onSubmit={handleSubmit}>
@@ -163,6 +171,7 @@ export default function ApproveMaintReq({ onSuccess }) {
                           aria-label="Numeric ID assigned to each employee"
                           value={currentUser.UserID}
                           onChange={handleChange}
+                          readOnly
                         ></input>
                       </div>
 
@@ -186,6 +195,7 @@ export default function ApproveMaintReq({ onSuccess }) {
                           aria-label="Name of Department"
                           value={formData.departmentName}
                           onChange={handleChange}
+                          readOnly
                         ></input>
                       </div>
 
@@ -209,6 +219,7 @@ export default function ApproveMaintReq({ onSuccess }) {
                           aria-label="Name of Attraction"
                           value={formData.attractionName}
                           onChange={handleChange}
+                          readOnly
                         ></input>
                       </div>
 
@@ -231,6 +242,7 @@ export default function ApproveMaintReq({ onSuccess }) {
                             rows="3"
                             value={formData.reasonForRequest}
                             onChange={handleChange}
+                            readOnly
                           ></textarea>
                         </div>
                       </div>
@@ -263,6 +275,7 @@ export default function ApproveMaintReq({ onSuccess }) {
                             }
                             className="form-control"
                             dateFormat="MMMM d, yyyy"
+                            readOnly
                           />
                         </div>
                       </div>
@@ -293,6 +306,7 @@ export default function ApproveMaintReq({ onSuccess }) {
                             }
                             className="form-control"
                             dateFormat="MMMM d, yyyy"
+                            readOnly
                           />
                         </div>
 
@@ -313,15 +327,18 @@ export default function ApproveMaintReq({ onSuccess }) {
                               className="form-select"
                               name="maintenanceStatus"
                               aria-label="Maintenance Status"
-                              value={formData.maintenanceStatus}
+                              value={"Active"}
                               onChange={handleChange}
                             >
                               <option value="">Select Menu</option>
-                              <option value="Pending">Pending</option>
+                              <option value="Pending" disabled>
+                                Pending
+                              </option>
                               <option value="Active">Active</option>
                               <option value="Completed" disabled>
                                 Completed
                               </option>
+                              readOnly
                             </select>
                           </div>
 
@@ -345,6 +362,7 @@ export default function ApproveMaintReq({ onSuccess }) {
                               aria-label="$"
                               value={formData.estimatedCost}
                               onChange={handleChange}
+                              readOnly
                             ></input>
                           </div>
                         </div>

@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { currentConfig } from "../config";
+import Swal from "sweetalert2";
 
 export default function AddEmployee({ employeeData = {}, onSuccess }) {
   console.log("Received employeeData:", employeeData);
@@ -66,9 +67,16 @@ export default function AddEmployee({ employeeData = {}, onSuccess }) {
         const responseData = await response.json();
         console.log("Employee added successfully:", responseData);
 
-        if (onSuccess) {
-          onSuccess();
-        }
+        Swal.fire({
+          title: "Success!",
+          text: responseData.message,
+          icon: "success",
+          confirmButtonText: "OK",
+        }).then((result) => {
+          if (result.value && onSuccess) {
+            onSuccess();
+          }
+        });
       } else {
         console.error("Failed to add employee.");
       }

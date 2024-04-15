@@ -1,7 +1,7 @@
 import { poolPromise } from "./database.js";
 
 export default async (req, res) => {
-  if (req.method !== "PUT") {
+  if (req.method !== "POST") {
     res.status(405).json({ message: "Method Not Allowed" });
     return;
   }
@@ -23,29 +23,62 @@ export default async (req, res) => {
       req.on("error", (err) => reject(err));
     });
 
-    const { RequestID: requestId, attractionName } = body;
+    const {
+      userID: userId,
+      departmentName: depName,
+      attractionName: nameOfAttraction,
+      reasonForRequest: descriptionOfRequest,
+      submissionDate: date,
+      completionDate: dateCompleted,
+      maintenanceStatus,
+      estimatedCost: expense,
+      StateID: stateId,
+      RequestID: requestId,
+    } = body;
 
-    const updateStatusQuery = `
-      UPDATE Maintenance
-      SET MaintenanceStatus = 'Completed'
-      WHERE RequestID = ?
+    let incrementedStateID = stateId + 1;
+
+    const maintenanceUpdateQuery = `
+      INSERT INTO Maintenance (
+        UserID,
+        DepName,
+        NameOfAttraction,
+        DescriptionOfRequest,
+        Date,
+        DateCompleted,
+        MaintenanceStatus,
+        Expense,
+        StateID,
+        RequestID
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `;
 
     const pool = await poolPromise;
-    const [updateResult] = await pool.query(updateStatusQuery, [requestId]);
-
-    const updateAttractionStatus = `
-    UPDATE Attraction
-    SET AttractionStatus = 'Active'
-    WHERE NameOfAttraction = ?
-    `;
-    const [attractionResult] = await pool.query(updateAttractionStatus, [
-      attractionName,
+    await pool.query(maintenanceUpdateQuery, [
+      userId,
+      depName,
+      nameOfAttraction,
+      descriptionOfRequest,
+      date,
+      dateCompleted,
+      maintenanceStatus,
+      expense,
+      incrementedStateID,
+      requestId,
     ]);
 
-    if (updateResult.affectedRows > 0) {
+    const updateAttractionStatus = `
+      UPDATE Attraction
+      SET AttractionStatus = 'Active'
+      WHERE NameOfAttraction = ?
+    `;
+    const [attractionResult] = await pool.query(updateAttractionStatus, [
+      nameOfAttraction,
+    ]);
+
+    if (attractionResult.affectedRows > 0) {
       res.status(200).json({
-        message: "Maintenance status completed successfully",
+        message: "Maintenance and attraction status updated successfully!",
       });
     } else {
       res.status(404).json({
@@ -53,9 +86,9 @@ export default async (req, res) => {
       });
     }
   } catch (error) {
-    console.error("Failed to complete maintenance status:", error);
+    console.error("Failed to complete maintenance:", error);
     res.status(500).json({
-      message: "Failed to complete maintenance status",
+      message: "Failed to update maintenance and attraction status",
       error: error.message,
     });
   }

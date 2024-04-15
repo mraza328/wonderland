@@ -71,7 +71,7 @@ export default async (req, res) => {
     ]);
 
     res.status(201).json({
-      message: "Employee added successfully",
+      message: "Employee added successfully!",
       employeeId: employeeResult.insertId,
     });
   } catch (error) {

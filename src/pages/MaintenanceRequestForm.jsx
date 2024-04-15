@@ -3,6 +3,7 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { useAuth } from "../context/AuthContext";
 import { currentConfig } from "../config";
+import Swal from "sweetalert2";
 
 export default function MaintenanceRequestForm({ onSuccess }) {
   const { currentUser } = useAuth();
@@ -53,9 +54,31 @@ export default function MaintenanceRequestForm({ onSuccess }) {
         console.log("Request submitted successfully:", responseData);
         setResponseMessage(responseData.message);
         setMessageType("success");
-        alert(responseData.message);
-        if (onSuccess) {
-          onSuccess();
+
+        if (response.status === 200) {
+          // Success message for status 200
+          Swal.fire({
+            title: "Success!",
+            text: responseData.message,
+            icon: "success",
+            confirmButtonText: "OK",
+          }).then((result) => {
+            if (result.value && onSuccess) {
+              onSuccess();
+            }
+          });
+        } else if (response.status === 201) {
+          // Warning message for status 201
+          Swal.fire({
+            title: "Pending!",
+            text: responseData.message,
+            icon: "warning",
+            confirmButtonText: "OK",
+          }).then((result) => {
+            if (result.value && onSuccess) {
+              onSuccess();
+            }
+          });
         }
       } else {
         console.error("Failed to add request:", responseData);

@@ -27,20 +27,20 @@ export default async (req, res) => {
 
     const maintenanceUpdateQuery = `
       UPDATE Maintenance
-      SET ManagerApproval = ?
+      SET ManagerApproval = ?, MaintenanceStatus = 'Active'
       WHERE RequestID = ?
-    `; // Corrected SQL statement
+    `;
 
     const pool = await poolPromise;
     await pool.query(maintenanceUpdateQuery, [managerApproval, requestId]); // Passing parameters correctly
 
     res.status(200).json({
-      message: "Maintenance request approved successfully",
+      message: "Maintenance request approved successfully!",
     });
   } catch (error) {
-    console.error("Failed to update maintenance request:", error);
+    console.error("Failed to approve maintenance request:", error);
     res.status(500).json({
-      message: "Failed to update maintenance request",
+      message: "Failed to approve maintenance request",
       error: error.message,
     });
   }
