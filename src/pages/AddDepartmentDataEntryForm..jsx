@@ -3,7 +3,6 @@ import { currentConfig } from "../config";
 
 export default function AddDepartment() {
   const [name, setName] = useState("");
-  const [hoursWorked, setHoursWorked] = useState('35');
   const [mggrUserID, setMggrUserID] = useState("");
   const [creationSuccess, setCreationSuccess] = useState(false);
 
@@ -15,7 +14,6 @@ export default function AddDepartment() {
     // Submit data to backend or perform further processing
     const formData = {
       name,
-      hoursWorked,
       mggrUserID,
     };
     

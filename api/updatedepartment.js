@@ -9,7 +9,6 @@ export default async (req, res) => {
   try {
     const {
       DepName: depName,
-      HoursWorked: hoursWorked,
       ManagerUserID: mggrUserID,
       OldManagerUserID: oldMggrUserID,
       OldDepartmentName: oldDepartmentName,
