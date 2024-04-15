@@ -8,7 +8,7 @@ export default async (req, res) => {
 
   try {
     const {
-        name, hoursWorked, mggrUserID
+        name, mggrUserID
     } = await new Promise((resolve, reject) => {
       let body = "";
       req.on("data", (chunk) => (body += chunk.toString()));
@@ -17,13 +17,13 @@ export default async (req, res) => {
     });
 
     const departmentQuery =
-      `INSERT INTO Department (DepName, HoursWorked, ManagerUserID) VALUES (?, ?, ?)`;
+      `INSERT INTO Department (DepName, ManagerUserID) VALUES (?, ?)`;
     const employeeQuery =
       `UPDATE Employee as A, Employee as B SET A.position=?, A.DepName=?, A.SupUserID=B.UserID WHERE A.UserID=? AND B.position=?`;
 
     const pool = await poolPromise;
     const [departmentResults] = await pool.query(departmentQuery, [
-        name, hoursWorked, mggrUserID
+        name, mggrUserID
     ]);
 
     const [employeeResults] = await pool.query(employeeQuery, [
