@@ -14,6 +14,11 @@ export default function RideDataReports() {
   const [attractions, setAttractions] = useState([]);
   const [showAttractionTypeSelect, setShowAttractionTypeSelect] =
     useState(false);
+  const [peakActivity, setPeakActivity] = useState(null);
+  const [leastPopularDay, setLeastPopularDay] = useState(null);
+  const [mostPopularRide, setMostPopularRide] = useState(null);
+  const [mostPopularRidePercentage, setMostPopularRidePercentage] =
+    useState(null);
 
   const baseURL = currentConfig.REACT_APP_API_BASE_URL;
 
@@ -57,6 +62,11 @@ export default function RideDataReports() {
       const data = await response.json();
       setRideData(data.reportData);
       setTotalRiders(data.totalRiders);
+      setPeakActivity(data.peakActivity);
+      setLeastPopularDay(data.leastPopularDay);
+      setMostPopularRide(data.mostPopularRide);
+      setMostPopularRidePercentage(data.mostPopularRidePercentage);
+      console.log("Set Data:", data);
     } catch (error) {
       console.error("Error generating report:", error);
     }
@@ -160,12 +170,66 @@ export default function RideDataReports() {
             ))}
             <tr>
               <td colSpan="3">
-                <b>Total "{selectedRideAttraction}" Visits</b>
+                <b>
+                  Total "{selectedRideAttraction}" Visits for Specified Date
+                  Range
+                </b>
               </td>
               <td>
                 <b>{totalRiders}</b>
               </td>
             </tr>
+            {selectedAttractionType === "All" &&
+              selectedRideAttraction === "All" &&
+              peakActivity && (
+                <tr>
+                  <td colSpan="3">
+                    <b>Peak Attraction Activity</b>
+                  </td>
+                  <td>
+                    <b>{peakActivity[0].PeakDate}</b> (Visitors:{" "}
+                    <b>{peakActivity[0].PeakVisitors}</b>)
+                  </td>
+                </tr>
+              )}
+            {selectedAttractionType === "All" &&
+              selectedRideAttraction === "All" &&
+              leastPopularDay && (
+                <tr>
+                  <td colSpan="3">
+                    <b>Least Attraction Activity</b>
+                  </td>
+                  <td>
+                    <b>{leastPopularDay[0].LeastPopularDate}</b> (Visitors:{" "}
+                    <b>{leastPopularDay[0].LeastVisitors}</b>)
+                  </td>
+                </tr>
+              )}
+            {selectedAttractionType === "All" &&
+              selectedRideAttraction === "All" &&
+              mostPopularRide && (
+                <tr>
+                  <td colSpan="3">
+                    <b>Most Popular Ride</b>
+                  </td>
+                  <td>
+                    <b>{mostPopularRide[0].NameOfAttraction}</b> (Total Riders:{" "}
+                    <b>{mostPopularRide[0].TotalRiders}</b>)
+                  </td>
+                </tr>
+              )}
+            {selectedAttractionType === "All" &&
+              selectedRideAttraction === "All" &&
+              mostPopularRidePercentage !== null && (
+                <tr>
+                  <td colSpan="3">
+                    <b>Most Popular Ride Percentage</b>
+                  </td>
+                  <td>
+                    <b>{mostPopularRidePercentage.toFixed(2)}%</b>
+                  </td>
+                </tr>
+              )}
           </tbody>
         </Table>
       )}
