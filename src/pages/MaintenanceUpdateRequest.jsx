@@ -38,21 +38,21 @@ export default function MaintUpReq({ onSuccess }) {
         }
         const data = await response.json();
 
-        // Filter out completed maintenance requests immediately after fetching
-        const nonCompletedData = data.filter(
-          (item) => item.MaintenanceStatus !== "Completed"
-        );
-
-        // Process non-completed data to get the highest stateID for each requestID
-        const filteredData = nonCompletedData.reduce((acc, item) => {
+        // Process to get the highest stateID for each requestID
+        const highestStateData = data.reduce((acc, item) => {
           const existing = acc[item.RequestID];
           if (!existing || existing.StateID < item.StateID) {
-            acc[item.RequestID] = item; // Store the item if it has a higher StateID or if it's the first occurrence
+            acc[item.RequestID] = item; // Store the item if it has a higher StateID
           }
           return acc;
         }, {});
 
-        setRequestsData(Object.values(filteredData));
+        // Filter out completed maintenance requests after identifying the highest stateID
+        const nonCompletedData = Object.values(highestStateData).filter(
+          (item) => item.MaintenanceStatus !== "Completed"
+        );
+
+        setRequestsData(nonCompletedData);
       } catch (error) {
         console.error("Error fetching maintenance requests:", error);
       }
@@ -130,6 +130,24 @@ export default function MaintUpReq({ onSuccess }) {
         console.log("Request updated successfully:", responseData);
         setResponseMessage(responseData.message);
         setMessageType("success");
+
+        const approvalResponse = await fetch(`${baseURL}/approvemaintreq`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(updatedFormData),
+        });
+        const approvalResponseData = await approvalResponse.json();
+        if (
+          approvalResponse.status === 200 ||
+          approvalResponse.status === 201
+        ) {
+          console.log("Request approved successfully:", approvalResponseData);
+        } else {
+          console.error("Failed to approve request:", approvalResponseData);
+        }
+
         if (response.status === 200) {
           // Success message for status 200
           Swal.fire({

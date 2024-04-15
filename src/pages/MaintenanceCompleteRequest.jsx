@@ -11,6 +11,8 @@ export default function MaintenanceCompReq({ onSuccess }) {
   const [requestsData, setRequestsData] = useState([]);
   const { currentUser } = useAuth();
   const [errorMessage, setErrorMessage] = useState("");
+  const [costChangedByUser, setCostChangedByUser] = useState(false);
+
   const baseURL = currentConfig.REACT_APP_API_BASE_URL;
   console.log(currentConfig.REACT_APP_API_BASE_URL);
 
@@ -21,7 +23,7 @@ export default function MaintenanceCompReq({ onSuccess }) {
     reasonForRequest: "",
     submissionDate: new Date(),
     completionDate: new Date(),
-    maintenanceStatus: "",
+    maintenanceStatus: "Completed",
     estimatedCost: "",
     StateID: "",
     RequestID: "",
@@ -98,6 +100,18 @@ export default function MaintenanceCompReq({ onSuccess }) {
   const handleChange = (event) => {
     const { name, value } = event.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
+
+    if (name === "estimatedCost") {
+      setCostChangedByUser(true); // Indicate that the user has changed this field
+
+      if (Number(value) > 5000) {
+        setErrorMessage(
+          "Cost Exceeds $5000, please update the price using Update Maintenance Request"
+        );
+      } else {
+        setErrorMessage("");
+      }
+    }
   };
 
   const requestIDs = requestsData.map((item) => item.RequestID);
@@ -150,6 +164,7 @@ export default function MaintenanceCompReq({ onSuccess }) {
   };
 
   const BackButtonClick = () => {
+    setCostChangedByUser(false);
     setSelectedRequest("");
   };
 
@@ -342,14 +357,8 @@ export default function MaintenanceCompReq({ onSuccess }) {
                               aria-label="Maintenance Status"
                               value={formData.maintenanceStatus}
                               onChange={handleChange}
+                              disabled={true}
                             >
-                              <option value="">Select Menu</option>
-                              <option value="Pending" disabled>
-                                Pending
-                              </option>
-                              <option value="Active" disabled>
-                                Active
-                              </option>
                               <option value="Completed">Completed</option>
                             </select>
                           </div>
@@ -388,7 +397,14 @@ export default function MaintenanceCompReq({ onSuccess }) {
                   )}
 
                   <div className="d-grid gap-2 col-6 mx-auto">
-                    <button className="btn btn-primary" type="submit">
+                    <button
+                      className="btn btn-primary"
+                      type="submit"
+                      disabled={
+                        costChangedByUser &&
+                        Number(formData.estimatedCost) > 5000
+                      }
+                    >
                       Submit
                     </button>
                     <button

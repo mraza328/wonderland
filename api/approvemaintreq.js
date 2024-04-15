@@ -22,17 +22,25 @@ export default async (req, res) => {
       req.on("error", (err) => reject(err)); // Handling streaming errors
     });
 
-    let { ManagerApproval: managerApproval, RequestID: requestId } = body;
+    let {
+      ManagerApproval: managerApproval,
+      RequestID: requestId,
+      StateID: stateId,
+    } = body;
     managerApproval = 0; // Resetting the approval status
 
     const maintenanceUpdateQuery = `
       UPDATE Maintenance
       SET ManagerApproval = ?, MaintenanceStatus = 'Active'
-      WHERE RequestID = ?
+      WHERE RequestID = ? AND StateID = ?
     `;
 
     const pool = await poolPromise;
-    await pool.query(maintenanceUpdateQuery, [managerApproval, requestId]); // Passing parameters correctly
+    await pool.query(maintenanceUpdateQuery, [
+      managerApproval,
+      requestId,
+      stateId,
+    ]); // Passing parameters correctly
 
     res.status(200).json({
       message: "Maintenance request approved successfully!",

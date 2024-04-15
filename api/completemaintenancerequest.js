@@ -37,6 +37,7 @@ export default async (req, res) => {
     } = body;
 
     let incrementedStateID = stateId + 1;
+    let CompStatus = "Completed";
 
     const maintenanceUpdateQuery = `
       INSERT INTO Maintenance (
@@ -61,7 +62,7 @@ export default async (req, res) => {
       descriptionOfRequest,
       date,
       dateCompleted,
-      maintenanceStatus,
+      CompStatus,
       expense,
       incrementedStateID,
       requestId,
