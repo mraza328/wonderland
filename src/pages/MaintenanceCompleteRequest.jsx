@@ -12,6 +12,7 @@ export default function MaintenanceCompReq({ onSuccess }) {
   const { currentUser } = useAuth();
   const [errorMessage, setErrorMessage] = useState("");
   const [costChangedByUser, setCostChangedByUser] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const baseURL = currentConfig.REACT_APP_API_BASE_URL;
   console.log(currentConfig.REACT_APP_API_BASE_URL);
@@ -31,6 +32,7 @@ export default function MaintenanceCompReq({ onSuccess }) {
 
   useEffect(() => {
     const fetchMaintenanceIDs = async () => {
+      setIsLoading(true);
       try {
         const response = await fetch(`${baseURL}/fetchmaintenanceinfo`);
         if (!response.ok) {
@@ -56,10 +58,19 @@ export default function MaintenanceCompReq({ onSuccess }) {
       } catch (error) {
         console.error("Error fetching maintenance requests:", error);
       }
+      setIsLoading(false);
     };
 
     fetchMaintenanceIDs();
   }, []);
+
+  useEffect(() => {
+    if (isLoading) {
+      document.body.style.cursor = "wait";
+    } else {
+      document.body.style.cursor = "default";
+    }
+  }, [isLoading]);
 
   const isValidDate = (date) => {
     return date instanceof Date && !isNaN(date);
@@ -117,6 +128,7 @@ export default function MaintenanceCompReq({ onSuccess }) {
   const requestIDs = requestsData.map((item) => item.RequestID);
 
   const handleSubmit = async (event) => {
+    setIsLoading(true);
     event.preventDefault();
     setErrorMessage("");
     const { submissionDate, completionDate, ...restOfFormData } = formData;
@@ -161,6 +173,7 @@ export default function MaintenanceCompReq({ onSuccess }) {
     } catch (error) {
       console.error("Error submitting maintenance request:", error);
     }
+    setIsLoading(false);
   };
 
   const BackButtonClick = () => {
