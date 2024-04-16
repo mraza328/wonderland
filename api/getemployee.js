@@ -7,27 +7,23 @@ export default async (req, res) => {
   }
 
   try {
-    const {
-      employeeId,
-    } = await new Promise((resolve, reject) => {
+    const { employeeId } = await new Promise((resolve, reject) => {
       let body = "";
       req.on("data", (chunk) => (body += chunk.toString()));
       req.on("end", () => resolve(JSON.parse(body)));
       req.on("error", (err) => reject(err));
     });
 
-    const getEmployeeQuery = `SELECT * FROM Employee WHERE UserID=?`;
+    const getEmployeeQuery = `SELECT * FROM Employee WHERE UserID=? AND Status='Active'`;
 
     const pool = await poolPromise;
-    const [result] = await pool.query(getEmployeeQuery, [
-      employeeId
-    ]);
+    const [result] = await pool.query(getEmployeeQuery, [employeeId]);
 
     if (result.length > 0) {
-        res.status(200).json(result);
-      } else {
-        res.status(404).json({ message: "No employee found" });
-      }
+      res.status(200).json(result);
+    } else {
+      res.status(404).json({ message: "No employee found" });
+    }
   } catch (error) {
     console.error("Failed to get employee:", error);
     res.status(500).json({
