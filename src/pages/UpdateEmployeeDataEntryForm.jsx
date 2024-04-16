@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import { currentConfig } from "../config";
 
 export default function UpdateEmployee() {
+  const [employeeDepartment, setEmployeeDepartment] = useState("");
+  const [employees, setEmployees] = useState([]);
   const [employeeId, setEmployeeId] = useState("");
   const [employeeData, setEmployeeData] = useState(null);
   const [accountData, setAccountData] = useState(null);
@@ -43,6 +45,31 @@ export default function UpdateEmployee() {
 
     fetchDepartments();
   }, []);
+
+  const fetchEmployeesByDepartment = async () => {
+    const response = await fetch(`${baseURL}/getemployeesbydepartment`, {
+      method: "POST",
+      body: JSON.stringify({ department: employeeDepartment }),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    const json = await response.json();
+
+    if (!response.ok) {
+      console.log("Failed to fetch employee data");
+    }
+    if (response.ok) {
+      setEmployees(json);
+    }
+  };
+
+  useEffect(() => {
+    if (employeeDepartment) {
+      fetchEmployeesByDepartment();
+    }
+  }, [employeeDepartment]);
 
   const handleSubmitOne = async (e) => {
     e.preventDefault();
@@ -150,21 +177,51 @@ export default function UpdateEmployee() {
             {isSet && (
               <form onSubmit={handleSubmitOne}>
                 <div className="mb-3 mt-3">
-                  <label htmlFor="employeeID" className="form-label">
-                    Enter Employee ID:
+                  <label htmlFor="employeeDepartment" className="form-label">
+                    Select Employee's Department:
                   </label>
-                  <input
-                    type="number"
-                    className="form-control"
-                    id="employeeID"
-                    name="employeeID"
-                    placeholder="12345"
-                    maxLength="10"
-                    required
-                    value={employeeId}
-                    onChange={(e) => setEmployeeId(e.target.value)}
-                  />
+                  <select
+                    className="form-select"
+                    id="employeeDepartment"
+                    name="employeeDepartment"
+                    value={employeeDepartment}
+                    onChange={(e) => setEmployeeDepartment(e.target.value)}
+                  >
+                    <option value="">Select Department</option>
+                    {departments.map((department, index) => (
+                      <option key={index} value={department.DepName}>
+                        {department.DepName}
+                      </option>
+                    ))}
+                  </select>
                 </div>
+                {employeeDepartment && employees && (
+                  <div className="mb-3 mt-3">
+                    <label htmlFor="employeeId" className="form-label">
+                      Select Employee:
+                    </label>
+                    <select
+                      className="form-select"
+                      id="employeeId"
+                      name="employeeId"
+                      value={employeeId}
+                      onChange={(e) => setEmployeeId(e.target.value)}
+                    >
+                      <option value="">Select Employee</option>
+                      {employees.length > 0 ? (
+                        employees.map((employee) => (
+                          <option key={employee.UserID} value={employee.UserID}>
+                            {`Employee ID: ${employee.UserID} - ${employee.FirstName} ${employee.LastName} (${employee.Position})`}
+                          </option>
+                        ))
+                      ) : (
+                        <option disabled>
+                          No employees found in this department
+                        </option>
+                      )}
+                    </select>
+                  </div>
+                )}
                 <div className="flex flex-wrap -mx-3 mt-6">
                   <div className="w-full px-3 text-center">
                     <button
