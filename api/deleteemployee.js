@@ -10,26 +10,52 @@ export default async (req, res) => {
     const { employeeID, status } = await new Promise((resolve, reject) => {
       let body = "";
       req.on("data", (chunk) => (body += chunk.toString()));
-      req.on("end", () => resolve(JSON.parse(body)));
+      req.on("end", () => {
+        try {
+          resolve(JSON.parse(body));
+        } catch (err) {
+          reject(err);
+        }
+      });
       req.on("error", (err) => reject(err));
     });
 
     const query = `UPDATE Employee SET Status=? WHERE UserID=?`;
+    const accountStatusQuery = `UPDATE Account SET AccountStatus = 'Inactive' WHERE UserID = ?`;
 
     const pool = await poolPromise;
-    const [result] = await pool.query(query, [status, employeeID]);
+    const connection = await pool.getConnection();
+    try {
+      await connection.beginTransaction();
 
-    if (result.affectedRows > 0) {
-      res.status(200).json({
-        message: "Employee deleted successfully",
-      });
-    } else {
-      res.status(404).json({
-        message: "Employee not found, please enter a valid Employee ID.",
-      });
+      const [employeeResult] = await connection.query(query, [
+        status,
+        employeeID,
+      ]);
+      const [accountResult] = await connection.query(accountStatusQuery, [
+        employeeID,
+      ]);
+
+      if (employeeResult.affectedRows > 0 && accountResult.affectedRows > 0) {
+        await connection.commit();
+        res.status(200).json({
+          message: "Employee and account status updated successfully",
+        });
+      } else {
+        await connection.rollback();
+        res.status(404).json({
+          message:
+            "Employee or account not found, please enter a valid Employee ID.",
+        });
+      }
+    } catch (error) {
+      await connection.rollback();
+      throw error; // This error will be caught by the outer catch block
+    } finally {
+      connection.release();
     }
   } catch (error) {
-    console.error("Failed to delete employee:", error);
+    console.error("Failed to update employee and account:", error);
     res.status(500).json({
       message: "Server error",
       error: error.message,

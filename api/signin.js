@@ -27,6 +27,11 @@ export default async (req, res) => {
 
     const user = results[0];
 
+    if (user.AccountStatus === "Inactive") {
+      res.status(403).json({ message: "Account is Inactive" });
+      return;
+    }
+
     // Compare password asynchronously
     const passwordIsValid = await bcrypt.compare(password, user.Password);
 
