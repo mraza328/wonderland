@@ -187,6 +187,13 @@ export default function MaintUpReq({ onSuccess }) {
           });
         }
         setIsLoading(false);
+      } else if (response.status === 409) {
+        Swal.fire({
+          title: "Duplicate Entry!",
+          text: "Please edit the request before submitting.",
+          icon: "error",
+          confirmButtonText: "OK",
+        });
       } else {
         console.error("Failed to update request:", responseData);
         setResponseMessage("Failed to update request.");
