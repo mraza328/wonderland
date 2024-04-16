@@ -143,7 +143,7 @@ export default function MaintUpReq({ onSuccess }) {
         setMessageType("success");
 
         const approvalResponse = await fetch(`${baseURL}/approvemaintreq`, {
-          method: "POST",
+          method: "PUT",
           headers: {
             "Content-Type": "application/json",
           },
