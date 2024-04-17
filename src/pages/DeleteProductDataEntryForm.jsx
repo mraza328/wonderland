@@ -9,6 +9,7 @@ export default function DeleteProduct() {
   const [products, setProducts] = useState(null);
   const [isSet, setIsSet] = useState(false);
   const [creationSuccess, setCreationSuccess] = useState(false);
+  const [showConfirmation, setShowConfirmation] = useState(false);
 
   const baseURL = currentConfig.REACT_APP_API_BASE_URL;
 
@@ -96,7 +97,7 @@ export default function DeleteProduct() {
                     <option value="">Select product...</option>
                     {products.map((product, index) => (
                       <option key={index} value={product.ItemID}>
-                        {product.NameOfItem}
+                        {`${product.NameOfItem} (${product.NameOfVendor})`}
                       </option>
                     ))}
                   </select>
@@ -119,13 +120,35 @@ export default function DeleteProduct() {
                 <div className="flex flex-wrap -mx-3 mt-6">
                   <div className="w-full px-3 text-center">
                     <button
-                      id="button"
-                      type="submit"
+                      type="button"
                       className="btn btn-danger"
+                      onClick={() => setShowConfirmation(true)}
                     >
                       Delete Product
                     </button>
                   </div>
+                  {showConfirmation && (
+                    <div className="w-full px-3 text-center mt-3">
+                      <p>
+                        Are you sure you want to delete this product? This
+                        action is permanent.
+                      </p>
+                      <button
+                        type="button"
+                        className="btn btn-danger mx-2"
+                        onClick={handleSubmit}
+                      >
+                        Confirm Delete Product
+                      </button>
+                      <button
+                        type="button"
+                        className="btn btn-secondary mx-2"
+                        onClick={() => setShowConfirmation(false)}
+                      >
+                        Cancel
+                      </button>
+                    </div>
+                  )}
                 </div>
               </form>
             )}
