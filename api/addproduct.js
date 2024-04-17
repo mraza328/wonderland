@@ -20,13 +20,33 @@ export default async (req, res) => {
     let errors = [];
     let errorFields = [];
 
+    if(!name){
+      errors.push("Name is required.");
+      errorFields.push("name");
+    }
+
     if (name.length > 100) {
       errors.push("Name must be 100 characters or less");
       errorFields.push("name");
     }
 
+    if(!description){
+      errors.push("Description is required.");
+      errorFields.push("description");
+    }
+
+    if (description.length > 255) {
+      errors.push("Description must be 255 characters or less");
+      errorFields.push("description");
+    }
+
     if (acquisitionCost < 0) {
       errors.push("Acquisition Cost must be non-negative");
+      errorFields.push("acquisitionCost");
+    }
+
+    if (acquisitionCost >= 1000) {
+      errors.push("Acquisition Cost must be below $1000");
       errorFields.push("acquisitionCost");
     }
 
@@ -35,8 +55,23 @@ export default async (req, res) => {
       errorFields.push("price");
     }
 
+    if (price >= 1000) {
+      errors.push("Acquisition Cost must be below $1000");
+      errorFields.push("acquisitionCost");
+    }
+
     if (profit < 0) {
       errors.push("Sale Price must be larger than Acquisition Cost");
+      if(!errorFields.includes("price")){
+        errorFields.push("price");
+      }
+      if(!errorFields.includes("acquisitionCost")){
+        errorFields.push("acquisitionCost");
+      }
+    }
+
+    if (profit >= 1000) {
+      errors.push("Profit must be below $1000");
       if(!errorFields.includes("price")){
         errorFields.push("price");
       }

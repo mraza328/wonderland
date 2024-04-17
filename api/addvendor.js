@@ -28,6 +28,11 @@ export default async (req, res) => {
         errorFields.push("name");
     }
 
+    if (name.length > 100) {
+      errors.push("Name must be 100 characters or less");
+      errorFields.push("name");
+    }
+
     if (!type) {
         errors.push("Type is required.");
         errorFields.push("type");

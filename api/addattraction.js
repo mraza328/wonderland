@@ -28,6 +28,16 @@ export default async (req, res) => {
     let errors = [];
     let errorFields = [];
 
+    if(!name){
+      errors.push("Name is required.");
+      errorFields.push("name");
+    }
+
+    if (name.length > 100) {
+      errors.push("Name must be 100 characters or less");
+      errorFields.push("name");
+    }
+
     // Operating hours validation
     if (startOperatingHour >= endOperatingHour) {
       errors.push("Start Operating Hour should be before End Operating Hour");
@@ -70,6 +80,17 @@ export default async (req, res) => {
     if (capacity < 0)
       errors.push("Capacity must be non-negative") &&
         errorFields.push("capacity");
+
+    if(height >= 100)
+    {
+      errors.push("Height Requirement must be below 100 inches");
+      errorFields.push("height")
+    }
+    if(weight >= 1000)
+    {
+      errors.push("Weight Requirement must be below 1000 pounds");
+      errorFields.push("weight")
+    }
 
     if (errors.length > 0) {
       res.status(400).json({ errors, errorFields });

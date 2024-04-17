@@ -17,6 +17,25 @@ export default async (req, res) => {
       req.on("error", (err) => reject(err));
     });
 
+    // Validations
+    let errors = [];
+    let errorFields = [];
+
+    if (!NameOfVendor) {
+        errors.push("Name is required.");
+        errorFields.push("name");
+    }
+
+    if (NameOfVendor.length > 100) {
+      errors.push("Name must be 100 characters or less");
+      errorFields.push("name");
+    }
+
+    if (errors.length > 0) {
+      res.status(400).json({ errors, errorFields });
+      return;
+    }
+
     const query = `UPDATE Vendor SET NameOfVendor=? WHERE NameOfVendor=?`;
 
     const pool = await poolPromise;
