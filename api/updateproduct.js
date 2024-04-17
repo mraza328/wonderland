@@ -28,9 +28,25 @@ export default async (req, res) => {
 
     const profit = SalePrice - AcquisitionCost;
 
+
+    if(!NameOfItem){
+      errors.push("Name is required.");
+      errorFields.push("name");
+    }
+
     if (NameOfItem.length > 100) {
         errors.push("Name must be 100 characters or less");
         errorFields.push("name");
+      }
+
+      if(!Description){
+        errors.push("Description is required.");
+        errorFields.push("description");
+      }
+  
+      if (Description.length > 255) {
+        errors.push("Description must be 255 characters or less");
+        errorFields.push("description");
       }
   
       if (AcquisitionCost < 0) {
@@ -42,9 +58,29 @@ export default async (req, res) => {
         errors.push("Sale Price must be non-negative");
         errorFields.push("price");
       }
+
+      if (AcquisitionCost >= 1000) {
+        errors.push("Acquisition Cost must be less than $1000");
+        errorFields.push("acquisitionCost");
+      }
+  
+      if (SalePrice >= 1000) {
+        errors.push("Sale Price must be less than $1000");
+        errorFields.push("price");
+      }
   
       if (profit < 0) {
         errors.push("Sale Price must be larger than Acquisition Cost");
+        if(!errorFields.includes("price")){
+          errorFields.push("price");
+        }
+        if(!errorFields.includes("acquisitionCost")){
+          errorFields.push("acquisitionCost");
+        }
+      }
+      
+      if (profit >= 1000) {
+        errors.push("Profit must be below $1000");
         if(!errorFields.includes("price")){
           errorFields.push("price");
         }
