@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { currentConfig } from "../config";
+import { useAuth } from "../context/AuthContext";
 
 export default function UpdateEmployee() {
+  const { currentUser } = useAuth();
+  console.log("Current user:", currentUser);
   const [employeeDepartment, setEmployeeDepartment] = useState("");
   const [employees, setEmployees] = useState([]);
   const [employeeId, setEmployeeId] = useState("");
@@ -170,8 +173,8 @@ export default function UpdateEmployee() {
               Update Employee
             </h1>
             <div className="text-center">
-              Please enter the Employee ID of the Employee you would like to
-              update.
+              Please select the employee you want to update from the dropdown
+              below.
             </div>
 
             {isSet && (
@@ -195,7 +198,7 @@ export default function UpdateEmployee() {
                     ))}
                   </select>
                 </div>
-                {employeeDepartment && employees && (
+                {employeeDepartment && (
                   <div className="mb-3 mt-3">
                     <label htmlFor="employeeId" className="form-label">
                       Select Employee:
@@ -208,12 +211,37 @@ export default function UpdateEmployee() {
                       onChange={(e) => setEmployeeId(e.target.value)}
                     >
                       <option value="">Select Employee</option>
-                      {employees.length > 0 ? (
-                        employees.map((employee) => (
-                          <option key={employee.UserID} value={employee.UserID}>
-                            {`Employee ID: ${employee.UserID} - ${employee.FirstName} ${employee.LastName} (${employee.Position})`}
-                          </option>
-                        ))
+                      {employees.filter((employee) => {
+                        // Check if the current user is a department manager
+                        const isDepartmentManager =
+                          currentUser &&
+                          currentUser.Position === "Department Manager";
+                        // Filter out department managers if the current user is also a department manager
+                        return !(
+                          isDepartmentManager &&
+                          employee.Position === "Department Manager"
+                        );
+                      }).length > 0 ? (
+                        employees
+                          .filter((employee) => {
+                            // Check if the current user is a department manager
+                            const isDepartmentManager =
+                              currentUser &&
+                              currentUser.Position === "Department Manager";
+                            // Filter out department managers if the current user is also a department manager
+                            return !(
+                              isDepartmentManager &&
+                              employee.Position === "Department Manager"
+                            );
+                          })
+                          .map((employee) => (
+                            <option
+                              key={employee.UserID}
+                              value={employee.UserID}
+                            >
+                              {`Employee ID: ${employee.UserID} - ${employee.FirstName} ${employee.LastName} (${employee.Position})`}
+                            </option>
+                          ))
                       ) : (
                         <option disabled>
                           No employees found in this department
