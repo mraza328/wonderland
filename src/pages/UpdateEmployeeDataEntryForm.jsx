@@ -4,7 +4,6 @@ import { useAuth } from "../context/AuthContext";
 
 export default function UpdateEmployee() {
   const { currentUser } = useAuth();
-  console.log("Current user:", currentUser);
   const [employeeDepartment, setEmployeeDepartment] = useState("");
   const [employees, setEmployees] = useState([]);
   const [employeeId, setEmployeeId] = useState("");
@@ -239,7 +238,7 @@ export default function UpdateEmployee() {
                               key={employee.UserID}
                               value={employee.UserID}
                             >
-                              {`Employee ID: ${employee.UserID} - ${employee.FirstName} ${employee.LastName} (${employee.Position})`}
+                              {`Employee ID: ${employee.UserID} | ${employee.FirstName} ${employee.LastName} (${employee.Position})`}
                             </option>
                           ))
                       ) : (

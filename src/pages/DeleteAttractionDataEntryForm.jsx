@@ -107,7 +107,7 @@ export default function DeleteAttraction() {
                     <button
                       id="button"
                       type="submit"
-                      className="btn btn-primary"
+                      className="btn btn-danger"
                     >
                       Delete Attraction
                     </button>

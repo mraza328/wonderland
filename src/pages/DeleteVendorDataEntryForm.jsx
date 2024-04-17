@@ -120,7 +120,7 @@ export default function DeleteVendor() {
                     <button
                       id="button"
                       type="submit"
-                      className="btn btn-primary"
+                      className="btn btn-danger"
                     >
                       Delete Vendor
                     </button>
