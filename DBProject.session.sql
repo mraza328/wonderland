@@ -334,6 +334,11 @@ UPDATE Attraction
 SET AttractionType = 'Ride'
 WHERE NameOfAttraction = 'The Drop';
 
+-- @block Update Date DateSold
+UPDATE Sale
+SET DateSold = DATE_SUB(DateValid, INTERVAL 1 DAY)
+WHERE DateSold > DateValid;
+
 -- @block
 SELECT *
 FROM account 
