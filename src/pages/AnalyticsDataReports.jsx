@@ -19,8 +19,19 @@ export default function RideDataReports() {
   const [mostPopularRide, setMostPopularRide] = useState(null);
   const [mostPopularRidePercentage, setMostPopularRidePercentage] =
     useState(null);
+  const [selectedVendorType, setSelectedVendorType] = useState("All");
+  const [vendors, setVendors] = useState([]);
+  const [selectedVendor, setSelectedVendor] = useState("All");
+  const [vendorProducts, setVendorProducts] = useState([]);
+  const [selectedProduct, setSelectedProduct] = useState("All");
+  const [vendorData, setVendorData] = useState([]);
+  const [totalSales, setTotalSales] = useState(0);
 
   const baseURL = currentConfig.REACT_APP_API_BASE_URL;
+
+  useEffect(() => {
+    setShowAttractionTypeSelect(selectedRideAttraction === "All");
+  }, [selectedRideAttraction]);
 
   useEffect(() => {
     fetchAttractions();
@@ -40,9 +51,45 @@ export default function RideDataReports() {
     }
   };
 
-  const handleGenerateReport = async () => {
+  useEffect(() => {
+    fetchVendors();
+  }, []);
+
+  const fetchVendors = async () => {
     try {
-      const response = await fetch(`${baseURL}/analyticsreport`, {
+      const response = await fetch(`${baseURL}/getallvendors`);
+      if (!response.ok) {
+        throw new Error("Failed to fetch vendor data");
+      }
+      const vendorsData = await response.json();
+      console.log("Vendors Data:", vendorsData);
+      setVendors(vendorsData);
+    } catch (error) {
+      console.error("Error fetching vendors data:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchProductsByVendor();
+  }, []);
+
+  const fetchProductsByVendor = async () => {
+    try {
+      const response = await fetch(`${baseURL}/getallproducts`);
+      if (!response.ok) {
+        throw new Error("Failed to fetch vendor products data");
+      }
+      const vendorProductsData = await response.json();
+      console.log("Vendor Products Data:", vendorProductsData);
+      setVendorProducts(vendorProductsData);
+    } catch (error) {
+      console.error("Error fetching vendor products data:", error);
+    }
+  };
+
+  const handleGenerateAttractionReport = async () => {
+    try {
+      const response = await fetch(`${baseURL}/attractionsanalyticsreport`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -72,13 +119,37 @@ export default function RideDataReports() {
     }
   };
 
-  useEffect(() => {
-    setShowAttractionTypeSelect(selectedRideAttraction === "All");
-  }, [selectedRideAttraction]);
+  const handleGenerateVendorReport = async () => {
+    try {
+      const response = await fetch(`${baseURL}/vendorsanalyticsreport`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          startDate,
+          endDate,
+          selectedVendor,
+          selectedVendorType,
+          selectedProduct,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to generate report");
+      }
+      const data = await response.json();
+      setVendorData(data.reportData);
+      setTotalSales(data.totalSales);
+      console.log("Set Data:", data);
+    } catch (error) {
+      console.error("Error generating report:", error);
+    }
+  };
 
   return (
     <div className="ride-report-container">
-      <h1>Attraction Analytics Data Report Page</h1>
+      <h1>Analytics Data Report Page</h1>
       <Form className="mt-3">
         <Form.Group controlId="startDate" className="mb-3">
           <Form.Label>Report Start Date</Form.Label>
@@ -103,6 +174,7 @@ export default function RideDataReports() {
             onChange={(e) => setSelectedAnalyticsType(e.target.value)}
           >
             <option value="Attractions">Attractions</option>
+            <option value="Vendors">Vendors</option>
           </Form.Select>
         </Form.Group>
         {selectedAnalyticsType === "Attractions" && (
@@ -139,13 +211,83 @@ export default function RideDataReports() {
             )}
           </>
         )}
-        <Button
-          variant="primary"
-          onClick={handleGenerateReport}
-          className="mb-3"
-        >
-          Generate Report
-        </Button>
+        {selectedAnalyticsType === "Vendors" && (
+          <>
+            <Form.Group controlId="selectedVendor" className="mb-3">
+              <Form.Label>Select Vendor</Form.Label>
+              <Form.Select
+                value={selectedVendor}
+                onChange={(e) => {
+                  setSelectedVendor(e.target.value);
+                  setSelectedProduct("All");
+                }}
+              >
+                <option value="All">All Vendors</option>
+                {vendors.map((vendor) => (
+                  <option key={vendor.NameOfVendor} value={vendor.NameOfVendor}>
+                    {vendor.NameOfVendor}
+                  </option>
+                ))}
+              </Form.Select>
+            </Form.Group>
+            {selectedVendor === "All" && (
+              <Form.Group controlId="selectedVendorType" className="mb-3">
+                <Form.Label>Select Vendor Type</Form.Label>
+                <Form.Select
+                  value={selectedVendorType}
+                  onChange={(e) => setSelectedVendorType(e.target.value)}
+                >
+                  <option value="All">All Types</option>
+                  <option value="Food">Food</option>
+                  <option value="Merchandise">Merchandise</option>
+                </Form.Select>
+              </Form.Group>
+            )}
+            {selectedVendor !== "All" && (
+              <Form.Group controlId="selectedProduct" className="mb-3">
+                <Form.Label>Select Product</Form.Label>
+                <Form.Select
+                  value={selectedProduct}
+                  onChange={(e) => setSelectedProduct(e.target.value)}
+                >
+                  <option value="All">All {selectedVendor} Products</option>
+                  {vendorProducts
+                    .filter(
+                      (product) => product.NameOfVendor === selectedVendor
+                    )
+                    .map((product) => (
+                      <option key={product.ItemID} value={product.ItemID}>
+                        {product.NameOfItem}
+                      </option>
+                    ))}
+                  {vendorProducts.filter(
+                    (product) => product.NameOfVendor === selectedVendor
+                  ).length === 0 && (
+                    <option disabled>No products in vendor provided</option>
+                  )}
+                </Form.Select>
+              </Form.Group>
+            )}
+          </>
+        )}
+        {selectedAnalyticsType === "Attractions" && (
+          <Button
+            variant="primary"
+            onClick={handleGenerateAttractionReport}
+            className="mb-3"
+          >
+            Generate Attraction Report
+          </Button>
+        )}
+        {selectedAnalyticsType === "Vendors" && (
+          <Button
+            variant="primary"
+            onClick={handleGenerateVendorReport}
+            className="mb-3"
+          >
+            Generate Vendor Report
+          </Button>
+        )}
       </Form>
       <hr />
       <h2>Report</h2>
@@ -171,8 +313,8 @@ export default function RideDataReports() {
             <tr>
               <td colSpan="3">
                 <b>
-                  Total "{selectedRideAttraction}" Visits for Specified Date
-                  Range
+                  Total "{selectedRideAttraction}" Visits for Specified
+                  Parameters
                 </b>
               </td>
               <td>
@@ -184,10 +326,10 @@ export default function RideDataReports() {
               peakActivity && (
                 <tr>
                   <td colSpan="3">
-                    <b>Peak Attraction Activity</b>
+                    <b>Most Popular Day</b>
                   </td>
                   <td>
-                    <b>{peakActivity[0].PeakDate}</b> (Visitors:{" "}
+                    <b>{peakActivity[0].PeakDate}</b> (Riders:{" "}
                     <b>{peakActivity[0].PeakVisitors}</b>)
                   </td>
                 </tr>
@@ -197,10 +339,10 @@ export default function RideDataReports() {
               leastPopularDay && (
                 <tr>
                   <td colSpan="3">
-                    <b>Least Attraction Activity</b>
+                    <b>Least Popular Day</b>
                   </td>
                   <td>
-                    <b>{leastPopularDay[0].LeastPopularDate}</b> (Visitors:{" "}
+                    <b>{leastPopularDay[0].LeastPopularDate}</b> (Riders:{" "}
                     <b>{leastPopularDay[0].LeastVisitors}</b>)
                   </td>
                 </tr>
@@ -230,6 +372,38 @@ export default function RideDataReports() {
                   </td>
                 </tr>
               )}
+          </tbody>
+        </Table>
+      )}
+      {selectedAnalyticsType === "Vendors" && (
+        <Table striped bordered hover>
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Vendor Name</th>
+              <th>Vendor Type</th>
+              <th>Product Name</th>
+              <th>Total Sales</th>
+            </tr>
+          </thead>
+          <tbody>
+            {vendorData.map((entry, index) => (
+              <tr key={index}>
+                <td>{entry.Date}</td>
+                <td>{entry.NameOfVendor}</td>
+                <td>{entry.VendorType}</td>
+                <td>{entry.ProductName}</td>
+                <td>${entry.TotalSales}</td>
+              </tr>
+            ))}
+            <tr>
+              <td colSpan="4">
+                <b>Total "{selectedVendor}" Sales for Specified Parameters</b>
+              </td>
+              <td>
+                <b>${totalSales}</b>
+              </td>
+            </tr>
           </tbody>
         </Table>
       )}
