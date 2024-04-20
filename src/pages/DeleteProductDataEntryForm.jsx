@@ -3,19 +3,20 @@ import { currentConfig } from "../config";
 
 export default function DeleteProduct() {
   const [itemID, setItemID] = useState("");
-  const [productName, setProductName] = useState("");
   const [status, setStatus] = useState("Inactive");
-
-  const [products, setProducts] = useState(null);
+  const [products, setProducts] = useState([]);
+  const [vendorName, setVendorName] = useState("");
+  const [vendors, setVendors] = useState([]);
   const [isSet, setIsSet] = useState(false);
   const [creationSuccess, setCreationSuccess] = useState(false);
+  const [showConfirmation, setShowConfirmation] = useState(false);
+  const [reason, setReason] = useState("");
 
   const baseURL = currentConfig.REACT_APP_API_BASE_URL;
 
   useEffect(() => {
-    // Fetch product data from your backend based on the productID to be implemented later (backend)
-    const fetchProducts = async () => {
-      const response = await fetch(`${baseURL}/getallproducts`, {
+    const fetchVendors = async () => {
+      const response = await fetch(`${baseURL}/getallvendors`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -26,16 +27,45 @@ export default function DeleteProduct() {
       console.log(json);
 
       if (!response.ok) {
-        console.log("Failed to fetch product data");
+        console.log("Failed to fetch vendor data");
       }
       if (response.ok) {
-        setProducts(json);
+        setVendors(json);
         setIsSet(true);
       }
     };
 
-    fetchProducts();
+    fetchVendors();
   }, []);
+
+  const fetchProductsByVendor = async () => {
+    try {
+      const response = await fetch(`${baseURL}/getproductsbyvendor`, {
+        method: "POST",
+        body: JSON.stringify({ vendorName }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (!response.ok) {
+        console.log("Failed to fetch products for the selected vendor");
+        return;
+      }
+
+      const json = await response.json();
+      console.log("Products:", json); // Log the fetched products
+      setProducts(json);
+    } catch (error) {
+      console.error("Error fetching products:", error.message);
+    }
+  };
+
+  useEffect(() => {
+    if (vendorName) {
+      fetchProductsByVendor();
+    }
+  }, [vendorName]);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -44,6 +74,7 @@ export default function DeleteProduct() {
     const formData = {
       itemID,
       status,
+      reason,
     };
 
     try {
@@ -82,50 +113,102 @@ export default function DeleteProduct() {
             {isSet && (
               <form onSubmit={handleSubmit}>
                 <div className="mb-3 mt-3">
-                  <label htmlFor="itemID" className="form-label">
-                    Select Product Name:
+                  <label htmlFor="vendorName" className="form-label">
+                    Select Product's Vendor:
                   </label>
                   <select
                     className="form-select"
-                    id="itemID"
-                    name="itemID"
+                    id="vendorName"
+                    name="vendorName"
                     required
-                    value={itemID}
-                    onChange={(e) => setItemID(e.target.value)}
+                    value={vendorName}
+                    onChange={(e) => setVendorName(e.target.value)}
                   >
-                    <option value="">Select product...</option>
-                    {products.map((product, index) => (
-                      <option key={index} value={product.ItemID}>
-                        {product.NameOfItem}
+                    <option value="">Select vendor...</option>
+                    {vendors.map((vendor, index) => (
+                      <option key={index} value={vendor.NameOfVendor}>
+                        {`${vendor.NameOfVendor} (${vendor.VendorType})`}
                       </option>
                     ))}
                   </select>
                 </div>
-                <div className="mb-3 mt-3">
-                  <label htmlFor="status" className="form-label">
-                    Reason:
-                  </label>
-                  <input
-                    type="text"
-                    className="form-control"
-                    id="status"
-                    name="status"
-                    readOnly
-                    required
-                    value={status}
-                    onChange={(e) => setStatus(e.target.value)}
-                  />
-                </div>
+                {vendorName && (
+                  <div className="mb-3 mt-3">
+                    <label htmlFor="itemID" className="form-label">
+                      Select Product Name:
+                    </label>
+                    <select
+                      className="form-select"
+                      id="itemID"
+                      name="itemID"
+                      required
+                      value={itemID}
+                      onChange={(e) => setItemID(e.target.value)}
+                    >
+                      <option value="">Select product...</option>
+                      {products.length === 0 ? (
+                        <option value="" disabled>
+                          No products found in this department
+                        </option>
+                      ) : (
+                        products.map((product, index) => (
+                          <option key={index} value={product.ItemID}>
+                            {product.NameOfItem}
+                          </option>
+                        ))
+                      )}
+                    </select>
+                  </div>
+                )}
+                {vendorName && itemID && (
+                  <div className="mb-3 mt-3">
+                    <label htmlFor="status" className="form-label">
+                      Reason:
+                    </label>
+                    <input
+                      type="text"
+                      className="form-control"
+                      id="status"
+                      name="status"
+                      readOnly
+                      required
+                      value={status}
+                      onChange={(e) => setStatus(e.target.value)}
+                    />
+                  </div>
+                )}
                 <div className="flex flex-wrap -mx-3 mt-6">
                   <div className="w-full px-3 text-center">
                     <button
-                      id="button"
-                      type="submit"
-                      className="btn btn-primary"
+                      type="button"
+                      className="btn btn-danger"
+                      onClick={() => setShowConfirmation(true)}
                     >
                       Delete Product
                     </button>
                   </div>
+                  {showConfirmation && (
+                    <div className="w-full px-3 text-center mt-3">
+                      <p>
+                        Are you sure you want to delete this product? This
+                        action is permanent.
+                      </p>
+                      <button
+                        type="button"
+                        className="btn btn-danger mx-2"
+                        onClick={handleSubmit}
+                      >
+                        Confirm Delete Product
+                      </button>
+                      <button
+                        type="button"
+                        className="btn btn-secondary mx-2"
+                        onClick={() => setShowConfirmation(false)}
+                      >
+                        Cancel
+                      </button>
+                    </div>
+                  )}
                 </div>
               </form>
             )}

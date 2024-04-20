@@ -80,9 +80,14 @@ export default async (req, res) => {
     }
   } catch (error) {
     console.error("Failed to submit maintenance request:", error);
-    res.status(500).json({
-      message: "Failed to submit maintenance request",
-      error: error.message,
-    });
+    if (error.sqlState === "45000") {
+      res.status(409).json({
+        message: error.message,
+      });
+    } else {
+      res.status(500).json({
+        message: "An error occurred while processing your request.",
+      });
+    }
   }
 };

@@ -27,6 +27,16 @@ export default async (req, res) => {
     let errors = [];
     let errorFields = [];
 
+    if(!nameOfAttraction){
+      errors.push("Name is required.");
+      errorFields.push("name");
+    }
+
+    if (nameOfAttraction.length > 100) {
+      errors.push("Name must be 100 characters or less");
+      errorFields.push("name");
+    }
+
     if (startOperatingHour >= endOperatingHour) {
       errors.push("Start Operating Hour should be before End Operating Hour");
       errorFields.push("startOperatingHour", "endOperatingHour");
@@ -42,7 +52,7 @@ export default async (req, res) => {
       }
     }
 
-    const parkClose = "19:01";
+    const parkClose = "19:00";
     if (endOperatingHour > parkClose) {
       errors.push(
         "End Operating Hour cannot be after when the park closes: 7PM"
@@ -66,6 +76,17 @@ export default async (req, res) => {
     if (capacity < 0)
       errors.push("Capacity must be non-negative") &&
         errorFields.push("capacity");
+
+        if(heightRequirementInches >= 100)
+        {
+          errors.push("Height Requirement must be below 100 inches");
+          errorFields.push("height")
+        }
+        if(weightRequirementPounds >= 1000)
+        {
+          errors.push("Weight Requirement must be below 1000 pounds");
+          errorFields.push("weight")
+        }
 
     if (errors.length > 0) {
       res.status(400).json({ errors, errorFields });

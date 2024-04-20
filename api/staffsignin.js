@@ -26,6 +26,12 @@ export default async function handleStaffSignIn(req, res) {
     }
 
     const user = results[0];
+
+    if (user.AccountStatus === "Inactive") {
+      res.status(403).json({ message: "Account is Inactive" });
+      return;
+    }
+
     const passwordIsValid = await bcrypt.compare(password, user.Password);
 
     if (!passwordIsValid) {
