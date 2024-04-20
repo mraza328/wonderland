@@ -65,23 +65,25 @@ export default function RevenueDataReports() {
 
   const handleGenerateReport = () => {
     let filteredData = [...fetchedData];
-    const startDateObject = new Date(startDate);
-    const endDateObject = new Date(endDate);
-    const startDateWithoutTime = new Date(
-      startDateObject.getFullYear(),
-      startDateObject.getMonth(),
-      startDateObject.getDate() + 1
-    );
-    const endDateWithoutTime = new Date(
-      endDateObject.getFullYear(),
-      endDateObject.getMonth(),
-      endDateObject.getDate() + 1
-    );
-    filteredData = filteredData.filter(
-      (entry) =>
-        new Date(entry.Date) >= new Date(startDateWithoutTime) &&
-        new Date(entry.Date) <= new Date(endDateWithoutTime)
-    );
+    if (startDate && endDate) {
+      const startDateObject = new Date(startDate);
+      const endDateObject = new Date(endDate);
+      const startDateWithoutTime = new Date(
+        startDateObject.getFullYear(),
+        startDateObject.getMonth(),
+        startDateObject.getDate() + 1
+      );
+      const endDateWithoutTime = new Date(
+        endDateObject.getFullYear(),
+        endDateObject.getMonth(),
+        endDateObject.getDate() + 1
+      );
+      filteredData = filteredData.filter(
+        (entry) =>
+          new Date(entry.Date) >= new Date(startDateWithoutTime) &&
+          new Date(entry.Date) <= new Date(endDateWithoutTime)
+      );
+    }
 
     if (revenueSource !== "All") {
       filteredData = filteredData.filter(

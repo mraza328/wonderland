@@ -40,23 +40,25 @@ export default function TicketDataReports() {
 
   useEffect(() => {
     let filteredData = [...fetchedData];
-    const startDateObject = new Date(startDate);
-    const endDateObject = new Date(endDate);
-    const startDateWithoutTime = new Date(
-      startDateObject.getFullYear(),
-      startDateObject.getMonth(),
-      startDateObject.getDate() + 1
-    );
-    const endDateWithoutTime = new Date(
-      endDateObject.getFullYear(),
-      endDateObject.getMonth(),
-      endDateObject.getDate() + 1
-    );
-    filteredData = filteredData.filter(
-      (entry) =>
-        new Date(entry.DateSold) >= new Date(startDateWithoutTime) &&
-        new Date(entry.DateSold) <= new Date(endDateWithoutTime)
-    );
+    if (startDate && endDate) {
+      const startDateObject = new Date(startDate);
+      const endDateObject = new Date(endDate);
+      const startDateWithoutTime = new Date(
+        startDateObject.getFullYear(),
+        startDateObject.getMonth(),
+        startDateObject.getDate() + 1
+      );
+      const endDateWithoutTime = new Date(
+        endDateObject.getFullYear(),
+        endDateObject.getMonth(),
+        endDateObject.getDate() + 1
+      );
+      filteredData = filteredData.filter(
+        (entry) =>
+          new Date(entry.DateSold) >= new Date(startDateWithoutTime) &&
+          new Date(entry.DateSold) <= new Date(endDateWithoutTime)
+      );
+    }
 
     const totalGATicket = filteredData.reduce(
       (acc, curr) => acc + parseInt(curr.GA_Tickets),
