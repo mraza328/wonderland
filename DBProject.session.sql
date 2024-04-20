@@ -259,9 +259,9 @@ BEGIN
 
     ELSE
         -- Check if the total price of the current sale is greater than or equal to 120
-        IF NEW.TotalPrice >= 120 THEN
+        IF NEW.TotalPrice >= 150 THEN
             -- Apply customer discount
-            SET discountPercent = 25;
+            SET discountPercent = 20;
             SET newTotal = NEW.TotalPrice * (1 - discountPercent / 100);
 
             -- Update final sale price, including discount reduction

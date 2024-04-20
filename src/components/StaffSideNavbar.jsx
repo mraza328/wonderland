@@ -130,7 +130,6 @@ const StaffSideNavbar = ({ onItemClick }) => {
                     </li>
                   </>
                 )}
-
                 {((depName === "Vendor" && role === "Department Manager") ||
                   (depName === "Central" && role === "Department Manager") ||
                   role === "Admin" ||

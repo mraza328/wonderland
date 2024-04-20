@@ -178,7 +178,7 @@ export default function TicketPurchase() {
         if (data.message === "Discount applied successfully!") {
           const discountedTotalPrice = data.discountedTotalPrice;
           setNotification({
-            message: `Congratulations! You've received a 25% discount on your purchase because you've spent $120 or more!<br><br>New total amount after discount: $${discountedTotalPrice}`,
+            message: `Congratulations! You've received a 20% discount on your purchase because you've spent $150 or more!<br><br>New total amount after discount: $${discountedTotalPrice}`,
             type: "success",
           });
         } else {
