@@ -9,7 +9,6 @@ export default async (req, res) => {
   const { userID } = req.body; // Retrieve userID from request body
 
   try {
-    // Use the promise-based pool
     const pool = await poolPromise;
 
     const purchaseHistoryQuery = `

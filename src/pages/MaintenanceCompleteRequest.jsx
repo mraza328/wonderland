@@ -40,16 +40,14 @@ export default function MaintenanceCompReq({ onSuccess }) {
         }
         const data = await response.json();
 
-        // Process to get the highest stateID for each requestID
         const highestStateData = data.reduce((acc, item) => {
           const existing = acc[item.RequestID];
           if (!existing || existing.StateID < item.StateID) {
-            acc[item.RequestID] = item; // Store the item if it has a higher StateID
+            acc[item.RequestID] = item;
           }
           return acc;
         }, {});
 
-        // Filter out completed maintenance requests after identifying the highest stateID
         const nonCompletedData = Object.values(highestStateData).filter(
           (item) => item.MaintenanceStatus !== "Completed"
         );
@@ -113,7 +111,7 @@ export default function MaintenanceCompReq({ onSuccess }) {
     setFormData((prev) => ({ ...prev, [name]: value }));
 
     if (name === "estimatedCost") {
-      setCostChangedByUser(true); // Indicate that the user has changed this field
+      setCostChangedByUser(true);
 
       if (Number(value) > 5000) {
         setErrorMessage(

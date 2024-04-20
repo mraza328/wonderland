@@ -22,7 +22,6 @@ export default function UpdateEmployee() {
 
   const baseURL = currentConfig.REACT_APP_API_BASE_URL;
 
-  //var combinedObject = null;
   const [combinedObject, setCombinedObject] = useState(null);
 
   useEffect(() => {

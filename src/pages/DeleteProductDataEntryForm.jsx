@@ -54,7 +54,6 @@ export default function DeleteProduct() {
       }
 
       const json = await response.json();
-      console.log("Products:", json); // Log the fetched products
       setProducts(json);
     } catch (error) {
       console.error("Error fetching products:", error.message);

@@ -13,14 +13,12 @@ export default function TicketDataReports() {
 
   const baseURL = currentConfig.REACT_APP_API_BASE_URL;
 
-  const handleGenerateReport = async() => {
-    // Perform data fetching based on startDate and endDate
-    // Replace this with your actual data fetching logic
-    if(customerID===" "){
+  const handleGenerateReport = async () => {
+    if (customerID === " ") {
       setCustomerID(null);
     }
     console.log(customerID);
-    const formData = {customerID}
+    const formData = { customerID };
     const response = await fetch(`${baseURL}/ticketreports`, {
       method: "POST",
       body: JSON.stringify(formData),
@@ -41,7 +39,7 @@ export default function TicketDataReports() {
   };
 
   useEffect(() => {
-    let filteredData = [...fetchedData]; // Create a separate copy of fetchedData
+    let filteredData = [...fetchedData];
     const startDateObject = new Date(startDate);
     const endDateObject = new Date(endDate);
     const startDateWithoutTime = new Date(
@@ -59,12 +57,18 @@ export default function TicketDataReports() {
         new Date(entry.DateSold) >= new Date(startDateWithoutTime) &&
         new Date(entry.DateSold) <= new Date(endDateWithoutTime)
     );
-  
-    const totalGATicket = filteredData.reduce((acc, curr) => acc + parseInt(curr.GA_Tickets), 0);
-    const totalKITicket = filteredData.reduce((acc, curr) => acc + parseInt(curr.KI_Tickets), 0);
+
+    const totalGATicket = filteredData.reduce(
+      (acc, curr) => acc + parseInt(curr.GA_Tickets),
+      0
+    );
+    const totalKITicket = filteredData.reduce(
+      (acc, curr) => acc + parseInt(curr.KI_Tickets),
+      0
+    );
     setTotalGATickets(totalGATicket);
     setTotalKITickets(totalKITicket);
-  
+
     setTicketData(filteredData);
   }, [fetchedData]);
 

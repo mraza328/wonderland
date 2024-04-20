@@ -52,14 +52,12 @@ export default function MaintenanceDataReports() {
   const handleGenerateReport = () => {
     console.log("Filtering data from:", startDate, "to", endDate);
 
-    // Filter maintenance data based on the user-selected date range and other filters
     let filteredData = maintenanceData.filter((item) => {
       const itemStartDate = new Date(item.startDate);
       const isStartDateWithinRange =
         (!startDate || itemStartDate >= new Date(startDate)) &&
         (!endDate || itemStartDate <= new Date(endDate));
 
-      // Apply other existing filters, ensuring each condition is correctly handled
       const isMaintenanceIdMatch =
         !maintenanceFilter ||
         item.maintenanceIds.toString() === maintenanceFilter;
@@ -86,7 +84,6 @@ export default function MaintenanceDataReports() {
           return cost >= minCost && cost <= maxCost;
         })();
 
-      // Return true if all filter conditions are met
       return (
         isStartDateWithinRange &&
         isMaintenanceIdMatch &&

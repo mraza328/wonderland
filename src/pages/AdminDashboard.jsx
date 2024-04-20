@@ -71,17 +71,14 @@ export default function AdminDashboard() {
   const wedWorkHoursFirstShift = "9:00 AM - 2:00 PM";
   const wedWorkHoursSecondShift = "2:00 PM - 7:00 PM";
 
-  // Get current date, month, year, and day of the week
   const currentDate = new Date();
   const currentMonth = currentDate.toLocaleString("default", { month: "long" });
   const currentYear = currentDate.getFullYear();
   const currentDay = currentDate.getDate();
   const currentDayOfWeek = currentDate.getDay();
 
-  // Find the starting day of the current week
   const startingDayOfWeek = currentDayOfWeek === 0 ? 0 : currentDayOfWeek;
 
-  // Generate an array representing the current week
   const currentWeek = [];
   let day = currentDay - startingDayOfWeek;
   for (let i = 0; i < 7; i++) {

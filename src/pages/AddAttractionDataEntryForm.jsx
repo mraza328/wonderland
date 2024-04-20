@@ -25,7 +25,7 @@ export default function AddAttraction() {
   const handleSubmit = async (event) => {
     event.preventDefault();
     setCreationSuccess(false);
-    // Submit data to backend or perform further processing
+
     const formData = {
       startOperatingHour,
       endOperatingHour,

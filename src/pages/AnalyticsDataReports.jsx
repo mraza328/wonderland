@@ -152,21 +152,18 @@ export default function RideDataReports() {
   };
 
   const calculateMetricsForAllVendors = () => {
-    // Calculate most popular vendor
     const mostPopularVendor = vendorData.reduce((prev, current) =>
       parseFloat(prev.TotalSales) > parseFloat(current.TotalSales)
         ? prev
         : current
     );
 
-    // Calculate least popular vendor
     const leastPopularVendor = vendorData.reduce((prev, current) =>
       parseFloat(prev.TotalSales) < parseFloat(current.TotalSales)
         ? prev
         : current
     );
 
-    // Group by product name to calculate most and least popular products
     const productsGroupedByName = {};
     vendorData.forEach((entry) => {
       if (!productsGroupedByName[entry.ProductName]) {
@@ -175,7 +172,6 @@ export default function RideDataReports() {
       productsGroupedByName[entry.ProductName] += parseFloat(entry.TotalSales);
     });
 
-    // Calculate most popular product
     const mostPopularProduct = Object.keys(productsGroupedByName).reduce(
       (prev, current) =>
         productsGroupedByName[prev] > productsGroupedByName[current]
@@ -183,7 +179,6 @@ export default function RideDataReports() {
           : current
     );
 
-    // Calculate least popular product
     const leastPopularProduct = Object.keys(productsGroupedByName).reduce(
       (prev, current) =>
         productsGroupedByName[prev] < productsGroupedByName[current]

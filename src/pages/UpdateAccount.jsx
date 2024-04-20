@@ -25,11 +25,9 @@ export default function UpdateAccount() {
   const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
-    // This effect runs once on component mount, and logs the current user
     console.log(currentUser);
   }, [currentUser]);
 
-  // Update local state when form fields change
   const handleChange = (event) => {
     const { name, value } = event.target;
     setFormData((prevFormData) => ({
@@ -68,7 +66,7 @@ export default function UpdateAccount() {
   };
 
   const handleRedirect = () => {
-    navigate("/"); // Redirect user to home page
+    navigate("/");
   };
 
   return (

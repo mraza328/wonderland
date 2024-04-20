@@ -11,12 +11,12 @@ export default function AddDepartment() {
   const handleSubmit = async (event) => {
     event.preventDefault();
     setCreationSuccess(false);
-    // Submit data to backend or perform further processing
+
     const formData = {
       name,
       mggrUserID,
     };
-    
+
     try {
       const response = await fetch(`${baseURL}/adddepartment`, {
         method: "POST",

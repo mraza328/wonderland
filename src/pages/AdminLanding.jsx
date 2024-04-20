@@ -60,14 +60,11 @@ const AdminLanding = () => {
   return (
     <div className="container-fluid">
       <div className="row">
-        {/* Sidebar */}
         <div className="col-md-3">
           <StaffSideNavbar onItemClick={handleItemClick} />
         </div>
-        {/* Main Content */}
         <div className="col-md-9">
           <div className="main-content">
-            {/* Render the selected page */}
             {selectedPage === "Dashboard" && <AdminDashboard />}
             {selectedPage === "Department Management" && <AdminDepManagement />}
             {selectedPage === "Data Reports" && <AdminDataReports />}
@@ -142,7 +139,6 @@ const AdminLanding = () => {
                 onSuccess={handleFormSubmissionSuccess}
               />
             )}
-            {/* Add more pages as needed */}
           </div>
         </div>
       </div>

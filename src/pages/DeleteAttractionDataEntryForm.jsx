@@ -28,7 +28,6 @@ export default function DeleteAttraction() {
         console.log("Failed to fetch attraction data");
       }
       if (response.ok) {
-        // Filter the attractions to only include those with an "Active" status
         const activeAttractions = json.filter(
           (attraction) => attraction.AttractionStatus === "Active"
         );

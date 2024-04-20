@@ -12,7 +12,7 @@ export default function MaintenanceFormTemplate({ onSubmit }) {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    onSubmit(formData); // Pass the form data back to the handler provided by the parent
+    onSubmit(formData);
   };
 
   // State for managing the date input

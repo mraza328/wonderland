@@ -2,12 +2,10 @@ import { poolPromise } from "./database.js";
 
 export default async (req, res) => {
   try {
-    // Calculate start date and end date for the last month
     const endDate = new Date();
     const startDate = new Date();
     startDate.setMonth(startDate.getMonth() - 1);
 
-    // Retrieve data from the database based on startDate and endDate
     const pool = await poolPromise;
     const query = `
       SELECT p.NameOfItem AS ProductName, v.NameOfVendor AS VendorName, COUNT(*) AS SalesCount

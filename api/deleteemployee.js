@@ -50,7 +50,7 @@ export default async (req, res) => {
       }
     } catch (error) {
       await connection.rollback();
-      throw error; // This error will be caught by the outer catch block
+      throw error;
     } finally {
       connection.release();
     }

@@ -22,10 +22,8 @@ export default function SignUp() {
       });
 
       if (response.ok) {
-        // Redirect user to the sign-in page
         navigate("/signIn");
       } else {
-        // Set error message state to show to the user
         setErrorMessage("Signup unsuccessful, try again later");
       }
     } catch (error) {

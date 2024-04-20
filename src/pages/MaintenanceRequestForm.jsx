@@ -70,7 +70,6 @@ export default function MaintenanceRequestForm({ onSuccess }) {
         setMessageType("success");
 
         if (response.status === 200) {
-          // Success message for status 200
           Swal.fire({
             title: "Success!",
             text: responseData.message,
@@ -82,7 +81,6 @@ export default function MaintenanceRequestForm({ onSuccess }) {
             }
           });
         } else if (response.status === 201) {
-          // Warning message for status 201
           Swal.fire({
             title: "Pending!",
             text: responseData.message,

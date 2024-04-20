@@ -44,7 +44,6 @@ export default function UpdateDepartment() {
     setDepartmentData(null);
     setisSubmitted(false);
     setCreationSuccess(false);
-    // Form submission logic
 
     const formData = { department };
     try {

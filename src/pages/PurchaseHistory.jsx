@@ -17,7 +17,7 @@ export default function PurchaseHistory() {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ userID }), // Include userID in the request body
+          body: JSON.stringify({ userID }),
         });
         if (!response.ok) {
           throw new Error("Failed to fetch purchase history");

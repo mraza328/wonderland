@@ -12,7 +12,6 @@ export default function DeleteVendor() {
   const baseURL = currentConfig.REACT_APP_API_BASE_URL;
 
   useEffect(() => {
-    // Fetch vendor data from your backend based on the vendorName to be implemented later (backend)
     const fetchVendors = async () => {
       const response = await fetch(`${baseURL}/getallvendors`, {
         method: "GET",

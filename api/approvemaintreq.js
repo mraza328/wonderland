@@ -10,16 +10,16 @@ export default async (req, res) => {
     const body = await new Promise((resolve, reject) => {
       let data = "";
       req.on("data", (chunk) => {
-        data += chunk.toString(); // Collecting data chunks
+        data += chunk.toString();
       });
       req.on("end", () => {
         try {
-          resolve(JSON.parse(data)); // Parsing the collected data
+          resolve(JSON.parse(data));
         } catch (parseError) {
-          reject(parseError); // Handling JSON parsing error
+          reject(parseError);
         }
       });
-      req.on("error", (err) => reject(err)); // Handling streaming errors
+      req.on("error", (err) => reject(err));
     });
 
     let {
@@ -40,8 +40,7 @@ export default async (req, res) => {
       managerApproval,
       requestId,
       stateId,
-    ]); // Passing parameters correctly
-
+    ]);
     res.status(200).json({
       message: "Maintenance request approved successfully!",
     });

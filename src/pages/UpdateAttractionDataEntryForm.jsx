@@ -4,7 +4,7 @@ import { currentConfig } from "../config";
 export default function UpdateAttraction() {
   const [attractionName, setAttractionName] = useState("");
   const [attractionData, setAttractionData] = useState(null);
-  const [isSubmitted, setIsSubmitted] = useState(false); // Adjusted from setisSubmitted for naming convention
+  const [isSubmitted, setIsSubmitted] = useState(false);
   const [creationSuccess, setCreationSuccess] = useState(false);
   const [errors, setErrors] = useState([]);
   const [errorFields, setErrorFields] = useState([]);
@@ -30,7 +30,6 @@ export default function UpdateAttraction() {
       if (!response.ok) {
         console.error("Failed to fetch attraction data");
       } else {
-        // Filter the attractions to only include those with an "Active" status
         const activeAttractions = json.filter(
           (attraction) => attraction.AttractionStatus === "Active"
         );
@@ -45,8 +44,6 @@ export default function UpdateAttraction() {
   const handleSelectSubmit = async (e) => {
     e.preventDefault();
 
-    // Here you would filter out the selected attraction from the `attractions` state
-    // Since the attractions are already fetched, no need to fetch a single attraction again
     const selectedAttraction = attractions.find(
       (attraction) => attraction.NameOfAttraction === attractionName
     );
@@ -62,7 +59,6 @@ export default function UpdateAttraction() {
     setErrors([]);
     setErrorFields([]);
 
-    // Assuming attractionData includes all necessary fields
     const formData = {
       ...attractionData,
       startOperatingHour: attractionData.StartOperatingHour,

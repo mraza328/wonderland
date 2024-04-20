@@ -1,7 +1,6 @@
 import React, { useRef } from "react";
 import classes from "../components/UI/Home.module.css";
 
-//alerts for temporarily closure shows up first, then today's park hours, and so on
 export default function ParkInformation() {
   const scrollToSection = (sectionId) => {
     const section = document.getElementById(sectionId);

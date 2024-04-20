@@ -18,15 +18,13 @@ export default function AddVendor() {
   const handleSubmit = async (event) => {
     event.preventDefault();
     setCreationSuccess(false);
-    // Submit data to backend or perform further processing
+
     const formData = {
       name,
       type,
       status,
       department,
     };
-    //console.log(formData);
-    //alert("Vendor has been added");
 
     try {
       const response = await fetch(`${baseURL}/addvendor`, {

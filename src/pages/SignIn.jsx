@@ -24,7 +24,6 @@ export default function SignIn() {
     });
 
     const data = await response.json();
-    //console.log("Sign-in data:", data);
 
     if (response.status === 200) {
       navigate("/");

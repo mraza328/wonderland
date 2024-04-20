@@ -30,7 +30,7 @@ export default function AddWeatherLog() {
     event.preventDefault();
     setCreationSuccess(false);
     setUserID(currentUser.UserID);
-    // Submit data to backend or perform further processing
+
     const formData = {
       userID,
       dateOfClosure,

@@ -39,16 +39,14 @@ export default function MaintUpReq({ onSuccess }) {
         }
         const data = await response.json();
 
-        // Process to get the highest stateID for each requestID
         const highestStateData = data.reduce((acc, item) => {
           const existing = acc[item.RequestID];
           if (!existing || existing.StateID < item.StateID) {
-            acc[item.RequestID] = item; // Store the item if it has a higher StateID
+            acc[item.RequestID] = item;
           }
           return acc;
         }, {});
 
-        // Filter out completed maintenance requests after identifying the highest stateID
         const nonCompletedData = Object.values(highestStateData).filter(
           (item) => item.MaintenanceStatus !== "Completed"
         );

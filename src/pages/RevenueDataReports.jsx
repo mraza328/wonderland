@@ -7,8 +7,8 @@ export default function RevenueDataReports() {
   const [endDate, setEndDate] = useState("");
   const [revenueSource, setRevenueSource] = useState("All");
   const [ticketType, setTicketType] = useState("All");
-  const [foodBundleType, setFoodBundleType] = useState("All"); // New state for Food bundle type
-  const [merchBundleType, setMerchBundleType] = useState("All"); // New state for Merchandise bundle type
+  const [foodBundleType, setFoodBundleType] = useState("All");
+  const [merchBundleType, setMerchBundleType] = useState("All");
   const [fetchedData, setFetchedData] = useState([]);
   const [revenueData, setRevenueData] = useState([]);
   const [totalRevenue, setTotalRevenue] = useState(0);
@@ -64,7 +64,6 @@ export default function RevenueDataReports() {
   }, []);
 
   const handleGenerateReport = () => {
-    // Filter fetched data based on date range and revenue source
     let filteredData = [...fetchedData];
     const startDateObject = new Date(startDate);
     const endDateObject = new Date(endDate);
@@ -102,11 +101,12 @@ export default function RevenueDataReports() {
       );
     }
 
-    // Calculate total revenue
-    const total = filteredData.reduce((acc, curr) => acc + parseFloat(curr.Revenue), 0).toFixed(2);
+    const total = filteredData
+      .reduce((acc, curr) => acc + parseFloat(curr.Revenue), 0)
+      .toFixed(2);
+
     setTotalRevenue(total);
 
-    // Set revenue data
     setRevenueData(filteredData);
   };
 

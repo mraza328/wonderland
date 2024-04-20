@@ -9,10 +9,9 @@ export const StaffNavbar = () => {
 
   const handleSignOut = () => {
     signOut();
-
-    // Redirect to the sign-in page
     navigate("/StaffSignIn");
   };
+
   return (
     <nav className="navbar navbar-expand-lg">
       <div className="container">
