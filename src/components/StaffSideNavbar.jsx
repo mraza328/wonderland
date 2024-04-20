@@ -274,8 +274,7 @@ const StaffSideNavbar = ({ onItemClick }) => {
               )}
               {(role === "Admin" ||
                 role === "Department Manager" ||
-                role === "Park Manager" ||
-                role === "Maintenance") && (
+                role === "Park Manager") && (
                 <>
                   <li
                     className="list-group-submenu-item"
