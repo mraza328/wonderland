@@ -131,40 +131,6 @@ const StaffSideNavbar = ({ onItemClick }) => {
                   </>
                 )}
 
-                {(role === "Admin" || role === "Park Manager") && (
-                  <>
-                    <li
-                      className="list-group-submenu-item"
-                      onClick={() =>
-                        onItemClick("Add Weather Log Data Entry Form")
-                      }
-                    >
-                      Shut Down Park
-                    </li>
-                  </>
-                )}
-                {((depName === "Central" && role === "Department Manager") ||
-                  role === "Admin" ||
-                  role === "Park Manager") && (
-                  <>
-                    <li
-                      className="list-group-submenu-item"
-                      onClick={() =>
-                        onItemClick("Add Department Data Entry Form")
-                      }
-                    >
-                      Add Department
-                    </li>
-                    <li
-                      className="list-group-submenu-item"
-                      onClick={() =>
-                        onItemClick("Update Department Data Entry Form")
-                      }
-                    >
-                      Update Department
-                    </li>
-                  </>
-                )}
                 {((depName === "Vendor" && role === "Department Manager") ||
                   (depName === "Central" && role === "Department Manager") ||
                   role === "Admin" ||
@@ -191,6 +157,40 @@ const StaffSideNavbar = ({ onItemClick }) => {
                       }
                     >
                       Delete Product
+                    </li>
+                  </>
+                )}
+                {((depName === "Central" && role === "Department Manager") ||
+                  role === "Admin" ||
+                  role === "Park Manager") && (
+                  <>
+                    <li
+                      className="list-group-submenu-item"
+                      onClick={() =>
+                        onItemClick("Add Department Data Entry Form")
+                      }
+                    >
+                      Add Department
+                    </li>
+                    <li
+                      className="list-group-submenu-item"
+                      onClick={() =>
+                        onItemClick("Update Department Data Entry Form")
+                      }
+                    >
+                      Update Department
+                    </li>
+                  </>
+                )}
+                {(role === "Admin" || role === "Park Manager") && (
+                  <>
+                    <li
+                      className="list-group-submenu-item"
+                      onClick={() =>
+                        onItemClick("Add Weather Log Data Entry Form")
+                      }
+                    >
+                      Shut Down Park
                     </li>
                   </>
                 )}
