@@ -26,6 +26,10 @@ export default function RideDataReports() {
   const [selectedProduct, setSelectedProduct] = useState("All");
   const [vendorData, setVendorData] = useState([]);
   const [totalSales, setTotalSales] = useState(0);
+  const [mostPopularVendor, setMostPopularVendor] = useState(null);
+  const [leastPopularVendor, setLeastPopularVendor] = useState(null);
+  const [mostPopularProduct, setMostPopularProduct] = useState(null);
+  const [leastPopularProduct, setLeastPopularProduct] = useState(null);
 
   const baseURL = currentConfig.REACT_APP_API_BASE_URL;
 
@@ -146,6 +150,64 @@ export default function RideDataReports() {
       console.error("Error generating report:", error);
     }
   };
+
+  const calculateMetricsForAllVendors = () => {
+    // Calculate most popular vendor
+    const mostPopularVendor = vendorData.reduce((prev, current) =>
+      parseFloat(prev.TotalSales) > parseFloat(current.TotalSales)
+        ? prev
+        : current
+    );
+
+    // Calculate least popular vendor
+    const leastPopularVendor = vendorData.reduce((prev, current) =>
+      parseFloat(prev.TotalSales) < parseFloat(current.TotalSales)
+        ? prev
+        : current
+    );
+
+    // Group by product name to calculate most and least popular products
+    const productsGroupedByName = {};
+    vendorData.forEach((entry) => {
+      if (!productsGroupedByName[entry.ProductName]) {
+        productsGroupedByName[entry.ProductName] = 0;
+      }
+      productsGroupedByName[entry.ProductName] += parseFloat(entry.TotalSales);
+    });
+
+    // Calculate most popular product
+    const mostPopularProduct = Object.keys(productsGroupedByName).reduce(
+      (prev, current) =>
+        productsGroupedByName[prev] > productsGroupedByName[current]
+          ? prev
+          : current
+    );
+
+    // Calculate least popular product
+    const leastPopularProduct = Object.keys(productsGroupedByName).reduce(
+      (prev, current) =>
+        productsGroupedByName[prev] < productsGroupedByName[current]
+          ? prev
+          : current
+    );
+
+    return {
+      mostPopularVendor,
+      leastPopularVendor,
+      mostPopularProduct,
+      leastPopularProduct,
+    };
+  };
+
+  useEffect(() => {
+    if (vendorData.length > 0) {
+      const metrics = calculateMetricsForAllVendors();
+      setMostPopularVendor(metrics.mostPopularVendor);
+      setLeastPopularVendor(metrics.leastPopularVendor);
+      setMostPopularProduct(metrics.mostPopularProduct);
+      setLeastPopularProduct(metrics.leastPopularProduct);
+    }
+  }, [vendorData]);
 
   return (
     <div className="ride-report-container">
@@ -407,6 +469,76 @@ export default function RideDataReports() {
           </tbody>
         </Table>
       )}
+      {selectedAnalyticsType === "Vendors" &&
+        selectedVendor === "All" &&
+        selectedVendorType === "All" && (
+          <>
+            <Table striped bordered hover>
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>Vendor Name</th>
+                  <th>Vendor Type</th>
+                  <th>Product Name</th>
+                  <th>Total Sales</th>
+                </tr>
+              </thead>
+              <tbody>
+                {vendorData.map((entry, index) => (
+                  <tr key={index}>
+                    <td>{entry.Date}</td>
+                    <td>{entry.NameOfVendor}</td>
+                    <td>{entry.VendorType}</td>
+                    <td>{entry.ProductName}</td>
+                    <td>${entry.TotalSales}</td>
+                  </tr>
+                ))}
+                <tr>
+                  <td colSpan="4">
+                    <b>
+                      Total "{selectedVendor}" Sales for Specified Parameters
+                    </b>
+                  </td>
+                  <td>
+                    <b>${totalSales}</b>
+                  </td>
+                </tr>
+              </tbody>
+            </Table>
+            <Table striped bordered hover>
+              <thead>
+                <tr>
+                  <th>Metrics</th>
+                  <th>Report Results</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Most Popular Vendor</td>
+                  <td>
+                    {mostPopularVendor ? mostPopularVendor.NameOfVendor : "N/A"}
+                  </td>
+                </tr>
+                <tr>
+                  <td>Least Popular Vendor</td>
+                  <td>
+                    {leastPopularVendor
+                      ? leastPopularVendor.NameOfVendor
+                      : "N/A"}
+                  </td>
+                </tr>
+                <tr>
+                  <td>Most Popular Product</td>
+                  <td>{mostPopularProduct || "N/A"}</td>
+                </tr>
+                <tr>
+                  <td>Least Popular Product</td>
+                  <td>{leastPopularProduct || "N/A"}</td>
+                </tr>
+              </tbody>
+            </Table>
+          </>
+        )}
     </div>
   );
 }
