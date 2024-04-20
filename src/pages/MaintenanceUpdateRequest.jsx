@@ -339,6 +339,8 @@ export default function MaintUpReq({ onSuccess }) {
                             }
                             className="form-control"
                             dateFormat="MMMM d, yyyy"
+                            minDate={new Date()}
+                            readOnly
                           />
                         </div>
                       </div>
@@ -369,6 +371,7 @@ export default function MaintUpReq({ onSuccess }) {
                             }
                             className="form-control"
                             dateFormat="MMMM d, yyyy"
+                            minDate={new Date()}
                           />
                         </div>
 

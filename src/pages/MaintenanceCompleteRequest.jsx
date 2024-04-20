@@ -315,6 +315,7 @@ export default function MaintenanceCompReq({ onSuccess }) {
                             }
                             className="form-control"
                             dateFormat="MMMM d, yyyy"
+                            minDate={new Date()}
                             readOnly
                           />
                         </div>
@@ -346,6 +347,7 @@ export default function MaintenanceCompReq({ onSuccess }) {
                             }
                             className="form-control"
                             dateFormat="MMMM d, yyyy"
+                            minDate={new Date()}
                           />
                         </div>
 

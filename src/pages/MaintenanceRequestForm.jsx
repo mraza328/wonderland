@@ -241,6 +241,7 @@ export default function MaintenanceRequestForm({ onSuccess }) {
                             onChange={(date) => setSubmissionDate(date)}
                             className="form-control"
                             dateFormat="MMMM d, yyyy"
+                            minDate={new Date()}
                             readOnly
                           />
                         </div>
@@ -266,6 +267,7 @@ export default function MaintenanceRequestForm({ onSuccess }) {
                             onChange={(date) => setCompletionDate(date)}
                             className="form-control"
                             dateFormat="MMMM d, yyyy"
+                            minDate={new Date()}
                           />
                         </div>
 
