@@ -146,55 +146,55 @@ export default function Home() {
           <h2>About Wonderland</h2>
           <p>
             Wonderland was first established in 2005 by a group of young college
-            students who wanted to bring a splash of color to the world. They
-            dreamed that Wonderland would allow dreams to become reality and
-            wishes to come true. At Wonderland, imagination knows no bounds!
-            Step into a world where fantasy becomes reality, and every corner
-            holds a new adventure waiting to be discovered. Nestled amidst lush
-            greenery and surrounded by breathtaking landscapes, Wonderland is
-            the ultimate destination for thrill-seekers, families, and dreamers
-            alike.
+            students who wanted to bring joy and excitement to people's lives.
+            They envisioned Wonderland as a place where dreams could come true
+            and imaginations could run wild. Nestled amidst lush greenery and
+            surrounded by breathtaking landscapes, Wonderland is the ultimate
+            destination for thrill-seekers, families, and dreamers alike.
           </p>
           <h3>Discover Enchanting Attractions</h3>
           <p>
             Embark on a journey through our enchanting rides and events, each
-            with its own unique charm and allure. From the mystical wonders of
-            the "Legendary Arena," where mythical creatures roam free, to the
-            adrenaline-pumping ride, "Thrillseeker's Torment," there's something
-            for everyone to explore and enjoy.
+            offering its own unique charm and allure. From thrilling adventures
+            to whimsical experiences, Wonderland has something for everyone to
+            explore and enjoy.
           </p>
           <h3>Experience Magical Entertainment</h3>
           <p>
-            Experience the magic come to life with our captivating show,
-            "Enchanted Theater". Be mesmerized by spellbinding performances
-            where acrobats, magicians, and dancers dazzle audiences with their
-            talents. Join in on the fun with interactive shows, parades, and
-            character meet-and-greets that will leave you smiling from ear to
-            ear.
+            Witness the magic come to life with our captivating shows and
+            performances. Be enchanted by spellbinding acts and dazzling
+            displays that will leave you mesmerized and wanting more.
           </p>
           <h3>Indulge in Culinary Delights</h3>
           <p>
-            Take a break from the excitement and indulge in a culinary adventure
-            at one of our fine dining establishments. From mouthwatering treats
-            to savory delights, there's no shortage of delectable options to
-            satisfy your cravings and fuel your adventures.
+            Treat your taste buds to a culinary adventure at our fine dining
+            establishments. From delicious treats to savory delights, there's no
+            shortage of delectable options to satisfy your cravings and fuel
+            your adventures.
           </p>
           <h3>Shop for Unforgettable Souvenirs</h3>
           <p>
-            Don't forget to visit our mesmerizing gift shops scattered
-            throughout Wonderland! Take home a piece of the fun with a wide
-            array of themed merchandise inspired by your favorite attractions
-            and characters. Whether you're searching for the perfect memento or
-            a magical gift for a loved one, our gift shops have something for
-            everyone to treasure.
+            Explore our charming gift shops and take home a piece of the magic
+            with themed merchandise inspired by your favorite experiences at
+            Wonderland. Whether you're looking for a souvenir or a gift for a
+            loved one, our shops have something for everyone to cherish.
           </p>
           <h3>Create Memories to Last a Lifetime</h3>
           <p>
-            Whether you're embarking on a thrilling quest, exploring enchanted
-            realms, or simply soaking in the magical atmosphere, Wonderland is
-            the perfect place to create memories that will last a lifetime. Join
-            us and let your imagination run wild at Wonderland – where the fun
-            never ends!
+            Whether you're embarking on an exciting adventure, immersing
+            yourself in enchanting worlds, or simply enjoying the magical
+            atmosphere, Wonderland is the perfect place to create memories that
+            will last a lifetime. Join us and let your imagination soar at
+            Wonderland – where the fun never ends!
+          </p>
+          <h3>Why Wait?</h3>
+          <p>
+            Don't miss out on the magic! Create an account today and unlock a
+            world of possibilities for your visit to Wonderland. With your
+            account, you'll gain access to exclusive benefits, including the
+            ability to purchase tickets, customize your itinerary by selecting
+            attractions, pre-order food, reserve merchandise, and much more.
+            Start planning your unforgettable adventure now!
           </p>
         </section>
         <section id="attractions" className={classes.attraction}>
@@ -212,7 +212,7 @@ export default function Home() {
             <div key={index}>
               <h3>{product.ProductName}</h3>
               <p>Sold by: {product.VendorName}</p>
-              <p>Total Sales: {product.SalesCount}</p>
+              <p>Total Sales This Past Month: {product.SalesCount}</p>
             </div>
           ))}
         </section>

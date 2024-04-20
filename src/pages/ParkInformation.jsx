@@ -103,44 +103,29 @@ export default function ParkInformation() {
           <p>
             If you have any questions, feel free to speak to an attendant at the
             attraction or contact us at wonderlandUS@gmail.com or call
-            (111)-111-1111.
+            (111)111-1111.
           </p>
         </section>
 
         <section id="parking" className={classes.about}>
           <h2>Parking Information</h2>
-          <p>
-            Our theme park has four parking lots, three of which are accessible
-            for all visitors. Please see your parking options listed below!
-          </p>
 
-          <h3>Parking Zone A - Premium Parking</h3>
+          <h3>Parking Zone A - Free Parking</h3>
           <p>
-            Parking Zone A is our premium parking area, offering shaded parking
-            spots closest to the entrance. It's the ideal choice for visitors
-            seeking convenience and comfort. While parking here comes at a
-            premium, you'll enjoy the benefit of quick access to the park,
-            making it perfect for those who prioritize ease of entry.
+            Parking Zone A is our largest parking area and it's completely free!
+            It provides ample space for parking and is still within a reasonable
+            walking distance to the park.
           </p>
-          <p>Parking in this zone costs $30 per day.</p>
 
           <h3>Parking Zone B - Free Parking</h3>
           <p>
-            Parking Zone B is our largest parking area and it's completely free!
-            Although it's not as close to the entrance as Zone A, it provides
-            ample space for parking and is still within a reasonable walking
-            distance to the park.
-          </p>
-
-          <h3>Parking Zone C - Free Parking</h3>
-          <p>
             Parking Zone C is a smaller free parking area, located slightly
-            further from the entrance compared to Zones A and B. While it may
-            not offer as many parking spots, it's still a viable choice for
-            visitors looking for complimentary parking options.
+            further from the entrance compared to Zones A. While it may not
+            offer as many parking spots, it's still a viable choice for visitors
+            looking for complimentary parking options.
           </p>
 
-          <h3>Parking Zone D - Employees Only</h3>
+          <h3>Parking Zone E - Employees Only</h3>
           <p>
             Please note that Zone D is reserved exclusively for employees of the
             theme park. This ensures that our staff have convenient parking
