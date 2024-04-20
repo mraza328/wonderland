@@ -219,9 +219,8 @@ export default function UpdateProduct() {
                     <label htmlFor="vendor" className="form-label">
                       Select Vendor:
                     </label>
-                    <input
-                      list="vendors"
-                      className="form-control"
+                    <select
+                      className="form-select"
                       id="vendor"
                       name="vendor"
                       value={productData.NameOfVendor}
@@ -231,12 +230,14 @@ export default function UpdateProduct() {
                           NameOfVendor: e.target.value,
                         })
                       }
-                    />
-                    <datalist id="vendors">
+                    >
+                      <option value="">Select vendor...</option>
                       {vendors.map((vendor, index) => (
-                        <option key={index} value={vendor.NameOfVendor} />
+                        <option key={index} value={vendor.NameOfVendor}>
+                          {vendor.NameOfVendor}
+                        </option>
                       ))}
-                    </datalist>
+                    </select>
                   </div>
                 </div>
                 <div className="row mb-3 mt-3">
