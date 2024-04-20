@@ -410,17 +410,14 @@ export default function UpdateEmployee() {
                     <label htmlFor="position" className="form-label">
                       Position:
                     </label>
-                    <input
-                      list="positions"
+                    <select
                       className={
                         errorFields.includes("position")
-                          ? "error form-control"
-                          : "form-control"
+                          ? "error form-select"
+                          : "form-select"
                       }
                       id="position"
                       name="position"
-                      required
-                      placeholder="Type to search..."
                       value={combinedObject.Position}
                       onChange={(e) =>
                         setCombinedObject({
@@ -428,13 +425,16 @@ export default function UpdateEmployee() {
                           Position: e.target.value,
                         })
                       }
-                    />
-                    <datalist id="positions">
+                    >
+                      <option value="">Select Position</option>
                       {positions.map((position, index) => (
-                        <option key={index} value={position} />
+                        <option key={index} value={position}>
+                          {position}
+                        </option>
                       ))}
-                    </datalist>
+                    </select>
                   </div>
+
                   <div className="col">
                     <label htmlFor="supUserID" className="form-label">
                       Supervisor ID:
@@ -483,13 +483,10 @@ export default function UpdateEmployee() {
                     <label htmlFor="department" className="form-label">
                       Department:
                     </label>
-                    <input
-                      list="departments"
-                      className="form-control"
+                    <select
+                      className="form-select"
                       id="department"
                       name="department"
-                      required
-                      placeholder="Type to search..."
                       value={combinedObject.DepName}
                       onChange={(e) =>
                         setCombinedObject({
@@ -497,28 +494,27 @@ export default function UpdateEmployee() {
                           DepName: e.target.value,
                         })
                       }
-                    />
-                    <datalist id="departments">
+                    >
+                      <option value="">Select Department</option>
                       {departments.map((department, index) => (
-                        <option key={index} value={department.DepName} />
+                        <option key={index} value={department.DepName}>
+                          {department.DepName}
+                        </option>
                       ))}
-                    </datalist>
+                    </select>
                   </div>
                   <div className="col">
                     <label htmlFor="shift" className="form-label">
                       Shift:
                     </label>
-                    <input
-                      list="shifts"
+                    <select
                       className={
                         errorFields.includes("shift")
-                          ? "error form-control"
-                          : "form-control"
+                          ? "error form-select"
+                          : "form-select"
                       }
                       id="shift"
                       name="shift"
-                      placeholder="Type to search..."
-                      required
                       value={combinedObject.ScheduleType}
                       onChange={(e) =>
                         setCombinedObject({
@@ -526,12 +522,14 @@ export default function UpdateEmployee() {
                           ScheduleType: e.target.value,
                         })
                       }
-                    />
-                    <datalist id="shifts">
-                      {schedules.map((position, index) => (
-                        <option key={index} value={position} />
+                    >
+                      <option value="">Select Shift</option>
+                      {schedules.map((shift, index) => (
+                        <option key={index} value={shift}>
+                          {shift}
+                        </option>
                       ))}
-                    </datalist>
+                    </select>
                   </div>
                 </div>
                 <div className="row mb-3">
