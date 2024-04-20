@@ -218,6 +218,7 @@ export default function StaffTicketPurchase() {
                 id="dateSelected"
                 value={selectedDate}
                 onChange={(e) => setSelectedDate(e.target.value)}
+                min={new Date().toISOString().split("T")[0]}
                 required
               />
             </div>
@@ -242,7 +243,6 @@ export default function StaffTicketPurchase() {
               {ticketDetails.map((ticket, index) => (
                 <div key={index}>
                   {index > 0 && <hr style={{ borderTop: "4px solid black" }} />}{" "}
-                  {/* Horizontal line */}
                   <div className="mt-2 mb-3">
                     <label
                       htmlFor={`ticketType${index}`}
