@@ -331,7 +331,7 @@ export default function MaintenanceCompReq({ onSuccess }) {
                             fontWeight: "bold",
                           }}
                         >
-                          Expected Completion Date*
+                          Completion Date*
                         </label>
                       </div>
                       <div>
@@ -348,6 +348,7 @@ export default function MaintenanceCompReq({ onSuccess }) {
                             className="form-control"
                             dateFormat="MMMM d, yyyy"
                             minDate={new Date()}
+                            readOnly
                           />
                         </div>
 
@@ -371,6 +372,7 @@ export default function MaintenanceCompReq({ onSuccess }) {
                               value={formData.maintenanceStatus}
                               onChange={handleChange}
                               disabled={true}
+                              required
                             >
                               <option value="Completed">Completed</option>
                             </select>
@@ -386,7 +388,7 @@ export default function MaintenanceCompReq({ onSuccess }) {
                                 fontWeight: "bold",
                               }}
                             >
-                              Estimated Cost of Maintenance*
+                              Final Cost of Maintenance*
                             </label>
                             <input
                               className="form-control"
@@ -396,6 +398,7 @@ export default function MaintenanceCompReq({ onSuccess }) {
                               aria-label="$"
                               value={formData.estimatedCost}
                               onChange={handleChange}
+                              required
                             ></input>
                           </div>
                         </div>

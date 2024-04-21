@@ -289,15 +289,9 @@ export default function MaintenanceRequestForm({ onSuccess }) {
                               aria-label="Maintenance Status"
                               defaultValue=""
                               onChange={handleChange}
+                              required
                             >
-                              <option defaultValue>Select Menu</option>
-                              <option value="Pending" disabled>
-                                Pending
-                              </option>
                               <option value="Active">Active</option>
-                              <option value="Completed" disabled>
-                                Completed
-                              </option>
                             </select>
                           </div>
 
@@ -321,6 +315,7 @@ export default function MaintenanceRequestForm({ onSuccess }) {
                               aria-label="$"
                               value={formData.estimatedCost}
                               onChange={handleChange}
+                              required
                             ></input>
                           </div>
                         </div>

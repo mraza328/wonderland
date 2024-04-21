@@ -239,6 +239,7 @@ export default function MaintUpReq({ onSuccess }) {
                           aria-label="Numeric ID assigned to each employee"
                           value={currentUser.UserID}
                           onChange={handleChange}
+                          readOnly
                         ></input>
                       </div>
 
@@ -262,6 +263,7 @@ export default function MaintUpReq({ onSuccess }) {
                           aria-label="Name of Department"
                           value={formData.departmentName}
                           onChange={handleChange}
+                          readOnly
                         ></input>
                       </div>
 
@@ -285,6 +287,7 @@ export default function MaintUpReq({ onSuccess }) {
                           aria-label="Name of Attraction"
                           value={formData.attractionName}
                           onChange={handleChange}
+                          readOnly
                         ></input>
                       </div>
 
@@ -307,6 +310,7 @@ export default function MaintUpReq({ onSuccess }) {
                             rows="3"
                             value={formData.reasonForRequest}
                             onChange={handleChange}
+                            required
                           ></textarea>
                         </div>
                       </div>
@@ -395,12 +399,8 @@ export default function MaintUpReq({ onSuccess }) {
                               value={formData.maintenanceStatus}
                               onChange={handleChange}
                             >
-                              <option value="">Select Menu</option>
                               <option value="Pending">Pending</option>
                               <option value="Active">Active</option>
-                              <option value="Completed" disabled>
-                                Completed
-                              </option>
                             </select>
                           </div>
 
@@ -424,6 +424,7 @@ export default function MaintUpReq({ onSuccess }) {
                               aria-label="$"
                               value={formData.estimatedCost}
                               onChange={handleChange}
+                              required
                             ></input>
                           </div>
                         </div>

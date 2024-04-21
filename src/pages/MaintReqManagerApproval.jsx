@@ -342,14 +342,7 @@ export default function ApproveMaintReq({ onSuccess }) {
                               value={"Active"}
                               onChange={handleChange}
                             >
-                              <option value="">Select Menu</option>
-                              <option value="Pending" disabled>
-                                Pending
-                              </option>
                               <option value="Active">Active</option>
-                              <option value="Completed" disabled>
-                                Completed
-                              </option>
                               readOnly
                             </select>
                           </div>
