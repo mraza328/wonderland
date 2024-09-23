@@ -23,8 +23,6 @@ After Vercel finishes its setup process, the frontend and backend application wi
 
 After that, everything should be running locally and will be good to go!
 
-- Visit it and take a look!
-
 # Features
 
 Interactive UI: Built with React, the frontend of Wonderland provides an intuitive and responsive user interface, allowing users to easily navigate through the wealth of information about theme park offerings.
