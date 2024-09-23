@@ -23,8 +23,6 @@ After Vercel finishes its setup process, the frontend and backend application wi
 
 After that, everything should be running locally and will be good to go!
 
-Currently, Wonderland is also deployed under the following domain: https://wonderland-seven.vercel.app/
-
 - Visit it and take a look!
 
 # Features
